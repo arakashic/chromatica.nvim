@@ -1,0 +1,1 @@
+# chromatica.nvim
