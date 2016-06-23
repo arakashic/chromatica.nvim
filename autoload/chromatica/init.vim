@@ -96,7 +96,7 @@ function! chromatica#init#_context() abort
                 \ 'range': [line('w0'), line('w$')],
                 \ 'position': getpos('.')[1:2],
                 \ 'bufnr': bufnr('%'),
-                \ 'filename': bufname('%:p'),
+                \ 'filename': expand('%:p'),
                 \ }
 endfunction
 
