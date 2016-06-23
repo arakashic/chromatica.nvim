@@ -61,6 +61,10 @@ endfunction
 function! chromatica#init#_enable() abort
     call chromatica#handlers#_init()
     let s:is_enabled = 1
+    if get(g:, 'chromatica#enable_debug', 0) "{{{
+        call chromatica#enable_logging('DEBUG', 'chromatica.log')
+    endif "}}}
+
 endfunction
 
 function! chromatica#init#_disable() abort

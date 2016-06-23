@@ -1,3 +1,4 @@
+from chromatica import logger
 from chromatica.util import load_external_module
 
 load_external_module(__file__, "")
@@ -5,6 +6,8 @@ from clang import cindex
 
 import os
 import re
+
+log = logger.logging.getLogger('chromatica')
 
 def path_is_root(path):
     if path == "/":

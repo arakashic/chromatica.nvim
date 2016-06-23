@@ -24,12 +24,12 @@ class ChromaticaPlugin(object):
         logger.setup(self.__vim, level, logfile)
         self.__chromatica.debug_enabled = True
 
-    @neovim.rpc_export("chromatica_highlight")
+    @neovim.rpc_export("chromatica_highlight", sync=False)
     def highlight(self, context):
         context["rpc"] = "chromatica_highlight"
         self.__chromatica.highlight(context)
 
-    @neovim.rpc_export("chromatica_parse")
+    @neovim.rpc_export("chromatica_parse", sync=False)
     def parse(self, context):
         context["rpc"] = "chromatica_parse"
         self.__chromatica.parse(context)

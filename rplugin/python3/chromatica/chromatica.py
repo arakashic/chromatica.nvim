@@ -69,12 +69,17 @@ class Chromatica(logger.LoggingMixin):
                 return ret
 
             self.ctx[filename]["args"] = \
-                self.args_db.get_args_filename(context["filename"])
+                self.args_db.get_args_filename(filename)
             # self.debug("file: %s, args: %s" % (filename, self.ctx[filename]["args"]))
-            self.ctx[filename]["tu"] = self.idx.parse(self.get_bufname(filename), \
+            tu = self.idx.parse(self.get_bufname(filename), \
                 self.ctx[filename]["args"], \
                 self.get_unsaved_buffer(filename), \
                 options=cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
+            if not tu:
+                del(self.ctx[filename])
+                return ret
+
+            self.ctx[filename]["tu"] = tu
             ret = True
         elif self.ctx[filename]["changedtick"] != context["changedtick"]:
             self.ctx[filename]["tu"].reparse(\
