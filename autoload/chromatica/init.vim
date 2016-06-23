@@ -56,7 +56,6 @@ function! chromatica#init#_initialize() abort
     else
         call chromatica#init#_disable()
     endif
-    echo 'Chromatica init finished.'
 endfunction
 
 function! chromatica#init#_enable() abort
@@ -98,7 +97,6 @@ function! chromatica#init#_context() abort
                 \ 'position': getpos('.')[1:2],
                 \ 'bufnr': bufnr('%'),
                 \ 'filename': bufname('%:p'),
-                \ 'filetype': &filetype,
                 \ }
 endfunction
 

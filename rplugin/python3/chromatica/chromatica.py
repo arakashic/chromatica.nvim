@@ -56,18 +56,18 @@ class Chromatica(logger.LoggingMixin):
         return self.get_buf(filename).name
 
     def parse(self, context):
-        if not cindex.Config.loaded:
-            self.error("libclang is not loaded")
-            return False
+        ret = False
         self.debug("parse context: %s" % context)
-        # check if context is has the right filetype
-        if not context["filetype"].strip(".")[0] in ["c", "cpp"]:
-            self.debug("Major filetype: %s is not supported" % context["filetype"])
-            return False
         # check if context is already in ctx db
         filename = context["filename"]
         if filename not in self.ctx:
             self.ctx[filename] = context
+            # check if context is has the right filetype
+            filetype = self.get_buf(filename).options["filetype"].strip(".")[0]
+            if filetype not in ["c", "cpp"]:
+                del(self.ctx[filename])
+                return ret
+
             self.ctx[filename]["args"] = \
                 self.args_db.get_args_filename(context["filename"])
             self.debug("file: %s, args: %s" % (filename, self.ctx[filename]["args"]))
@@ -75,15 +75,18 @@ class Chromatica(logger.LoggingMixin):
                 self.ctx[filename]["args"], \
                 self.get_unsaved_buffer(filename), \
                 options=cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
-            return True
+            ret = True
         elif self.ctx[filename]["changedtick"] != context["changedtick"]:
             self.ctx[filename]["tu"].reparse(\
                 self.get_unsaved_buffer(filename), \
                 options=cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
             self.ctx[filename]["changedtick"] = context["changedtick"]
-            return True
+            ret = True
 
-        return False
+        if ret:
+            self.highlight(context)
+
+        return ret
 
     def highlight(self, context):
         """backend of highlight event"""
@@ -112,6 +115,7 @@ class Chromatica(logger.LoggingMixin):
                 row = pos[0] - 1
                 col_start = pos[1] - 1
                 col_end = col_start + pos[2]
-                self.get_buf(filename).add_highlight(hl_group, row, col_start, col_end)
+                self.get_buf(filename).add_highlight(hl_group, row, col_start, col_end,\
+                        self.syntax_pri)
 
         # self.__vim.current.buffer.add_highlight()

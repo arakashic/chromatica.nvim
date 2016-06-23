@@ -11,14 +11,11 @@ function! chromatica#handlers#_init() abort
         autocmd!
         autocmd BufEnter,InsertLeave,TextChanged * call chromatica#handlers#_parse()
         autocmd CursorMoved * call chromatica#handlers#_highlight()
+        autocmd TextChangedI * call chromatica#handlers#_parse()
     augroup END
 endfunction
 
 fun! chromatica#handlers#_highlight()
-    if index(['c', 'cpp', 'objc', 'objcpp'], &filetype) == -1
-        return
-    endif
-
     if !exists('b:highlight_tick')
         let b:highlight_tick = 0
     endif
@@ -32,10 +29,6 @@ fun! chromatica#handlers#_highlight()
 endf
 
 fun! chromatica#handlers#_parse()
-    if index(['c', 'cpp', 'objc', 'objcpp'], &filetype) == -1
-        return
-    endif
-
     if exists('g:chromatica#_channel_id')
         let context = chromatica#init#_context()
         silent! call rpcnotify(g:chromatica#_channel_id, 'chromatica_parse', context)
