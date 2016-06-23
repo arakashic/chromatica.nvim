@@ -57,7 +57,7 @@ class Chromatica(logger.LoggingMixin):
 
     def parse(self, context):
         ret = False
-        self.debug("parse context: %s" % context)
+        # self.debug("parse context: %s" % context)
         # check if context is already in ctx db
         filename = context["filename"]
         if filename not in self.ctx:
@@ -70,7 +70,7 @@ class Chromatica(logger.LoggingMixin):
 
             self.ctx[filename]["args"] = \
                 self.args_db.get_args_filename(context["filename"])
-            self.debug("file: %s, args: %s" % (filename, self.ctx[filename]["args"]))
+            # self.debug("file: %s, args: %s" % (filename, self.ctx[filename]["args"]))
             self.ctx[filename]["tu"] = self.idx.parse(self.get_bufname(filename), \
                 self.ctx[filename]["args"], \
                 self.get_unsaved_buffer(filename), \
@@ -90,7 +90,7 @@ class Chromatica(logger.LoggingMixin):
 
     def highlight(self, context):
         """backend of highlight event"""
-        self.debug("highlight context: %s" % context)
+        # self.debug("highlight context: %s" % context)
         filename = context["filename"]
         lbegin, lend = context["range"]
         row, col = context["position"]
@@ -100,15 +100,16 @@ class Chromatica(logger.LoggingMixin):
             return
 
         if filename not in self.ctx:
-            self.parse(context)
+            if not self.parse(context):
+                return
 
-        tu = self.ctx[filename]['tu']
+        tu = self.ctx[filename]["tu"]
 
         symbol = syntax.get_symbol_from_loc(tu, self.get_bufname(filename), row, col)
         syn_group, occurrence = syntax.get_highlight(tu, self.get_bufname(filename), \
                 lbegin, lend, symbol)
-        self.debug(syn_group)
-        self.debug(occurrence)
+        # self.debug(syn_group)
+        # self.debug(occurrence)
 
         for hl_group in syn_group:
             for pos in syn_group[hl_group]:
