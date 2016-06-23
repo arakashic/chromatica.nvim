@@ -91,6 +91,10 @@ function! chromatica#init#_variables() abort
                 \ 'g:chromatica#syntax_priority', -2)
     call chromatica#util#set_default(
                 \ 'g:chromatica#global_args', [])
+    call chromatica#util#set_default(
+                \ 'g:chromatica#responsive_mode', 0)
+    call chromatica#util#set_default(
+                \ 'g:chromatica#delay_ms', 80)
 endfunction
 
 function! chromatica#init#_context() abort

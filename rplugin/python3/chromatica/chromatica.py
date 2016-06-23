@@ -17,6 +17,7 @@ from clang import cindex
 
 import os
 import re
+import time
 
 class Chromatica(logger.LoggingMixin):
 
@@ -31,6 +32,7 @@ class Chromatica(logger.LoggingMixin):
         self.occurrence_pri = self.__vim.vars["chromatica#occurrence_priority"]
         self.syntax_pri = self.__vim.vars["chromatica#syntax_priority"]
         self.global_args = self.__vim.vars["chromatica#global_args"]
+        self.delay_time = self.__vim.vars["chromatica#delay_ms"] / 1000.0
         self.ctx = {}
 
         if not cindex.Config.loaded:
@@ -70,21 +72,29 @@ class Chromatica(logger.LoggingMixin):
 
             self.ctx[filename]["args"] = \
                 self.args_db.get_args_filename(filename)
+            self.info("filename: %s, args: %s" % (filename, self.ctx[filename]["args"]))
             # self.debug("file: %s, args: %s" % (filename, self.ctx[filename]["args"]))
+            t_start = time.clock()
             tu = self.idx.parse(self.get_bufname(filename), \
                 self.ctx[filename]["args"], \
                 self.get_unsaved_buffer(filename), \
                 options=cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
+
+            t_elapse = time.clock() - t_start
+            self.debug("[profile] idx.parse: %2.10f" % t_elapse)
             if not tu:
                 del(self.ctx[filename])
                 return ret
 
             self.ctx[filename]["tu"] = tu
             ret = True
-        elif self.ctx[filename]["changedtick"] != context["changedtick"]:
+        elif context["changedtick"] != self.ctx[filename]["changedtick"]:
+            t_start = time.clock()
             self.ctx[filename]["tu"].reparse(\
                 self.get_unsaved_buffer(filename), \
                 options=cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
+            t_elapse = time.clock() - t_start
+            self.debug("[profile] idx.reparse: %2.10f" % t_elapse)
             self.ctx[filename]["changedtick"] = context["changedtick"]
             ret = True
 
@@ -92,6 +102,26 @@ class Chromatica(logger.LoggingMixin):
             self.highlight(context)
 
         return ret
+
+    def delayed_parse(self, context):
+        """delayed parse for responsive mode"""
+        filename = context["filename"]
+        # context must already in self.ctx
+        time.sleep(self.delay_time)
+
+        if context["changedtick"] < self.__vim.eval("b:changedtick"):
+            return
+        else:
+        # if context["changedtick"] - self.ctx[filename]["changedtick"] > delay_ticks:
+            t_start = time.clock()
+            self.ctx[filename]["tu"].reparse(\
+                self.get_unsaved_buffer(filename), \
+                options=cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
+            t_elapse = time.clock() - t_start
+            self.debug("[profile] parse_delayed idx.reparse: %2.10f" % t_elapse)
+            self.ctx[filename]["changedtick"] = context["changedtick"]
+
+            self.highlight(context)
 
     def highlight(self, context):
         """backend of highlight event"""
@@ -108,20 +138,27 @@ class Chromatica(logger.LoggingMixin):
             if not self.parse(context):
                 return
 
+        buf = self.get_buf(filename)
+
         tu = self.ctx[filename]["tu"]
 
         symbol = syntax.get_symbol_from_loc(tu, self.get_bufname(filename), row, col)
+        # t_start = time.clock()
         syn_group, occurrence = syntax.get_highlight(tu, self.get_bufname(filename), \
                 lbegin, lend, symbol)
+        # t_elapse = time.clock() - t_start
+        # self.debug("[profile] syntax.get_highlight: %2.10f" % t_elapse)
         # self.debug(syn_group)
         # self.debug(occurrence)
 
+        # t_start = time.clock()
         for hl_group in syn_group:
             for pos in syn_group[hl_group]:
                 row = pos[0] - 1
                 col_start = pos[1] - 1
                 col_end = col_start + pos[2]
-                self.get_buf(filename).add_highlight(hl_group, row, col_start, col_end,\
+                buf.add_highlight(hl_group, row, col_start, col_end,\
                         self.syntax_pri)
+        # t_elapse = time.clock() - t_start
+        # self.debug("[profile] buf.add_highlight: %2.10f" % t_elapse)
 
-        # self.__vim.current.buffer.add_highlight()

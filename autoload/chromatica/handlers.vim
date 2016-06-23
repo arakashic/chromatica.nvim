@@ -11,7 +11,9 @@ function! chromatica#handlers#_init() abort
         autocmd!
         autocmd BufEnter,InsertLeave,TextChanged * call chromatica#handlers#_parse()
         autocmd CursorMoved * call chromatica#handlers#_highlight()
-        autocmd TextChangedI * call chromatica#handlers#_parse()
+        if get(g:, 'chromatica#responsive_mode', 0)
+            autocmd TextChangedI * call chromatica#handlers#_delayed_parse()
+        endif
     augroup END
 endfunction
 
@@ -32,6 +34,13 @@ fun! chromatica#handlers#_parse()
     if exists('g:chromatica#_channel_id')
         let context = chromatica#init#_context()
         silent! call rpcnotify(g:chromatica#_channel_id, 'chromatica_parse', context)
+    endif
+endf
+
+fun! chromatica#handlers#_delayed_parse()
+    if exists('g:chromatica#_channel_id')
+        let context = chromatica#init#_context()
+        silent! call rpcnotify(g:chromatica#_channel_id, 'chromatica_delayed_parse', context)
     endif
 endf
 
