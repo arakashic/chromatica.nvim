@@ -34,6 +34,13 @@ class Chromatica(logger.LoggingMixin):
         self.global_args = self.__vim.vars["chromatica#global_args"]
         self.delay_time = self.__vim.vars["chromatica#delay_ms"] / 1000.0
         self.ctx = {}
+        if self.__vim.vars["chromatica#delay_ms"]:
+            self.parse_options = cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD \
+                               + cindex.TranslationUnit.PARSE_INCOMPLETE
+        else:
+            self.parse_options = cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD \
+                               + cindex.TranslationUnit.PARSE_INCOMPLETE \
+                               + cindex.TranslationUnit.PARSE_PRECOMPILED_PREAMBLE
 
         if not cindex.Config.loaded:
             if os.path.isdir(os.path.abspath(self.library_path)):
@@ -86,7 +93,7 @@ class Chromatica(logger.LoggingMixin):
             tu = self.idx.parse(self.get_bufname(filename), \
                 self.ctx[filename]["args"], \
                 self.get_unsaved_buffer(filename), \
-                options=cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
+                options=self.parse_options)
 
             t_elapse = time.clock() - t_start
             self.debug("[profile] idx.parse: %2.10f" % t_elapse)
@@ -100,7 +107,7 @@ class Chromatica(logger.LoggingMixin):
             t_start = time.clock()
             self.ctx[filename]["tu"].reparse(\
                 self.get_unsaved_buffer(filename), \
-                options=cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
+                options=self.parse_options)
             t_elapse = time.clock() - t_start
             self.debug("[profile] idx.reparse: %2.10f" % t_elapse)
             self.ctx[filename]["changedtick"] = context["changedtick"]
@@ -127,7 +134,7 @@ class Chromatica(logger.LoggingMixin):
             t_start = time.clock()
             self.ctx[filename]["tu"].reparse(\
                 self.get_unsaved_buffer(filename), \
-                options=cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
+                options=self.parse_options)
             t_elapse = time.clock() - t_start
             self.debug("[profile] parse_delayed idx.reparse: %2.10f" % t_elapse)
             self.ctx[filename]["changedtick"] = context["changedtick"]
