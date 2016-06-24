@@ -115,6 +115,9 @@ class Chromatica(logger.LoggingMixin):
         """delayed parse for responsive mode"""
         filename = context["filename"]
         # context must already in self.ctx
+        if not self.is_supported_filetype():
+            return
+
         time.sleep(self.delay_time)
 
         if context["changedtick"] < self.__vim.eval("b:changedtick"):
