@@ -244,6 +244,7 @@ def get_highlight(tu, filename, lbegin, lend, symbol):
     return syntax, occurrence
 
 def get_highlight2(tu, filename, lbegin, lend):
+    fp = open("AST_out.log", "w")
     file = tu.get_file(filename)
 
     if not file:
@@ -264,12 +265,8 @@ def get_highlight2(tu, filename, lbegin, lend):
         pos = [token.location.line, token.location.column, len(token.spelling)]
         group = _get_syntax_group(token, cursor)
 
-
         if group:
-            if (symbol, group) not in output:
-                output[(symbol, group)] = []
+            fp.write("%s %s %s\n" % (symbol, group, pos))
 
-            output[(symbol, group)].append(pos)
-
-    return output
+    fp.close()
 

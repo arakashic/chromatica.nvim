@@ -186,10 +186,6 @@ class Chromatica(logger.LoggingMixin):
 
         tu = self.ctx[filename]["tu"]
 
-        output = syntax.get_highlight2(tu, self.get_bufname(filename), \
+        syntax.get_highlight2(tu, self.get_bufname(filename), \
                 lbegin, lend)
-
-        for symbol_grp in output:
-            self.info("Symbol, Group: %s, Pos: %s" \
-                    % (symbol_grp, output[symbol_grp]))
 
