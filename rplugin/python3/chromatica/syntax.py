@@ -5,7 +5,7 @@ from chromatica.util import load_external_module
 load_external_module(__file__, "")
 from clang import cindex
 
-log = logger.logging.getLogger('chromatica')
+log = logger.logging.getLogger("chromatica")
 
 def get_cursor(tu, filename, row, col):
     return cindex.Cursor.from_location(tu, \
@@ -48,11 +48,11 @@ def get_symbol_from_loc(tu, filename, row, col):
     return None
 
 LITERAL_GROUP = {
-    cindex.CursorKind.INTEGER_LITERAL: 'Number',
-    cindex.CursorKind.FLOATING_LITERAL: 'Float',
-    cindex.CursorKind.IMAGINARY_LITERAL: 'Number',
+    cindex.CursorKind.INTEGER_LITERAL: "Number",
+    cindex.CursorKind.FLOATING_LITERAL: "Float",
+    cindex.CursorKind.IMAGINARY_LITERAL: "Number",
     cindex.CursorKind.STRING_LITERAL: None,
-    cindex.CursorKind.CHARACTER_LITERAL: 'Character',
+    cindex.CursorKind.CHARACTER_LITERAL: "Character",
 }
 
 TYPE_GROUP = {
@@ -109,42 +109,42 @@ TYPE_GROUP = {
 SYNTAX_GROUP = {
 # Declarations
     cindex.CursorKind.UNEXPOSED_DECL: None,
-    cindex.CursorKind.STRUCT_DECL: 'chromaticaStructDecl',
-    cindex.CursorKind.UNION_DECL: 'chromaticaUnionDecl',
-    cindex.CursorKind.CLASS_DECL: 'chromaticaClassDecl',
-    cindex.CursorKind.ENUM_DECL: 'chromaticaEnumDecl',
-    cindex.CursorKind.FIELD_DECL: 'chromaticaFieldDecl',
-    cindex.CursorKind.ENUM_CONSTANT_DECL: 'chromaticaEnumConstantDecl',
-    cindex.CursorKind.FUNCTION_DECL: 'chromaticaFunctionDecl',
-    cindex.CursorKind.VAR_DECL: 'chromaticaVarDecl',
-    cindex.CursorKind.PARM_DECL: 'chromaticaParmDecl',
-    cindex.CursorKind.TYPEDEF_DECL: 'chromaticaTypedefDecl',
-    cindex.CursorKind.CXX_METHOD: 'chromaticaFunctionDecl',
-    cindex.CursorKind.NAMESPACE: 'chromaticaNamespace',
-    cindex.CursorKind.LINKAGE_SPEC: 'chromaticaLinkageSpec',
-    cindex.CursorKind.CONSTRUCTOR: 'chromaticaFunctionDecl',
-    cindex.CursorKind.DESTRUCTOR: 'chromaticaFunctionDecl',
-    cindex.CursorKind.CONVERSION_FUNCTION: 'chromaticaConversionFunction',
-    cindex.CursorKind.TEMPLATE_TYPE_PARAMETER: 'chromaticaTemplateTypeParameter',
-    cindex.CursorKind.TEMPLATE_NON_TYPE_PARAMETER: 'chromaticaTemplateNoneTypeParameter',
-    cindex.CursorKind.TEMPLATE_TEMPLATE_PARAMETER: 'chromaticaTemplateTemplateParameter',
-    cindex.CursorKind.FUNCTION_TEMPLATE: 'chromaticaFunctionDecl',
-    cindex.CursorKind.CLASS_TEMPLATE: 'chromaticaClassDecl',
-    cindex.CursorKind.CLASS_TEMPLATE_PARTIAL_SPECIALIZATION: 'chromaticaClassTemplatePartialSpecialization',
-    cindex.CursorKind.NAMESPACE_ALIAS: 'chromaticaNamespaceAlias',
-    cindex.CursorKind.USING_DIRECTIVE: 'chromaticaUsingDirective',
-    cindex.CursorKind.USING_DECLARATION: 'chromaticaUsingDeclaration',
-    cindex.CursorKind.TYPE_ALIAS_DECL: 'chromaticaTypeAliasDecl',
-    cindex.CursorKind.CXX_ACCESS_SPEC_DECL: 'chromaticaCXXAccessSpecifier',
+    cindex.CursorKind.STRUCT_DECL: "chromaticaStructDecl",
+    cindex.CursorKind.UNION_DECL: "chromaticaUnionDecl",
+    cindex.CursorKind.CLASS_DECL: "chromaticaClassDecl",
+    cindex.CursorKind.ENUM_DECL: "chromaticaEnumDecl",
+    cindex.CursorKind.FIELD_DECL: "chromaticaFieldDecl",
+    cindex.CursorKind.ENUM_CONSTANT_DECL: "chromaticaEnumConstantDecl",
+    cindex.CursorKind.FUNCTION_DECL: "chromaticaFunctionDecl",
+    cindex.CursorKind.VAR_DECL: "chromaticaVarDecl",
+    cindex.CursorKind.PARM_DECL: "chromaticaParmDecl",
+    cindex.CursorKind.TYPEDEF_DECL: "chromaticaTypedefDecl",
+    cindex.CursorKind.CXX_METHOD: "chromaticaFunctionDecl",
+    cindex.CursorKind.NAMESPACE: "chromaticaNamespace",
+    cindex.CursorKind.LINKAGE_SPEC: "chromaticaLinkageSpec",
+    cindex.CursorKind.CONSTRUCTOR: "chromaticaFunctionDecl",
+    cindex.CursorKind.DESTRUCTOR: "chromaticaFunctionDecl",
+    cindex.CursorKind.CONVERSION_FUNCTION: "chromaticaConversionFunction",
+    cindex.CursorKind.TEMPLATE_TYPE_PARAMETER: "chromaticaTemplateTypeParameter",
+    cindex.CursorKind.TEMPLATE_NON_TYPE_PARAMETER: "chromaticaTemplateNoneTypeParameter",
+    cindex.CursorKind.TEMPLATE_TEMPLATE_PARAMETER: "chromaticaTemplateTemplateParameter",
+    cindex.CursorKind.FUNCTION_TEMPLATE: "chromaticaFunctionDecl",
+    cindex.CursorKind.CLASS_TEMPLATE: "chromaticaClassDecl",
+    cindex.CursorKind.CLASS_TEMPLATE_PARTIAL_SPECIALIZATION: "chromaticaClassTemplatePartialSpecialization",
+    cindex.CursorKind.NAMESPACE_ALIAS: "chromaticaNamespaceAlias",
+    cindex.CursorKind.USING_DIRECTIVE: "chromaticaUsingDirective",
+    cindex.CursorKind.USING_DECLARATION: "chromaticaUsingDeclaration",
+    cindex.CursorKind.TYPE_ALIAS_DECL: "chromaticaTypeAliasDecl",
+    cindex.CursorKind.CXX_ACCESS_SPEC_DECL: "chromaticaCXXAccessSpecifier",
 # References
-    cindex.CursorKind.TYPE_REF: 'chromaticaTypeRef',  # class ref
-    cindex.CursorKind.CXX_BASE_SPECIFIER: 'chromaticaCXXBaseSpecifier',
-    cindex.CursorKind.TEMPLATE_REF: 'chromaticaTemplateRef',  # template class ref
-    cindex.CursorKind.NAMESPACE_REF: 'chromaticaNamespaceRef',  # namespace ref
-    cindex.CursorKind.MEMBER_REF: 'chromaticaDeclRefExprCall',  # ex: designated initializer
-    cindex.CursorKind.LABEL_REF: 'chromaticaLableRef',
-    cindex.CursorKind.OVERLOADED_DECL_REF: 'chromaticaOverloadDeclRef',
-    cindex.CursorKind.VARIABLE_REF: 'chromaticaVariableRef',
+    cindex.CursorKind.TYPE_REF: "chromaticaTypeRef",  # class ref
+    cindex.CursorKind.CXX_BASE_SPECIFIER: "chromaticaCXXBaseSpecifier",
+    cindex.CursorKind.TEMPLATE_REF: "chromaticaTemplateRef",  # template class ref
+    cindex.CursorKind.NAMESPACE_REF: "chromaticaNamespaceRef",  # namespace ref
+    cindex.CursorKind.MEMBER_REF: "chromaticaDeclRefExprCall",  # ex: designated initializer
+    cindex.CursorKind.LABEL_REF: "chromaticaLableRef",
+    cindex.CursorKind.OVERLOADED_DECL_REF: "chromaticaOverloadDeclRef",
+    cindex.CursorKind.VARIABLE_REF: "chromaticaVariableRef",
 # Errors
     cindex.CursorKind.INVALID_FILE: None,
     cindex.CursorKind.NO_DECL_FOUND: None,
@@ -155,12 +155,12 @@ SYNTAX_GROUP = {
     cindex.CursorKind.DECL_REF_EXPR: TYPE_GROUP,
     cindex.CursorKind.MEMBER_REF_EXPR:
     {
-        cindex.TypeKind.UNEXPOSED: 'chromaticaMemberRefExprCall',  # member function call
+        cindex.TypeKind.UNEXPOSED: "chromaticaMemberRefExprCall",  # member function call
     },
-    cindex.CursorKind.CALL_EXPR: 'chromaticaCallExprt',
-    cindex.CursorKind.BLOCK_EXPR: 'chromaticaBlockExpr',
-    cindex.CursorKind.MACRO_INSTANTIATION: 'chromaticaMacroInstantiation',
-    cindex.CursorKind.INCLUSION_DIRECTIVE: 'chromaticaInclusionDirective',
+    cindex.CursorKind.CALL_EXPR: "chromaticaCallExprt",
+    cindex.CursorKind.BLOCK_EXPR: "chromaticaBlockExpr",
+    cindex.CursorKind.MACRO_INSTANTIATION: "chromaticaMacroInstantiation",
+    cindex.CursorKind.INCLUSION_DIRECTIVE: "chromaticaInclusionDirective",
     cindex.CursorKind.COMPOUND_STMT: None,
     cindex.CursorKind.PAREN_EXPR: None,
     cindex.CursorKind.CXX_FOR_RANGE_STMT: None,
@@ -170,11 +170,11 @@ SYNTAX_GROUP = {
 
 def _get_default_syn(cursor_kind):
     if cursor_kind.is_preprocessing():
-        return 'chromaticaPrepro'
+        return "chromaticaPrepro"
     elif cursor_kind.is_declaration():
-        return 'chromaticaDecl'
+        return "chromaticaDecl"
     elif cursor_kind.is_reference():
-        return 'chromaticaRef'
+        return "chromaticaRef"
     else:
         return None
 
@@ -201,7 +201,7 @@ def _get_syntax_group(token, cursor):
                 if custom:
                     group = custom
                 else:
-                    group = 'chromaticaMemberRefExprVar'
+                    group = "chromaticaMemberRefExprVar"
             else:
                 group = custom
 
@@ -220,7 +220,7 @@ def get_highlight(tu, filename, lbegin, lend, symbol):
     tokens = tu.get_tokens(extent=cindex.SourceRange.from_locations(begin, end))
 
     syntax = {}
-    occurrence = {'chromaticaOccurrences': []}
+    occurrence = {"chromaticaOccurrences": []}
 
     for token in tokens:
         cursor = token.cursor
@@ -239,7 +239,7 @@ def get_highlight(tu, filename, lbegin, lend, symbol):
 
         if symbol and t_symbol and symbol == t_symbol \
                 and t_symbol.spelling == token.spelling:
-            occurrence['chromaticaOccurrences'].append(pos)
+            occurrence["chromaticaOccurrences"].append(pos)
 
     return syntax, occurrence
 
