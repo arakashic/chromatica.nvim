@@ -57,6 +57,14 @@ class Chromatica(logger.LoggingMixin):
     def get_bufname(self, filename):
         return self.get_buf(filename).name
 
+    def is_supported_filetype(self):
+        filetype = self.__vim.current.buffer.options["filetype"]
+        if len(filetype) <= 0:
+            return False
+        if filetype.strip(".")[0] in ["c", "cpp"]:
+            return True
+        return False
+
     def parse(self, context):
         ret = False
         # self.debug("parse context: %s" % context)
@@ -65,8 +73,8 @@ class Chromatica(logger.LoggingMixin):
         if filename not in self.ctx:
             self.ctx[filename] = context
             # check if context is has the right filetype
-            filetype = self.get_buf(filename).options["filetype"].strip(".")[0]
-            if filetype not in ["c", "cpp"]:
+            buffer = self.__vim.current.buffer
+            if not self.is_supported_filetype():
                 del(self.ctx[filename])
                 return ret
 
@@ -131,14 +139,16 @@ class Chromatica(logger.LoggingMixin):
         row, col = context["position"]
         highlight_tick = context["highlight_tick"]
 
-        if highlight_tick != self.__vim.current.buffer.vars["highlight_tick"]:
+        buffer = self.__vim.current.buffer
+        if not self.is_supported_filetype(): return
+
+        if highlight_tick != buffer.vars["highlight_tick"]:
             return
 
         if filename not in self.ctx:
-            if not self.parse(context):
-                return
+            return self.parse(context)
 
-        buf = self.get_buf(filename)
+        if "tu" not in self.ctx[filename]: return
 
         tu = self.ctx[filename]["tu"]
 
@@ -157,7 +167,7 @@ class Chromatica(logger.LoggingMixin):
                 row = pos[0] - 1
                 col_start = pos[1] - 1
                 col_end = col_start + pos[2]
-                buf.add_highlight(hl_group, row, col_start, col_end,\
+                buffer.add_highlight(hl_group, row, col_start, col_end,\
                         self.syntax_pri)
         # t_elapse = time.clock() - t_start
         # self.debug("[profile] buf.add_highlight: %2.10f" % t_elapse)

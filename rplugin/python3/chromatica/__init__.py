@@ -27,14 +27,26 @@ class ChromaticaPlugin(object):
     @neovim.rpc_export("chromatica_highlight")
     def highlight(self, context):
         context["rpc"] = "chromatica_highlight"
-        self.__chromatica.highlight(context)
+        try:
+            self.__chromatica.highlight(context)
+        except:
+            self.__chromatica.debug(context)
+            raise
 
     @neovim.rpc_export("chromatica_parse")
     def parse(self, context):
         context["rpc"] = "chromatica_parse"
-        self.__chromatica.parse(context)
+        try:
+            self.__chromatica.parse(context)
+        except:
+            self.__chromatica.debug(context)
+            raise
 
     @neovim.rpc_export("chromatica_delayed_parse")
     def delayed_parse(self, context):
         context["rpc"] = "chromatica_delayed_parse"
-        self.__chromatica.delayed_parse(context)
+        try:
+            self.__chromatica.delayed_parse(context)
+        except:
+            self.__chromatica.debug(context)
+            raise
