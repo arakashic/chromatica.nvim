@@ -50,3 +50,13 @@ class ChromaticaPlugin(object):
         except:
             self.__chromatica.debug(context)
             raise
+
+    @neovim.rpc_export("chromatica_print_highlight")
+    def print_highlight(self, context):
+        context["rpc"] = "chromatica_print_highlight"
+        try:
+            self.__chromatica.print_highlight(context)
+        except:
+            self.__chromatica.debug(context)
+            raise
+

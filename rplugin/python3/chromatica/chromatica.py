@@ -168,7 +168,28 @@ class Chromatica(logger.LoggingMixin):
                 col_start = pos[1] - 1
                 col_end = col_start + pos[2]
                 buffer.add_highlight(hl_group, row, col_start, col_end,\
-                        self.syntax_pri)
+                        self.syntax_pri, async=True)
         # t_elapse = time.clock() - t_start
         # self.debug("[profile] buf.add_highlight: %2.10f" % t_elapse)
+
+    def print_highlight(self, context):
+        """print highlight info"""
+        filename = context["filename"]
+        lbegin, lend = context["range"]
+        row, col = context["position"]
+        highlight_tick = context["highlight_tick"]
+
+        buffer = self.__vim.current.buffer
+        if not self.is_supported_filetype(): return
+
+        if "tu" not in self.ctx[filename]: return
+
+        tu = self.ctx[filename]["tu"]
+
+        output = syntax.get_highlight2(tu, self.get_bufname(filename), \
+                lbegin, lend)
+
+        for symbol_grp in output:
+            self.info("Symbol, Group: %s, Pos: %s" \
+                    % (symbol_grp, output[symbol_grp]))
 

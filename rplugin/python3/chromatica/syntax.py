@@ -47,7 +47,7 @@ def get_symbol_from_loc(tu, filename, row, col):
                 return symbol
     return None
 
-CUSTOM_LITERAL_GROUP = {
+LITERAL_GROUP = {
     cindex.CursorKind.INTEGER_LITERAL: 'Number',
     cindex.CursorKind.FLOATING_LITERAL: 'Float',
     cindex.CursorKind.IMAGINARY_LITERAL: 'Number',
@@ -55,7 +55,7 @@ CUSTOM_LITERAL_GROUP = {
     cindex.CursorKind.CHARACTER_LITERAL: 'Character',
 }
 
-CUSTOM_TYPE_GROUP = {
+TYPE_GROUP = {
     cindex.TypeKind.UNEXPOSED: "Variable",
     cindex.TypeKind.VOID: "Variable",
     cindex.TypeKind.BOOL: "Variable",
@@ -106,7 +106,7 @@ CUSTOM_TYPE_GROUP = {
     cindex.TypeKind.FUNCTIONPROTO: "Function"
 }
 
-CUSTOM_SYNTAX_GROUP = {
+SYNTAX_GROUP = {
 # Declarations
     cindex.CursorKind.UNEXPOSED_DECL: None,
     cindex.CursorKind.STRUCT_DECL: 'chromaticaStructDecl',
@@ -152,7 +152,7 @@ CUSTOM_SYNTAX_GROUP = {
     cindex.CursorKind.INVALID_CODE: None,
 # Expressions
     cindex.CursorKind.UNEXPOSED_EXPR: None,
-    cindex.CursorKind.DECL_REF_EXPR: CUSTOM_TYPE_GROUP,
+    cindex.CursorKind.DECL_REF_EXPR: TYPE_GROUP,
     cindex.CursorKind.MEMBER_REF_EXPR:
     {
         cindex.TypeKind.UNEXPOSED: 'chromaticaMemberRefExprCall',  # member function call
@@ -181,7 +181,7 @@ def _get_default_syn(cursor_kind):
 
 def _get_syntax_group(token, cursor):
     if token.kind.value == 3:
-        literal_type = CUSTOM_LITERAL_GROUP.get(cursor.kind)
+        literal_type = LITERAL_GROUP.get(cursor.kind)
         if literal_type:
             return literal_type
         else:
@@ -190,7 +190,7 @@ def _get_syntax_group(token, cursor):
     elif token.kind.value == 2:
         group = _get_default_syn(cursor.kind)
 
-        custom = CUSTOM_SYNTAX_GROUP.get(cursor.kind)
+        custom = SYNTAX_GROUP.get(cursor.kind)
         if custom:
             if cursor.kind == cindex.CursorKind.DECL_REF_EXPR:
                 custom = custom.get(cursor.type.kind)
@@ -223,9 +223,6 @@ def get_highlight(tu, filename, lbegin, lend, symbol):
     occurrence = {'chromaticaOccurrences': []}
 
     for token in tokens:
-        # if token.kind.value != 2:  # not INDENTIFIER
-        #     continue
-
         cursor = token.cursor
         cursor._tu = tu
 
@@ -245,4 +242,34 @@ def get_highlight(tu, filename, lbegin, lend, symbol):
             occurrence['chromaticaOccurrences'].append(pos)
 
     return syntax, occurrence
+
+def get_highlight2(tu, filename, lbegin, lend):
+    file = tu.get_file(filename)
+
+    if not file:
+        return None
+
+    begin = cindex.SourceLocation.from_position(tu, file, line=lbegin, column=1)
+    end   = cindex.SourceLocation.from_position(tu, file, line=lend+1, column=1)
+    tokens = tu.get_tokens(extent=cindex.SourceRange.from_locations(begin, end))
+
+    syntax = {}
+    output = {}
+
+    for token in tokens:
+        cursor = token.cursor
+        cursor._tu = tu
+
+        symbol = token.spelling
+        pos = [token.location.line, token.location.column, len(token.spelling)]
+        group = _get_syntax_group(token, cursor)
+
+
+        if group:
+            if (symbol, group) not in output:
+                output[(symbol, group)] = []
+
+            output[(symbol, group)].append(pos)
+
+    return output
 

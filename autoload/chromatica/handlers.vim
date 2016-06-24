@@ -44,4 +44,11 @@ fun! chromatica#handlers#_delayed_parse()
     endif
 endf
 
+fun! chromatica#handlers#_print_highlight()
+    if exists('g:chromatica#_channel_id')
+        let context = chromatica#init#_context()
+        silent! call rpcnotify(g:chromatica#_channel_id, 'chromatica_print_highlight', context)
+    endif
+endf
+
 " vim: tw=120:foldmarker={{{,}}}:foldmethod=marker:
