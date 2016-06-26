@@ -7,7 +7,7 @@ from clang import cindex
 import os
 import re
 
-log = logger.logging.getLogger('chromatica')
+log = logger.logging.getLogger("chromatica.compile_args")
 
 def path_is_root(path):
     if path == "/":
@@ -77,9 +77,12 @@ class CompileArgsDatabase(object):
             self.cdb = cindex.CompilationDatabase.fromDirectory(self.cdb_path)
 
     def get_args_filename(self, filename):
-        args = []
+        ret = None
         if self.cdb != None:
             args = self.cdb.getCompileCommands(filename)
 
-        return self.compile_args + args
+        if ret:
+            return ret.args
+        else:
+            return self.compile_args
 
