@@ -16,10 +16,6 @@ hi default link chromaticaTemplateNoneTypeParameter Identifier
 
 hi default link chromaticaOccurrences IncSearch
 
-" hi default link chromaticaStructDecl Identifier
-" hi default link chromaticaUnionDecl Identifier
-" hi default link chromaticaClassDecl Identifier
-" hi default link chromaticaEnumDecl Identifier
 hi link chromaticaStructDecl Type
 hi link chromaticaUnionDecl Type
 hi link chromaticaClassDecl Type
@@ -29,11 +25,6 @@ hi link chromaticaEnumConstantDecl EnumConstant
 hi link chromaticaFunctionDecl Function
 hi link chromaticaVarDecl Variable
 hi link chromaticaParmDecl Variable
-" hi default link chromaticaFieldDecl Identifier
-" hi default link chromaticaEnumConstantDecl Constant
-" hi default link chromaticaVarDecl Identifier
-" hi default link chromaticaParmDecl Identifier
-" hi default link chromaticaFunctionDecl Identifier
 hi link chromaticaObjCInterfaceDecl Normal
 hi link chromaticaObjCCategoryDecl Normal
 hi link chromaticaObjCProtocolDecl Normal
@@ -46,13 +37,11 @@ hi link chromaticaObjCCategoryImplDecl Normal
 hi link chromaticaTypedefDecl Type
 hi link chromaticaCXXMethod Function
 hi link chromaticaNamespace Namespace
-" hi default link chromaticaNamespace Identifier
 hi link chromaticaLinkageSpec Normal
 hi link chromaticaConstructor Function
 hi link chromaticaDestructor Function
 hi link chromaticaConversionFunction Function
 hi link chromaticaTemplateTypeParameter Type
-" hi default link chromaticaTemplateTypeParameter Identifier
 hi link chromaticaNonTypeTemplateParameter Variable
 hi link chromaticaTemplateTemplateParameter Type
 hi link chromaticaFunctionTemplate Function
@@ -72,7 +61,6 @@ hi link chromaticaTypeRef Type
 hi link chromaticaCXXBaseSpecifier Type
 hi link chromaticaTemplateRef Type
 hi link chromaticaNamespaceRef Namespace
-" hi default link chromaticaNamespaceRef Type
 hi link chromaticaMemberRef Member
 hi link chromaticaLabelRef Label
 hi link chromaticaOverloadedDeclRef Function
@@ -90,7 +78,6 @@ hi link chromaticaObjCMessageExpr Normal
 hi link chromaticaBlockExpr Normal
 hi link chromaticaMacroDefinition Macro
 hi link chromaticaMacroInstantiation Macro
-" hi default link chromaticaMacroInstantiation Constant
 hi link chromaticaIntegerLiteral Number
 hi link chromaticaFloatingLiteral Float
 hi link chromaticaImaginaryLiteral Number
