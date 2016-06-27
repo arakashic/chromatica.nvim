@@ -122,6 +122,8 @@ class Chromatica(logger.LoggingMixin):
         """delayed parse for responsive mode"""
         filename = context["filename"]
         # context must already in self.ctx
+        if "tu" not in self.ctx[filename]:
+            return
         if not self.is_supported_filetype():
             return
 
