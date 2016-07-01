@@ -60,7 +60,7 @@ class Chromatica(logger.LoggingMixin):
         filetype = self.__vim.current.buffer.options["filetype"]
         if len(filetype) <= 0:
             return False
-        if filetype.strip(".")[0] in ["c", "cpp"]:
+        if filetype.strip(".")[0] in ["c", "cpp", "objc", "objcpp"]:
             return True
         return False
 

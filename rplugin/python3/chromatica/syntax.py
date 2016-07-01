@@ -118,6 +118,15 @@ SYNTAX_GROUP = {
     cindex.CursorKind.FUNCTION_DECL: "chromaticaFunctionDecl",
     cindex.CursorKind.VAR_DECL: "chromaticaVarDecl",
     cindex.CursorKind.PARM_DECL: "chromaticaParmDecl",
+    cindex.CursorKind.OBJC_INTERFACE_DECL: "chromaticaObjCInterfaceDecl",
+    cindex.CursorKind.OBJC_CATEGORY_DECL: "chromaticaObjCCategoryDecl",
+    cindex.CursorKind.OBJC_PROTOCOL_DECL: "chromaticaObjCProtocolDecl",
+    cindex.CursorKind.OBJC_PROPERTY_DECL: "chromaticaObjCPropertyDecl",
+    cindex.CursorKind.OBJC_IVAR_DECL: "chromaticaObjCIvarDecl",
+    cindex.CursorKind.OBJC_INSTANCE_METHOD_DECL: "chromaticaObjCInstanceMethodDecl",
+    cindex.CursorKind.OBJC_CLASS_METHOD_DECL: "chromaticaObjCClassMethodDecl",
+    cindex.CursorKind.OBJC_IMPLEMENTATION_DECL: "chromaticaObjCImplementationDecl",
+    cindex.CursorKind.OBJC_CATEGORY_IMPL_DECL: "chromaticaObjCCategoryImplDecl",
     cindex.CursorKind.TYPEDEF_DECL: "chromaticaTypedefDecl",
     cindex.CursorKind.CXX_METHOD: "chromaticaFunctionDecl",
     cindex.CursorKind.NAMESPACE: "chromaticaNamespace",
@@ -135,8 +144,13 @@ SYNTAX_GROUP = {
     cindex.CursorKind.USING_DIRECTIVE: "chromaticaUsingDirective",
     cindex.CursorKind.USING_DECLARATION: "chromaticaUsingDeclaration",
     cindex.CursorKind.TYPE_ALIAS_DECL: "chromaticaTypeAliasDecl",
+    cindex.CursorKind.OBJC_SYNTHESIZE_DECL = "chromaticaObjCSynthesizeDecl",
+    cindex.CursorKind.OBJC_DYNAMIC_DECL    = "chromaticaObjCDynamicDecl",
     cindex.CursorKind.CXX_ACCESS_SPEC_DECL: "chromaticaCXXAccessSpecifier",
 # References
+    cindex.CursorKind.OBJC_SUPER_CLASS_REF: "chromaticaObjCSuperClassRef",
+    cindex.CursorKind.OBJC_PROTOCOL_REF: "chromaticaObjCProtocolRef",
+    cindex.CursorKind.OBJC_CLASS_REF: "chromaticaObjCClassRef",
     cindex.CursorKind.TYPE_REF: "chromaticaTypeRef",  # class ref
     cindex.CursorKind.CXX_BASE_SPECIFIER: "chromaticaCXXBaseSpecifier",
     cindex.CursorKind.TEMPLATE_REF: "chromaticaTemplateRef",  # template class ref
@@ -158,6 +172,7 @@ SYNTAX_GROUP = {
         cindex.TypeKind.UNEXPOSED: "chromaticaMemberRefExprCall",  # member function call
     },
     cindex.CursorKind.CALL_EXPR: "chromaticaCallExprt",
+    cindex.CursorKind.OBJC_MESSAGE_EXPR: "chromaticaObjCMessageExpr",
     cindex.CursorKind.BLOCK_EXPR: "chromaticaBlockExpr",
     cindex.CursorKind.MACRO_INSTANTIATION: "chromaticaMacroInstantiation",
     cindex.CursorKind.INCLUSION_DIRECTIVE: "chromaticaInclusionDirective",
