@@ -29,7 +29,7 @@ class Chromatica(logger.LoggingMixin):
         self.name = "core"
         self.mark = "[Chromatica Core]"
         self.library_path = self.__vim.vars["chromatica#libclang_path"]
-        self.syntax_pri = self.__vim.vars["chromatica#syntax_priority"]
+        self.syntax_src_id = self.__vim.vars["chromatica#syntax_src_id"]
         self.global_args = self.__vim.vars["chromatica#global_args"]
         self.delay_time = self.__vim.vars["chromatica#delay_ms"] / 1000.0
         self.ctx = {}
@@ -161,7 +161,7 @@ class Chromatica(logger.LoggingMixin):
                 col_start = pos[1] - 1
                 col_end = col_start + pos[2]
                 buffer.add_highlight(hl_group, row, col_start, col_end,\
-                        self.syntax_pri, async=True)
+                        self.syntax_src_id, async=True)
 
     def print_highlight(self, context):
         """print highlight info"""

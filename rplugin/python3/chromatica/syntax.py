@@ -144,8 +144,8 @@ SYNTAX_GROUP = {
     cindex.CursorKind.USING_DIRECTIVE: "chromaticaUsingDirective",
     cindex.CursorKind.USING_DECLARATION: "chromaticaUsingDeclaration",
     cindex.CursorKind.TYPE_ALIAS_DECL: "chromaticaTypeAliasDecl",
-    cindex.CursorKind.OBJC_SYNTHESIZE_DECL = "chromaticaObjCSynthesizeDecl",
-    cindex.CursorKind.OBJC_DYNAMIC_DECL    = "chromaticaObjCDynamicDecl",
+    cindex.CursorKind.OBJC_SYNTHESIZE_DECL: "chromaticaObjCSynthesizeDecl",
+    cindex.CursorKind.OBJC_DYNAMIC_DECL: "chromaticaObjCDynamicDecl",
     cindex.CursorKind.CXX_ACCESS_SPEC_DECL: "chromaticaCXXAccessSpecifier",
 # References
     cindex.CursorKind.OBJC_SUPER_CLASS_REF: "chromaticaObjCSuperClassRef",

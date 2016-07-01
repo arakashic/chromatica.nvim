@@ -35,6 +35,8 @@ function! chromatica#init#_initialize() abort
         return 1
     endif
 
+    call chromatica#init#_variables()
+
     try
         if !exists('g:loaded_remote_plugins')
             runtime! plugin/rplugin.vim
@@ -47,8 +49,6 @@ function! chromatica#init#_initialize() abort
                     \ 'Please execute :UpdateRemotePlugins command and restart Neovim.')
         return 1
     endtry
-
-    call chromatica#init#_variables()
 
     let s:is_enabled = g:chromatica#enable_at_startup
     if s:is_enabled
@@ -86,7 +86,7 @@ function! chromatica#init#_variables() abort
     call chromatica#util#set_default(
                 \ 'g:chromatica#enable_debug', 0)
     call chromatica#util#set_default(
-                \ 'g:chromatica#syntax_priority', -2)
+                \ 'g:chromatica#syntax_src_id', -2)
     call chromatica#util#set_default(
                 \ 'g:chromatica#global_args', [])
     call chromatica#util#set_default(
