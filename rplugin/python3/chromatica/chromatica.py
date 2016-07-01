@@ -66,7 +66,6 @@ class Chromatica(logger.LoggingMixin):
 
     def parse(self, context):
         ret = False
-        # self.debug("parse context: %s" % context)
         # check if context is already in ctx db
         filename = context["filename"]
         if filename not in self.ctx:
@@ -80,7 +79,6 @@ class Chromatica(logger.LoggingMixin):
             self.ctx[filename]["args"] = \
                 self.args_db.get_args_filename(filename)
             self.info("filename: %s, args: %s" % (filename, self.ctx[filename]["args"]))
-            # self.debug("file: %s, args: %s" % (filename, self.ctx[filename]["args"]))
             t_start = time.clock()
             tu = self.idx.parse(self.__vim.current.buffer.name, \
                 self.ctx[filename]["args"], \
@@ -124,7 +122,6 @@ class Chromatica(logger.LoggingMixin):
         if context["changedtick"] < self.__vim.eval("b:changedtick"):
             return
         else:
-        # if context["changedtick"] - self.ctx[filename]["changedtick"] > delay_ticks:
             t_start = time.clock()
             self.ctx[filename]["tu"].reparse(\
                 self.get_unsaved_buffer(filename), \
@@ -137,7 +134,6 @@ class Chromatica(logger.LoggingMixin):
 
     def highlight(self, context):
         """backend of highlight event"""
-        # self.debug("highlight context: %s" % context)
         filename = context["filename"]
         lbegin, lend = context["range"]
         row, col = context["position"]
@@ -157,15 +153,9 @@ class Chromatica(logger.LoggingMixin):
         tu = self.ctx[filename]["tu"]
 
         symbol = syntax.get_symbol_from_loc(tu, self.__vim.current.buffer.name, row, col)
-        # t_start = time.clock()
         syn_group, occurrence = syntax.get_highlight(tu, self.__vim.current.buffer.name, \
                 lbegin, lend, symbol)
-        # t_elapse = time.clock() - t_start
-        # self.debug("[profile] syntax.get_highlight: %2.10f" % t_elapse)
-        # self.debug(syn_group)
-        # self.debug(occurrence)
 
-        # t_start = time.clock()
         for hl_group in syn_group:
             for pos in syn_group[hl_group]:
                 row = pos[0] - 1
@@ -173,8 +163,6 @@ class Chromatica(logger.LoggingMixin):
                 col_end = col_start + pos[2]
                 buffer.add_highlight(hl_group, row, col_start, col_end,\
                         self.syntax_pri, async=True)
-        # t_elapse = time.clock() - t_start
-        # self.debug("[profile] buf.add_highlight: %2.10f" % t_elapse)
 
     def print_highlight(self, context):
         """print highlight info"""
