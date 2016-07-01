@@ -54,15 +54,7 @@ class Chromatica(logger.LoggingMixin):
         self.idx = cindex.Index.create()
 
     def get_unsaved_buffer(self, filename):
-        buf_idx = self.ctx[filename]["bufnr"] - 1
-        return [(self.__vim.buffers[buf_idx].name, "\n".join(self.__vim.buffers[buf_idx]))]
-
-    def get_buf(self, filename):
-        buf_idx = self.ctx[filename]["bufnr"] - 1
-        return self.__vim.buffers[buf_idx]
-
-    def get_bufname(self, filename):
-        return self.get_buf(filename).name
+        return [(self.__vim.current.buffer.name, "\n".join(self.__vim.current.buffer))]
 
     def is_supported_filetype(self):
         filetype = self.__vim.current.buffer.options["filetype"]
@@ -90,7 +82,7 @@ class Chromatica(logger.LoggingMixin):
             self.info("filename: %s, args: %s" % (filename, self.ctx[filename]["args"]))
             # self.debug("file: %s, args: %s" % (filename, self.ctx[filename]["args"]))
             t_start = time.clock()
-            tu = self.idx.parse(self.get_bufname(filename), \
+            tu = self.idx.parse(self.__vim.current.buffer.name, \
                 self.ctx[filename]["args"], \
                 self.get_unsaved_buffer(filename), \
                 options=self.parse_options)
@@ -164,9 +156,9 @@ class Chromatica(logger.LoggingMixin):
 
         tu = self.ctx[filename]["tu"]
 
-        symbol = syntax.get_symbol_from_loc(tu, self.get_bufname(filename), row, col)
+        symbol = syntax.get_symbol_from_loc(tu, self.__vim.current.buffer.name, row, col)
         # t_start = time.clock()
-        syn_group, occurrence = syntax.get_highlight(tu, self.get_bufname(filename), \
+        syn_group, occurrence = syntax.get_highlight(tu, self.__vim.current.buffer.name, \
                 lbegin, lend, symbol)
         # t_elapse = time.clock() - t_start
         # self.debug("[profile] syntax.get_highlight: %2.10f" % t_elapse)
@@ -198,6 +190,6 @@ class Chromatica(logger.LoggingMixin):
 
         tu = self.ctx[filename]["tu"]
 
-        syntax.get_highlight2(tu, self.get_bufname(filename), \
+        syntax.get_highlight2(tu, self.__vim.current.buffer.name, \
                 lbegin, lend)
 
