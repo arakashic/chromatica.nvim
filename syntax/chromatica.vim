@@ -14,8 +14,6 @@ hi default link chromaticaMemberRefExprCall Type
 hi default link chromaticaMemberRefExprVar Type
 hi default link chromaticaTemplateNoneTypeParameter Identifier
 
-hi default link chromaticaOccurrences IncSearch
-
 hi link chromaticaStructDecl Type
 hi link chromaticaUnionDecl Type
 hi link chromaticaClassDecl Type

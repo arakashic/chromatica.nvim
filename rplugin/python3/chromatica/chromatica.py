@@ -29,7 +29,6 @@ class Chromatica(logger.LoggingMixin):
         self.name = "core"
         self.mark = "[Chromatica Core]"
         self.library_path = self.__vim.vars["chromatica#libclang_path"]
-        self.occurrence_pri = self.__vim.vars["chromatica#occurrence_priority"]
         self.syntax_pri = self.__vim.vars["chromatica#syntax_priority"]
         self.global_args = self.__vim.vars["chromatica#global_args"]
         self.delay_time = self.__vim.vars["chromatica#delay_ms"] / 1000.0
@@ -153,7 +152,7 @@ class Chromatica(logger.LoggingMixin):
         tu = self.ctx[filename]["tu"]
 
         symbol = syntax.get_symbol_from_loc(tu, self.__vim.current.buffer.name, row, col)
-        syn_group, occurrence = syntax.get_highlight(tu, self.__vim.current.buffer.name, \
+        syn_group = syntax.get_highlight(tu, self.__vim.current.buffer.name, \
                 lbegin, lend, symbol)
 
         for hl_group in syn_group:

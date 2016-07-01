@@ -235,7 +235,6 @@ def get_highlight(tu, filename, lbegin, lend, symbol):
     tokens = tu.get_tokens(extent=cindex.SourceRange.from_locations(begin, end))
 
     syntax = {}
-    occurrence = {"chromaticaOccurrences": []}
 
     for token in tokens:
         cursor = token.cursor
@@ -250,13 +249,7 @@ def get_highlight(tu, filename, lbegin, lend, symbol):
 
             syntax[group].append(pos)
 
-        t_symbol = get_symbol(cursor)
-
-        if symbol and t_symbol and symbol == t_symbol \
-                and t_symbol.spelling == token.spelling:
-            occurrence["chromaticaOccurrences"].append(pos)
-
-    return syntax, occurrence
+    return syntax
 
 def get_highlight2(tu, filename, lbegin, lend):
     fp = open("AST_out.log", "w")

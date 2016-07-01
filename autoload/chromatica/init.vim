@@ -86,8 +86,6 @@ function! chromatica#init#_variables() abort
     call chromatica#util#set_default(
                 \ 'g:chromatica#enable_debug', 0)
     call chromatica#util#set_default(
-                \ 'g:chromatica#occurrence_priority', -1)
-    call chromatica#util#set_default(
                 \ 'g:chromatica#syntax_priority', -2)
     call chromatica#util#set_default(
                 \ 'g:chromatica#global_args', [])
