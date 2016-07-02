@@ -52,16 +52,14 @@ class Chromatica(logger.LoggingMixin):
                 self.global_args)
         self.idx = cindex.Index.create()
 
-    def get_unsaved_buffer(self, filename):
-        return [(self.__vim.current.buffer.name, "\n".join(self.__vim.current.buffer))]
-
-    def is_supported_filetype(self):
-        filetype = self.__vim.current.buffer.options["filetype"]
-        if len(filetype) <= 0:
-            return False
-        if filetype.strip(".")[0] in ["c", "cpp", "objc", "objcpp"]:
+    @classmethod
+    def is_supported_filetype(self, filetype):
+        if len(filetype) > 0 and filetype.split(".")[0] in ["c", "cpp", "objc", "objcpp"]:
             return True
         return False
+
+    def get_unsaved_buffer(self, filename):
+        return [(self.__vim.current.buffer.name, "\n".join(self.__vim.current.buffer))]
 
     def parse(self, context):
         ret = False
@@ -71,7 +69,7 @@ class Chromatica(logger.LoggingMixin):
             self.ctx[filename] = context
             # check if context is has the right filetype
             buffer = self.__vim.current.buffer
-            if not self.is_supported_filetype():
+            if not Chromatica.is_supported_filetype(context["filetype"]):
                 del(self.ctx[filename])
                 return ret
 
@@ -111,9 +109,9 @@ class Chromatica(logger.LoggingMixin):
         """delayed parse for responsive mode"""
         filename = context["filename"]
         # context must already in self.ctx
-        if "tu" not in self.ctx[filename]:
-            return
-        if not self.is_supported_filetype():
+        if filename not in self.ctx \
+                or "tu" not in self.ctx[filename] \
+                or not Chromatica.is_supported_filetype(context["filetype"]):
             return
 
         time.sleep(self.delay_time)
@@ -139,7 +137,7 @@ class Chromatica(logger.LoggingMixin):
         highlight_tick = context["highlight_tick"]
 
         buffer = self.__vim.current.buffer
-        if not self.is_supported_filetype(): return
+        if not Chromatica.is_supported_filetype(buffer.options["filetype"]): return
 
         if highlight_tick != buffer.vars["highlight_tick"]:
             return
@@ -171,7 +169,7 @@ class Chromatica(logger.LoggingMixin):
         highlight_tick = context["highlight_tick"]
 
         buffer = self.__vim.current.buffer
-        if not self.is_supported_filetype(): return
+        if not Chromatica.is_supported_filetype(buffer.vars["filetype"]): return
 
         if "tu" not in self.ctx[filename]: return
 

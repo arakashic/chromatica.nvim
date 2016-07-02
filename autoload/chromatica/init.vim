@@ -103,6 +103,7 @@ function! chromatica#init#_context() abort
                 \ 'position': getpos('.')[1:2],
                 \ 'bufnr': bufnr('%'),
                 \ 'filename': expand('%:p'),
+                \ 'filetype': &filetype,
                 \ }
 endfunction
 
