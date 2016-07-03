@@ -14,9 +14,9 @@ This project is largely inspired by [deoplete][1] and [color_coded][2].
 
 ## Prerequites
 
-* [Neovim][https://neovim.io]
-* [Python3][https://www.python.org/download/releases/3.0] and [Neovim python client][https://github.com/neovim/python-client]
-* [libclang][http://clang.llvm.org] (prefers 3.9.0, the latest HEAD version)
+* [Neovim][3]
+* [Python3][4] and [Neovim python client][5]
+* [libclang][6] (prefers 3.9.0, the latest HEAD version)
 
 ## Installation
 
@@ -55,3 +55,7 @@ or the directory that contains it.
 
 [1]: https://github.com/Shougo/deoplete.nvim
 [2]: https://github.com/jeaye/color_coded
+[3]: https://neovim.io
+[4]: https://www.python.org/download/releases/3.0
+[5]: https://github.com/neovim/python-client
+[6]: http://clang.llvm.org
