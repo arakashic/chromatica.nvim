@@ -93,6 +93,8 @@ function! chromatica#init#_variables() abort
                 \ 'g:chromatica#responsive_mode', 0)
     call chromatica#util#set_default(
                 \ 'g:chromatica#delay_ms', 80)
+    call chromatica#util#set_default(
+                \ 'g:chromatica#use_pch', 1)
 endfunction
 
 function! chromatica#init#_context() abort

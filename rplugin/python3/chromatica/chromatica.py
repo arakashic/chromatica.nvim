@@ -33,13 +33,11 @@ class Chromatica(logger.LoggingMixin):
         self.global_args = self.__vim.vars["chromatica#global_args"]
         self.delay_time = self.__vim.vars["chromatica#delay_ms"] / 1000.0
         self.ctx = {}
-        if self.__vim.vars["chromatica#delay_ms"]:
-            self.parse_options = cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD \
-                               + cindex.TranslationUnit.PARSE_INCOMPLETE
-        else:
-            self.parse_options = cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD \
-                               + cindex.TranslationUnit.PARSE_INCOMPLETE \
-                               + cindex.TranslationUnit.PARSE_PRECOMPILED_PREAMBLE
+        self.parse_options = cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD \
+                           + cindex.TranslationUnit.PARSE_INCOMPLETE
+        if self.__vim.vars["chromatica#use_pch"]:
+            self.parse_options += cindex.TranslationUnit.PARSE_PRECOMPILED_PREAMBLE \
+                               + cindex.TranslationUnit.CREATE_PREAMBLE_ON_FIRST_PARSE
 
         if not cindex.Config.loaded:
             if os.path.isdir(os.path.abspath(self.library_path)):
@@ -172,7 +170,7 @@ class Chromatica(logger.LoggingMixin):
         highlight_tick = context["highlight_tick"]
 
         buffer = self.__vim.current.buffer
-        if not Chromatica.is_supported_filetype(buffer.vars["filetype"]): return
+        if not Chromatica.is_supported_filetype(buffer.options["filetype"]): return
 
         if "tu" not in self.ctx[filename]: return
 
