@@ -155,7 +155,11 @@ class _CXString(Structure):
     @staticmethod
     def from_result(res, fn, args):
         assert isinstance(res, _CXString)
-        return conf.lib.clang_getCString(res).decode('utf-8')
+        ret = conf.lib.clang_getCString(res)
+        if ret:
+            return ret.decode('utf-8')
+        else:
+            return ret
 
     @property
     def spelling(self):
@@ -542,6 +546,7 @@ class BaseEnumeration:
         self.value = value
         self.__class__._kinds[value] = self
         self.__class__._name_map = None
+
 
     def from_param(self):
         return self.value
@@ -1858,6 +1863,7 @@ TypeKind.DEPENDENT = TypeKind(26)
 TypeKind.OBJCID = TypeKind(27)
 TypeKind.OBJCCLASS = TypeKind(28)
 TypeKind.OBJCSEL = TypeKind(29)
+TypeKind.FLOAT128 = TypeKind(30)
 TypeKind.COMPLEX = TypeKind(100)
 TypeKind.POINTER = TypeKind(101)
 TypeKind.BLOCKPOINTER = TypeKind(102)
@@ -2133,6 +2139,21 @@ class Type(Structure):
         """
         return RefQualifierKind.from_id(
                 conf.lib.clang_Type_getCXXRefQualifier(self))
+
+    def get_fields(self):
+        """Return an iterator for accessing the fields of this type."""
+
+        def visitor(field, children):
+            assert field != conf.lib.clang_getNullCursor()
+
+            # Create reference to TU so it isn't GC'd before Cursor.
+            field._tu = self._tu
+            fields.append(field)
+            return 1 # continue
+        fields = []
+        conf.lib.clang_Type_visitFields(self,
+                            callbacks['fields_visit'](visitor), fields)
+        return iter(fields)
 
     @property
     def spelling(self):
@@ -2581,7 +2602,7 @@ class TranslationUnit(ClangObject):
         functions above. __init__ is only called internally.
         """
         assert isinstance(index, Index)
-        # self.index = index
+        self.index = index
         ClangObject.__init__(self, ptr)
 
     def __del__(self):
@@ -2718,6 +2739,7 @@ class TranslationUnit(ClangObject):
                     # FIXME: It would be great to support an efficient version
                     # of this, one day.
                     value = value.read()
+                    print(value)
                 if not isinstance(value, str):
                     raise TypeError('Unexpected unsaved file contents.')
                 unsaved_files_array[i].name = name.encode ('utf-8')
@@ -2781,6 +2803,7 @@ class TranslationUnit(ClangObject):
                     # FIXME: It would be great to support an efficient version
                     # of this, one day.
                     value = value.read()
+                    print(value)
                 if not isinstance(value, str):
                     raise TypeError('Unexpected unsaved file contents.')
                 unsaved_files_array[i].name = name.encode ('utf-8')
@@ -2979,13 +3002,6 @@ class CompilationDatabase(ClangObject):
         return conf.lib.clang_CompilationDatabase_getCompileCommands(self,
                                                                      filename.encode ('utf-8'))
 
-    def getAllCompileCommands(self):
-        """
-        Get an iterable object providing all the CompileCommands available from
-        the database.
-        """
-        return conf.lib.clang_CompilationDatabase_getAllCompileCommands(self)
-
 
     def getAllCompileCommands(self):
         """
@@ -3061,11 +3077,6 @@ functionList = [
    [c_char_p, POINTER(c_uint)],
    c_object_p,
    CompilationDatabase.from_result),
-
-  ("clang_CompilationDatabase_getAllCompileCommands",
-   [c_object_p],
-   c_object_p,
-   CompileCommands.from_result),
 
   ("clang_CompilationDatabase_getAllCompileCommands",
    [c_object_p],
@@ -3703,12 +3714,12 @@ functionList = [
    _CXString,
    _CXString.from_result),
 
-  ("clang_Type_getAlignOf",
-   [Type],
-   c_longlong),
-
   ("clang_Cursor_getOffsetOfField",
    [Cursor],
+   c_longlong),
+
+  ("clang_Type_getAlignOf",
+   [Type],
    c_longlong),
 
   ("clang_Type_getClassType",
@@ -3776,8 +3787,8 @@ def register_functions(lib, ignore_errors):
     def register(item):
         return register_function(lib, item, ignore_errors)
 
-    for function in functionList:
-        register (function)
+    for func in functionList:
+        register(func)
 
 class Config:
     library_path = None
@@ -3839,26 +3850,19 @@ class Config:
             return Config.library_file
 
         import platform
-        import ctypes.util
         name = platform.system()
 
         if name == 'Darwin':
-            filename = 'libclang.dylib'
+            file = 'libclang.dylib'
         elif name == 'Windows':
-            filename = 'libclang.dll'
+            file = 'libclang.dll'
         else:
-            # Does the right thing on Linux and MacOS X
-            filename = ctypes.util.find_library ('clang')
-
-            # On Ubuntu, find_library fails and returns None
-            # this will break loading below so replace with libclang.so
-            if filename is None:
-                return 'libclang.so'
+            file = 'libclang.so'
 
         if Config.library_path:
-            filename = Config.library_path + '/' + filename
+            file = Config.library_path + '/' + file
 
-        return filename
+        return file
 
     def get_cindex_library(self):
         try:
