@@ -72,6 +72,7 @@ class Chromatica(logger.LoggingMixin):
             if not Chromatica.is_supported_filetype(buffer.options["filetype"]):
                 del(self.ctx[filename])
                 return ret
+            self.ctx[filename]["buffer"] = buffer
 
             self.ctx[filename]["args"] = \
                 self.args_db.get_args_filename(filename)
@@ -109,6 +110,7 @@ class Chromatica(logger.LoggingMixin):
         """delayed parse for responsive mode"""
         filename = context["filename"]
         # context must already in self.ctx
+        buffer = self.__vim.current.buffer
         if filename not in self.ctx \
                 or "tu" not in self.ctx[filename] \
                 or not Chromatica.is_supported_filetype(buffer.options["filetype"]):
@@ -178,3 +180,10 @@ class Chromatica(logger.LoggingMixin):
         syntax.get_highlight2(tu, buffer.name, \
                 lbegin, lend)
 
+    def clear_highlight(self):
+        """clear highlight on all buffers"""
+        for filename in self.ctx:
+            buffer = self.ctx[filename]["buffer"]
+            buffer.clear_highlight(self.syntax_src_id)
+
+        self.ctx.clear()

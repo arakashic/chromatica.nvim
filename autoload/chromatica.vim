@@ -18,6 +18,7 @@ function! chromatica#enable() abort
 endfunction
 
 function! chromatica#disable() abort
+    call chromatica#clear_highlight()
     return chromatica#init#_disable()
 endfunction
 
@@ -33,6 +34,10 @@ function! chromatica#enable_logging(level, logfile) abort
 
     call rpcrequest(g:chromatica#_channel_id,
                 \ 'chromatica_enable_logging', a:level, a:logfile)
+endfunction
+
+function! chromatica#clear_highlight() abort
+    call rpcnotify(g:chromatica#_channel_id, 'chromatica_clear_highlight')
 endfunction
 
 " vim: tw=120:foldmarker={{{,}}}:foldmethod=marker:
