@@ -1,0 +1,134 @@
+*chromatica*	Clang based syntax highlighting plugin for Neovim
+
+==============================================================================
+CONTENTS				*chromatica-contents*
+1. Intro			|chromatica-intro|
+2. Requirements			|chromatica-requirements|
+3. Installation			|chromatica-installation|
+4. Options			|chromatica-options|
+5. Compilation Database		|chromatica-compilation-database|
+6. FAQ				|chromatica-faq|
+7. LICENSE			|chromatica-license|
+
+==============================================================================
+					*chromatica-intro*
+1. Intro~
+
+Chromatica is a syntax highlighting for C-family languages. It is a
+remote plugin for Neovim and implemented based on Chromatica highlight engine.
+Chromatica provides following features currently:
+
+* Semantic-accurate syntax highlight
+
+Github~
+
+https://github.com/arakashic/chromatica.nvim
+
+==============================================================================
+					*chromatica-requirements*
+2. Requirements~
+
+Chromatica requires the following:
+
+* Neovim 0.1.4 with python3.x enabled
+* libclang, preferably 3.9.0 (latest svn version). Please reference
+  http://llvm.org/apt/ to install
+* Chromatica has been tested under Linux and macOS
+
+==============================================================================
+					*chromatica-installation*
+3. Installation~
+
+Neobundle Install~
+>
+	Bundle 'arakashic/chromatica.nvim'
+<
+
+Manuall Install~
+
+Untar the chromatica.nvim.tar.gz to your vim path.
+
+==============================================================================
+					*chromatica-options*
+4. Options~
+
+|g:chromatica#enable_at_startup|
+|g:chromatica#libclang_path|
+|g:chromatica#enable_debug|
+|g:chromatica#global_args|
+|g:chromatica#responsive_mode|
+|g:chromatica#delay_ms|
+
+------------------------------------------------------------------------------
+					*g:chromatica#enable_at_startup*
+g:chromatica#enable_at_startup~
+
+Chromatica will automatically start when
+g:chromatica#enable_at_startup == `1`, regardless the filetype. To load
+Chromatica only for C-family languages, please refer to the manual of
+your plugin manager.
+
+Default: `1`
+>
+	let g:chromatica#enable_at_startup = 1
+<
+------------------------------------------------------------------------------
+					*g:chromatica#libclang_path*
+g:chromatica#libclang_path~
+
+Chromatica searches libclang-3.9 in your system automatically. You must
+set this option when chromatica cannot find libclang, or other version
+of libclang is used. This can be set to either the libclang file (.so/.dylib)
+or the path to the library.
+
+Default: `''`
+>
+	let g:chromatica#libclang_path = ''
+<
+-------------------------------------------------------------------------------
+					*g:chromatica#global_args*
+g:chromatica#global_args~
+
+The global compile args of chromatica. It will be prepended in each
+file's compile args.
+
+Default: `[]`
+>
+	let g:chromatica#compile_args = []
+
+-------------------------------------------------------------------------------
+					*g:chromatica#responsive_mode*
+g:chromatica#responsive_mode~
+
+Chromatica responsive mode reparses and updates highlight as soon as you
+make any change to the buffer.
+
+Default: `0`
+>
+	let g:chromatica#responsive_mode = 0
+
+==============================================================================
+					*chromatica-compilation-database*
+5. Compilation Database~
+
+Chromtica automatically searches the current directory and parent
+directories for the compilation database "compile_commands.json". The compile
+options will be passed to libclang.
+
+==============================================================================
+					*chromatica-faq*
+6. FAQ~
+
+Nothing for now.
+
+==============================================================================
+                                        *chromatica-license*
+7. License ~
+
+This software is licensed under the MIT license.
+
+Note: This license does not cover the files that come from the LLVM project.
+
+==============================================================================
+
+vim:tw=78:ts=8:noet:ft=help:
