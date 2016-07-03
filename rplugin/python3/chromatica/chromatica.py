@@ -155,6 +155,7 @@ class Chromatica(logger.LoggingMixin):
         syn_group = syntax.get_highlight(tu, buffer.name, \
                 lbegin, lend, symbol)
 
+        buffer.clear_highlight(self.syntax_src_id, row)
         for hl_group in syn_group:
             for pos in syn_group[hl_group]:
                 row = pos[0] - 1
