@@ -69,7 +69,7 @@ class Chromatica(logger.LoggingMixin):
             self.ctx[filename] = context
             # check if context is has the right filetype
             buffer = self.__vim.current.buffer
-            if not Chromatica.is_supported_filetype(context["filetype"]):
+            if not Chromatica.is_supported_filetype(buffer.options["filetype"]):
                 del(self.ctx[filename])
                 return ret
 
@@ -77,7 +77,7 @@ class Chromatica(logger.LoggingMixin):
                 self.args_db.get_args_filename(filename)
             self.info("filename: %s, args: %s" % (filename, self.ctx[filename]["args"]))
             t_start = time.clock()
-            tu = self.idx.parse(self.__vim.current.buffer.name, \
+            tu = self.idx.parse(buffer.name, \
                 self.ctx[filename]["args"], \
                 self.get_unsaved_buffer(filename), \
                 options=self.parse_options)
@@ -111,7 +111,7 @@ class Chromatica(logger.LoggingMixin):
         # context must already in self.ctx
         if filename not in self.ctx \
                 or "tu" not in self.ctx[filename] \
-                or not Chromatica.is_supported_filetype(context["filetype"]):
+                or not Chromatica.is_supported_filetype(buffer.options["filetype"]):
             return
 
         time.sleep(self.delay_time)
@@ -149,8 +149,8 @@ class Chromatica(logger.LoggingMixin):
 
         tu = self.ctx[filename]["tu"]
 
-        symbol = syntax.get_symbol_from_loc(tu, self.__vim.current.buffer.name, row, col)
-        syn_group = syntax.get_highlight(tu, self.__vim.current.buffer.name, \
+        symbol = syntax.get_symbol_from_loc(tu, buffer.name, row, col)
+        syn_group = syntax.get_highlight(tu, buffer.name, \
                 lbegin, lend, symbol)
 
         for hl_group in syn_group:
@@ -175,6 +175,6 @@ class Chromatica(logger.LoggingMixin):
 
         tu = self.ctx[filename]["tu"]
 
-        syntax.get_highlight2(tu, self.__vim.current.buffer.name, \
+        syntax.get_highlight2(tu, buffer.name, \
                 lbegin, lend)
 
