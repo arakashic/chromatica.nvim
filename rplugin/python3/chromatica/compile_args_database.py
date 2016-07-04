@@ -1,6 +1,7 @@
 from chromatica import logger
 from chromatica.util import load_external_module
 
+clang_file_path = self.__path
 load_external_module(__file__, "")
 from clang import cindex
 
@@ -9,16 +10,13 @@ import re
 
 log = logger.logging.getLogger("chromatica.compile_args")
 
-def path_is_root(path):
-    if path == "/":
-        return True
-
-    return False
-
 class CompileArgsDatabase(object):
 
     def __init__(self, path, global_args=None):
-        self.__path = path
+        if path:
+            self.__path = path
+        else:
+            self.__path = os.getcwd()
         self.compile_args = []
         self.cdb = None
         self.clang_file = None
@@ -35,7 +33,7 @@ class CompileArgsDatabase(object):
 
     def __find_clang_file(self):
         clang_file_path = self.__path
-        while not path_is_root(clang_file_path):
+        while os.path.dirname(clang_file_path) != clang_file_path:
             self.clang_file = os.path.join(clang_file_path, ".clang")
             if os.path.exists(self.clang_file):
                 return
@@ -45,7 +43,7 @@ class CompileArgsDatabase(object):
 
     def __find_cdb_file(self):
         cdb_file_path = self.__path
-        while not path_is_root(cdb_file_path):
+        while os.path.dirname(cdb_file_path) != cdb_file_path:
             cdb_file = os.path.join(cdb_file_path, "compile_commands.json")
             if os.path.exists(cdb_file):
                 self.cdb_path = cdb_file_path
