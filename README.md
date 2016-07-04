@@ -14,6 +14,10 @@ This project is largely inspired by [deoplete][1] and [color_coded][2].
   as you update your code.
 * Semantic-accurate highlighting for C-family languages.
 
+### Example
+
+<img src="https://raw.githubusercontent.com/arakashic/chromatica.nvim/master/figures/comparison_c.png" width="100%"/>
+
 ## Prerequites
 
 * [Neovim][3]
