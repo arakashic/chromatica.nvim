@@ -1,7 +1,6 @@
 from chromatica import logger
 from chromatica.util import load_external_module
 
-clang_file_path = self.__path
 load_external_module(__file__, "")
 from clang import cindex
 
