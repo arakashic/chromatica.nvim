@@ -46,8 +46,8 @@ class Chromatica(logger.LoggingMixin):
                 cindex.Config.set_library_file(self.library_path)
             cindex.Config.set_compatibility_check(False)
 
-        # self.args_db = CompileArgsDatabase(self.__vim.current.buffer.name,\
-        #         self.global_args)
+        self.args_db = CompileArgsDatabase(self.__vim.current.buffer.name,\
+                self.global_args)
         self.idx = cindex.Index.create()
 
     @classmethod
