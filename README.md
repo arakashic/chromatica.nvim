@@ -18,6 +18,11 @@ This project is largely inspired by [deoplete][1] and [color_coded][2].
 * [Python3][4] and [Neovim python client][5]
 * [libclang][6] (prefers 3.9.0, the latest HEAD version)
 
+Tested on:
+
+    * macOS 10.11.5, Neovim 0.1.4, Python 3.5.2, clang 3.9.0svn
+    * Archlinux, Neovim 0.1.4, Python 3.5.1, clang 3.8.0
+
 ## Installation
 
 ### Install Prerequites
