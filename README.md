@@ -4,7 +4,7 @@ Chromatica is an asynchronous syntax highlight engine for Neovim. It is a
 python3 remote plugin. Currently, chromatica focuses on providing semantic
 accurate syntax highlighting for C-family languages (using libclang).
 
-Currently, the project is in alpha state.
+Currently, the project is in alpha state. VERSION=0.1
 
 This project is largely inspired by [deoplete][1] and [color_coded][2].
 
