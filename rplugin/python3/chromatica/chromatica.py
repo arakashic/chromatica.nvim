@@ -5,6 +5,8 @@
 # based on original version by BB Chung <afafaf4 at gmail.com>
 # ============================================================================
 
+from chromatica.neovim_helper import NvimHelper
+
 from chromatica import logger
 from chromatica import syntax
 from chromatica.util import load_external_module
@@ -25,6 +27,7 @@ class Chromatica(logger.LoggingMixin):
 
     def __init__(self, vim):
         self.__vim = vim
+        self.vimh = NvimHelper(vim)
         self.__runtimepath = ""
         self.name = "core"
         self.mark = "[Chromatica Core]"
@@ -49,9 +52,6 @@ class Chromatica(logger.LoggingMixin):
         self.args_db = CompileArgsDatabase(self.__vim.current.buffer.name,\
                 self.global_args)
         self.idx = cindex.Index.create()
-
-    def vim_print(self, s):
-        self.__vim.command("echo '%s'" % s)
 
     @classmethod
     def is_supported_filetype(self, filetype):
@@ -191,9 +191,9 @@ class Chromatica(logger.LoggingMixin):
         self.ctx.clear()
 
     def show_info(self, context):
-        self.vim_print("libclang file: %s" % cindex.conf.get_filename())
-        self.vim_print("Filename: %s" % context["filename"])
-        self.vim_print("Filetype: %s" % self.__vim.current.buffer.options["filetype"])
-        self.vim_print(".clang file: %s" % self.args_db.clang_file)
-        self.vim_print("Compilation Database: %s" % self.args_db.cdb_file)
-        self.vim_print("Compile Flags: %s" % " ".join(self.args_db.get_args_filename(context["filename"])))
+        self.vimh.echo("libclang file: %s" % cindex.conf.get_filename())
+        self.vimh.echo("Filename: %s" % context["filename"])
+        self.vimh.echo("Filetype: %s" % self.__vim.current.buffer.options["filetype"])
+        self.vimh.echo(".clang file: %s" % self.args_db.clang_file)
+        self.vimh.echo("Compilation Database: %s" % self.args_db.cdb_file)
+        self.vimh.echo("Compile Flags: %s" % " ".join(self.args_db.get_args_filename(context["filename"])))
