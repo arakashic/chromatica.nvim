@@ -6,9 +6,11 @@ CONTENTS				*chromatica-contents*
 2. Requirements			|chromatica-requirements|
 3. Installation			|chromatica-installation|
 4. Options			|chromatica-options|
-5. Compilation Database		|chromatica-compilation-database|
-6. FAQ				|chromatica-faq|
-7. LICENSE			|chromatica-license|
+4. Commands			|chromatica-commands|
+6. Compilation Database		|chromatica-compilation-database|
+6. Responsive Mode		|chromatica-responsive-mode|
+8. FAQ				|chromatica-faq|
+9. LICENSE			|chromatica-license|
 
 ==============================================================================
 					*chromatica-intro*
@@ -132,8 +134,43 @@ Default: `1`
 	let g:chromatica#use_pch = 1
 
 ==============================================================================
+					*chromatica-commands*
+5. Commands ~
+
+Chromatica provides these commands.
+
+|ChromaticaEnable|
+|ChromaticaDisable|
+|ChromaticaToggle|
+|ChromaticaShowInfo|
+
+------------------------------------------------------------------------------
+					*ChromaticaEnable*
+ChromaticaEnable~
+
+Enable chromatica plugin.
+
+------------------------------------------------------------------------------
+					*ChromaticaDisable*
+ChromaticaDisable~
+
+Disable chromatica plugin.
+
+------------------------------------------------------------------------------
+					*ChromaticaToggle*
+ChromaticaToggle~
+
+Toggle on/off chromatica.
+
+------------------------------------------------------------------------------
+					*ChromaticaShowInfo*
+ChromaticaShowInfo~
+
+Show chromatica runtime information.
+
+==============================================================================
 					*chromatica-compilation-database*
-5. Compilation Database~
+6. Compilation Database~
 
 Chromatica already has flags for simple codes. To provide the most accurate
 highlighting for complex projects, chromatica needs to know the correct
