@@ -20,6 +20,7 @@ execute('source '. s:script_folder_path . '/../syntax/chromatica.vim')
 command! ChromaticaStart call chromatica#enable()
 command! ChromaticaStop call chromatica#disable()
 command! ChromaticaToggle call chromatica#toggle()
+command! ChromaticaShowInfo call chromatica#show_info()
 command! ChromaticaLogInfo call chromatica#enable_logging('INFO', 'chromatica.log')
 
 command! PrintHL call chromatica#handlers#_print_highlight()

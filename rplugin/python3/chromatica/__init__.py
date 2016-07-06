@@ -64,3 +64,7 @@ class ChromaticaPlugin(object):
     def clear_highlight(self):
         self.__chromatica.clear_highlight()
 
+    @neovim.rpc_export("chromatica_show_info", sync=True)
+    def show_info(self, context):
+        self.__chromatica.show_info(context)
+

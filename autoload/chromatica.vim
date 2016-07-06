@@ -40,4 +40,11 @@ function! chromatica#clear_highlight() abort
     call rpcnotify(g:chromatica#_channel_id, 'chromatica_clear_highlight')
 endfunction
 
+function! chromatica#show_info()
+    if exists('g:chromatica#_channel_id')
+        let context = chromatica#init#_context()
+        call rpcrequest(g:chromatica#_channel_id, 'chromatica_show_info', context)
+    endif
+endf
+
 " vim: tw=120:foldmarker={{{,}}}:foldmethod=marker:

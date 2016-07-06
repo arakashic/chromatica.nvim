@@ -50,6 +50,9 @@ class Chromatica(logger.LoggingMixin):
                 self.global_args)
         self.idx = cindex.Index.create()
 
+    def vim_print(self, s):
+        self.__vim.command("echo '%s'" % s)
+
     @classmethod
     def is_supported_filetype(self, filetype):
         if len(filetype) > 0 and filetype.split(".")[0] in ["c", "cpp", "objc", "objcpp"]:
@@ -186,3 +189,11 @@ class Chromatica(logger.LoggingMixin):
             buffer.clear_highlight(self.syntax_src_id)
 
         self.ctx.clear()
+
+    def show_info(self, context):
+        self.vim_print("libclang file: %s" % cindex.conf.get_filename())
+        self.vim_print("Filename: %s" % context["filename"])
+        self.vim_print("Filetype: %s" % self.__vim.current.buffer.options["filetype"])
+        self.vim_print(".clang file: %s" % self.args_db.clang_file)
+        self.vim_print("Compilation Database: %s" % self.args_db.cdb_file)
+        self.vim_print("Compile Flags: %s" % " ".join(self.args_db.get_args_filename(context["filename"])))
