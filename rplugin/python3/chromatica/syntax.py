@@ -274,7 +274,7 @@ def get_highlight2(tu, filename, lbegin, lend):
         group = _get_syntax_group(token, cursor)
 
         if group:
-            fp.write("%s %s %s\n" % (symbol, group, pos))
+            fp.write("%s %s %s %s\n" % (symbol, group, pos, cursor.kind))
 
     fp.close()
 
