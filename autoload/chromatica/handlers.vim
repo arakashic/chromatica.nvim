@@ -20,6 +20,11 @@ function! chromatica#handlers#_init() abort
 endfunction
 
 fun! chromatica#handlers#_highlight()
+    if exists('b:chromatica_changedtick_old')
+        if b:chromatica_changedtick_old >= b:changedtick
+            return
+        endif
+    endif
     if !exists('b:highlight_tick')
         let b:highlight_tick = 0
     endif
@@ -33,6 +38,7 @@ fun! chromatica#handlers#_highlight()
 endf
 
 fun! chromatica#handlers#_parse()
+    let b:chromatica_changedtick_old = b:changedtick
     if exists('g:chromatica#_channel_id')
         let context = chromatica#init#_context()
         silent! call rpcnotify(g:chromatica#_channel_id, 'chromatica_parse', context)
@@ -40,6 +46,7 @@ fun! chromatica#handlers#_parse()
 endf
 
 fun! chromatica#handlers#_delayed_parse()
+    let b:chromatica_changedtick_old = b:changedtick
     if exists('g:chromatica#_channel_id')
         let context = chromatica#init#_context()
         silent! call rpcnotify(g:chromatica#_channel_id, 'chromatica_delayed_parse', context)
