@@ -6,6 +6,7 @@
 # ============================================================================
 
 from chromatica.neovim_helper import NvimHelper
+from chromatica.profiler import Profiler
 
 from chromatica import logger
 from chromatica import syntax
@@ -31,6 +32,7 @@ class Chromatica(logger.LoggingMixin):
         self.__runtimepath = ""
         self.name = "core"
         self.mark = "[Chromatica Core]"
+        self.profiler = Profiler(output_fn=self.debug)
         self.library_path = self.__vim.vars["chromatica#libclang_path"]
         self.syntax_src_id = self.__vim.vars["chromatica#syntax_src_id"]
         self.global_args = self.__vim.vars["chromatica#global_args"]
@@ -39,8 +41,9 @@ class Chromatica(logger.LoggingMixin):
         self.parse_options = cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD \
                            + cindex.TranslationUnit.PARSE_INCOMPLETE
         if self.__vim.vars["chromatica#use_pch"]:
-            self.parse_options += cindex.TranslationUnit.PARSE_PRECOMPILED_PREAMBLE \
-                               + cindex.TranslationUnit.CREATE_PREAMBLE_ON_FIRST_PARSE
+            self.parse_options += cindex.TranslationUnit.PARSE_PRECOMPILED_PREAMBLE
+            # self.parse_options += cindex.TranslationUnit.PARSE_PRECOMPILED_PREAMBLE \
+            #                    + cindex.TranslationUnit.CREATE_PREAMBLE_ON_FIRST_PARSE
 
         if not cindex.Config.loaded:
             if os.path.isdir(os.path.abspath(self.library_path)):
@@ -66,51 +69,53 @@ class Chromatica(logger.LoggingMixin):
         ret = False
         # check if context is already in ctx db
         filename = context["filename"]
+        self.debug("filename: %s" % filename)
         if filename not in self.ctx:
-            self.ctx[filename] = context
             # check if context is has the right filetype
             buffer = self.__vim.current.buffer
-            if not Chromatica.is_supported_filetype(buffer.options["filetype"]):
-                del(self.ctx[filename])
-                return ret
+            if not Chromatica.is_supported_filetype(buffer.options["filetype"]): return ret
+
+            args = self.args_db.get_args_filename(filename)
+            self.info("args: %s" % args)
+
+            self.profiler.start("parse index.parse")
+            tu = self.idx.parse(buffer.name, args, \
+                                self.get_unsaved_buffer(filename), \
+                                options=self.parse_options)
+            self.profiler.stop()
+
+            if not tu: return ret
+
+            self.ctx[filename] = context
             self.ctx[filename]["buffer"] = buffer
-
-            self.ctx[filename]["args"] = \
-                self.args_db.get_args_filename(filename)
-            self.info("filename: %s, args: %s" % (filename, self.ctx[filename]["args"]))
-            t_start = time.clock()
-            tu = self.idx.parse(buffer.name, \
-                self.ctx[filename]["args"], \
-                self.get_unsaved_buffer(filename), \
-                options=self.parse_options)
-
-            t_elapse = time.clock() - t_start
-            self.debug("[profile] idx.parse: %2.10f" % t_elapse)
-            if not tu:
-                del(self.ctx[filename])
-                return ret
-
+            self.ctx[filename]["args"] = args
             self.ctx[filename]["tu"] = tu
+            self.ctx[filename]["hl_clear_ctick"] = -1
+
             ret = True
-        elif context["changedtick"] != self.ctx[filename]["changedtick"]:
-            t_start = time.clock()
-            self.ctx[filename]["tu"].reparse(\
-                self.get_unsaved_buffer(filename), \
-                options=self.parse_options)
-            t_elapse = time.clock() - t_start
-            self.debug("[profile] idx.reparse: %2.10f" % t_elapse)
-            self.ctx[filename]["changedtick"] = context["changedtick"]
-            ret = True
+
+        else:
+            ret = self._reparse(context)
 
         if ret:
-            self.highlight(context)
+            self._highlight(filename) # update highlight on entire file
 
         return ret
+
+    def _reparse(self, context):
+        filename = context["filename"]
+        if context["changedtick"] <= self.ctx[filename]["changedtick"]: return False
+        self.profiler.start("_reparse")
+        self.ctx[filename]["tu"].reparse(\
+            self.get_unsaved_buffer(filename), \
+            options=self.parse_options)
+        self.profiler.stop()
+        self.ctx[filename]["changedtick"] = context["changedtick"]
+        return True
 
     def delayed_parse(self, context):
         """delayed parse for responsive mode"""
         filename = context["filename"]
-        # context must already in self.ctx
         buffer = self.__vim.current.buffer
         if filename not in self.ctx \
                 or "tu" not in self.ctx[filename] \
@@ -122,15 +127,28 @@ class Chromatica(logger.LoggingMixin):
         if context["changedtick"] < self.__vim.eval("b:changedtick"):
             return
         else:
-            t_start = time.clock()
-            self.ctx[filename]["tu"].reparse(\
-                self.get_unsaved_buffer(filename), \
-                options=self.parse_options)
-            t_elapse = time.clock() - t_start
-            self.debug("[profile] parse_delayed idx.reparse: %2.10f" % t_elapse)
-            self.ctx[filename]["changedtick"] = context["changedtick"]
+            if self._reparse(context):
+                self.highlight(context) # update highlight on visible range
 
-            self.highlight(context)
+    def _highlight(self, filename, lbegin=1, lend=-1):
+        """internal highlight function"""
+        _lbegin = lbegin
+        _lend = self.vimh.line("$") if lend == -1 else lend
+
+        buffer = self.__vim.current.buffer
+        tu = self.ctx[filename]["tu"]
+
+        self.profiler.start("_highlight")
+        syn_group = syntax.get_highlight(tu, buffer.name, _lbegin, _lend)
+
+        for hl_group in syn_group:
+            for pos in syn_group[hl_group]:
+                _row = pos[0] - 1
+                col_start = pos[1] - 1
+                col_end = col_start + pos[2]
+                buffer.add_highlight(hl_group, _row, col_start, col_end,\
+                        self.syntax_src_id, async=True)
+        self.profiler.stop()
 
     def highlight(self, context):
         """backend of highlight event"""
@@ -142,28 +160,19 @@ class Chromatica(logger.LoggingMixin):
         buffer = self.__vim.current.buffer
         if not Chromatica.is_supported_filetype(buffer.options["filetype"]): return
 
-        if highlight_tick != buffer.vars["highlight_tick"]:
-            return
+        if highlight_tick != buffer.vars["highlight_tick"]: return
 
-        if filename not in self.ctx:
-            return self.parse(context)
+        if filename not in self.ctx: return self.parse(context)
 
         if "tu" not in self.ctx[filename]: return
 
         tu = self.ctx[filename]["tu"]
 
-        symbol = syntax.get_symbol_from_loc(tu, buffer.name, row, col)
-        syn_group = syntax.get_highlight(tu, buffer.name, \
-                lbegin, lend, symbol)
+        if context["changedtick"] > self.ctx[filename]["hl_clear_ctick"]:
+            buffer.clear_highlight(self.syntax_src_id, row)
+            self.ctx[filename]["hl_clear_ctick"] = context["changedtick"]
 
-        buffer.clear_highlight(self.syntax_src_id, row)
-        for hl_group in syn_group:
-            for pos in syn_group[hl_group]:
-                row = pos[0] - 1
-                col_start = pos[1] - 1
-                col_end = col_start + pos[2]
-                buffer.add_highlight(hl_group, row, col_start, col_end,\
-                        self.syntax_src_id, async=True)
+        self._highlight(filename, lbegin, lend)
 
     def print_highlight(self, context):
         """print highlight info"""

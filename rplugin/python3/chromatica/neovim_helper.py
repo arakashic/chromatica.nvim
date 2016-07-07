@@ -19,3 +19,7 @@ class NvimHelper(object):
     def echomsg(self, s):
         """echom[sg] command"""
         self.__vim.command("echomsg '%s'" % s)
+
+    def line(self, p):
+        """line function"""
+        return self.__vim.call("line", p)

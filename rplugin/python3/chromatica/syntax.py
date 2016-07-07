@@ -224,7 +224,7 @@ def _get_syntax_group(token, cursor):
     else:
         return None
 
-def get_highlight(tu, filename, lbegin, lend, symbol):
+def get_highlight(tu, filename, lbegin, lend):
     file = tu.get_file(filename)
 
     if not file:

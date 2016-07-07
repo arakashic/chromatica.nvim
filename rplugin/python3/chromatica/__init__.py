@@ -9,6 +9,8 @@ import neovim
 from chromatica import logger
 from chromatica.chromatica import Chromatica
 
+import time
+
 @neovim.plugin
 class ChromaticaPlugin(object):
     def __init__(self, vim):
