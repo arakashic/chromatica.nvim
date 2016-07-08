@@ -23,7 +23,7 @@ command! ChromaticaToggle call chromatica#toggle()
 command! ChromaticaShowInfo call chromatica#show_info()
 command! ChromaticaLogInfo call chromatica#enable_logging('INFO', 'chromatica.log')
 
-command! PrintHL call chromatica#handlers#_print_highlight()
+command! ChromaticaDbgAST call chromatica#handlers#_print_highlight()
 
 let g:loaded_chromatica=1
 
