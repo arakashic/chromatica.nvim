@@ -90,7 +90,6 @@ class Chromatica(logger.LoggingMixin):
             self.ctx[filename]["buffer"] = buffer
             self.ctx[filename]["args"] = args
             self.ctx[filename]["tu"] = tu
-            self.ctx[filename]["hl_clear_ctick"] = -1
 
             ret = True
 
@@ -128,6 +127,7 @@ class Chromatica(logger.LoggingMixin):
             return
         else:
             if self._reparse(context):
+                self._clear_highlight(context)
                 self.highlight(context) # update highlight on visible range
 
     def _highlight(self, filename, lbegin=1, lend=-1):
@@ -150,6 +150,12 @@ class Chromatica(logger.LoggingMixin):
                         self.syntax_src_id, async=True)
         self.profiler.stop()
 
+    def _clear_highlight(self, context, syn_src_id=None):
+        row, col = context["position"]
+        _syn_src_id = syn_src_id if syn_src_id else self.syntax_src_id
+        self.debug("clear old highlight from line %d" % row)
+        self.__vim.current.buffer.clear_highlight(_syn_src_id, row)
+
     def highlight(self, context):
         """backend of highlight event"""
         filename = context["filename"]
@@ -167,10 +173,6 @@ class Chromatica(logger.LoggingMixin):
         if "tu" not in self.ctx[filename]: return
 
         tu = self.ctx[filename]["tu"]
-
-        if context["changedtick"] > self.ctx[filename]["hl_clear_ctick"]:
-            buffer.clear_highlight(self.syntax_src_id, row)
-            self.ctx[filename]["hl_clear_ctick"] = context["changedtick"]
 
         self._highlight(filename, lbegin, lend)
 
