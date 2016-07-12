@@ -42,11 +42,15 @@ function! chromatica#init#_initialize() abort
             runtime! plugin/rplugin.vim
         endif
         call _chromatica()
-    catch
+    catch /^Vim\%((\a\+)\)\=:E117/
         call chromatica#util#print_error(
                     \ 'chromatica.nvim is not registered as Neovim remote plugins.')
         call chromatica#util#print_error(
                     \ 'Please execute :UpdateRemotePlugins command and restart Neovim.')
+        return 1
+    catch
+        call chromatica#util#print_error(
+                    \ 'There was an error starting Chromatica. Please check g:chromatica#libclang_path.')
         return 1
     endtry
 
