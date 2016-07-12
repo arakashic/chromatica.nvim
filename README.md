@@ -99,7 +99,7 @@ as soon as you change the code (in insert mode). To use the responsive mode,
 simply set
 
 ```vim
-let g:chomatica#respnsive_mode=1
+let g:chromatica#responsive_mode=1
 ```
 
 in your vimrc.
