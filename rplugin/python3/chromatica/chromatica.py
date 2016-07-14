@@ -75,7 +75,7 @@ class Chromatica(logger.LoggingMixin):
             buffer = self.__vim.current.buffer
             if not Chromatica.is_supported_filetype(buffer.options["filetype"]): return ret
 
-            args = self.args_db.get_args_filename(filename)
+            args = self.args_db.get_args_filename_ft(filename, buffer.options["filetype"])
             self.info("args: %s" % args)
 
             self.profiler.start("parse index.parse")
@@ -207,4 +207,6 @@ class Chromatica(logger.LoggingMixin):
         self.vimh.echo("Filetype: %s" % self.__vim.current.buffer.options["filetype"])
         self.vimh.echo(".clang file: %s" % self.args_db.clang_file)
         self.vimh.echo("Compilation Database: %s" % self.args_db.cdb_file)
-        self.vimh.echo("Compile Flags: %s" % " ".join(self.args_db.get_args_filename(context["filename"])))
+        self.vimh.echo("Compile Flags: %s" % " ".join( \
+                self.args_db.get_args_filename_ft(context["filename"], \
+                self.__vim.current.buffer.options["filetype"])))

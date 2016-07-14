@@ -9,6 +9,13 @@ import re
 
 log = logger.logging.getLogger("chromatica.compile_args")
 
+DEFAULT_STD={"c"   : ["-std=c11"], \
+             "cpp" : ["-std=c++14"]}
+
+def set_default_std(stds):
+    DEFAULT_STD = stds
+    return True
+
 class CompileArgsDatabase(object):
 
     def __init__(self, path, global_args=None):
@@ -74,12 +81,19 @@ class CompileArgsDatabase(object):
     def get_args_filename(self, filename):
         ret = None
         if self.cdb != None:
-            args = self.cdb.getCompileCommands(filename)
+            ret = self.cdb.getCompileCommands(filename)
 
         if ret:
-            return ret.args
+            return self.compile_args + ret.args
         else:
             return self.compile_args
+
+    def get_args_filename_ft(self, filename, filetype):
+        if self.cdb != None or filetype not in DEFAULT_STD:
+            return self.get_args_filename(filename)
+
+        ret = DEFAULT_STD[filetype]
+        return ret + self.compile_args
 
     @property
     def clang_file(self):
