@@ -4,7 +4,7 @@ Chromatica is an asynchronous syntax highlight engine for Neovim. It is a
 python3 remote plugin. Currently, chromatica focuses on providing semantic
 accurate syntax highlighting for C-family languages (using libclang).
 
-Currently, the project is in alpha state. VERSION=0.1
+Currently, the project is in alpha state.
 
 This project is largely inspired by [deoplete][1] and [color_coded][2].
 
@@ -99,7 +99,7 @@ as soon as you change the code (in insert mode). To use the responsive mode,
 simply set
 
 ```vim
-let g:chomatica#respnsive_mode=1
+let g:chromatica#responsive_mode=1
 ```
 
 in your vimrc.
