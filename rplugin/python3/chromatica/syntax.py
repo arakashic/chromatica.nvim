@@ -284,13 +284,19 @@ def _get_default_syn(cursor_kind):
     else:
         return "chromaticaDEFSYN"
 
+def _get_keyword_decl_syn(cursor_kind):
+    if cursor_kind == cindex.CursorKind.TYPE_ALIAS_DECL:
+        return "chromaticaTypeAliasStatement"
+    else:
+        return "chromaticaType"
+
 def _get_keyword_syn(cursor_kind):
     """Handles cursor type of keyword tokens. Providing syntax group for most
     keywords"""
     if cursor_kind.is_statement():
         return SYNTAX_GROUP.get(cursor_kind)
     elif cursor_kind.is_declaration(): # hack for function return type and others
-        return "chromaticaType"
+        return _get_keyword_decl_syn(cursor_kind)
     elif cursor_kind.is_attribute():
         return SYNTAX_GROUP.get(cursor_kind)
     elif cursor_kind.is_expression():

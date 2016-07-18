@@ -6,6 +6,7 @@ hi default EnumConstant ctermfg=LightGreen guifg=LightGreen
 hi default link chromaticaPrepro PreProc
 hi default link chromaticaDecl Identifier
 hi default link chromaticaRef Type
+hi default link chromaticaKeyword Keyword
 
 hi default link chromaticaInclusionDirective cIncluded
 hi default link chromaticaDeclRefExprEnum Constant
@@ -91,5 +92,6 @@ hi link chromaticaBoolean Boolean
 hi link chromaticaConstant Constant
 hi link chromaticaCast Statement
 hi link chromaticaExceptionStatement Statement
+hi link chromaticaTypeAliasStatement Statement
 " Microsoft
 hi link chromaticaMSStatement Statement
