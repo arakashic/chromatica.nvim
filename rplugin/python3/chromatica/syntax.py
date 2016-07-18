@@ -308,7 +308,7 @@ def _get_syntax_group(token, cursor):
         _group = SYNTAX_GROUP.get(cursor.kind)
         if _group:
             if cursor.kind == cindex.CursorKind.DECL_REF_EXPR:
-                _group = custom.get(cursor.type.kind)
+                _group = _group.get(cursor.type.kind)
                 if _group:
                     group = _group
             elif cursor.kind == cindex.CursorKind.MEMBER_REF_EXPR:
