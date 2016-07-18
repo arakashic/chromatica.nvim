@@ -166,6 +166,8 @@ class Chromatica(logger.LoggingMixin):
         buffer = self.__vim.current.buffer
         if not Chromatica.is_supported_filetype(buffer.options["filetype"]): return
 
+        # self.__vim.command("set syn=chromatica")
+
         if highlight_tick != buffer.vars["highlight_tick"]: return
 
         if filename not in self.ctx: return self.parse(context)

@@ -82,3 +82,14 @@ hi link chromaticaImaginaryLiteral Number
 hi link chromaticaStringLiteral String
 hi link chromaticaCharacterLiteral Character
 hi link chromaticaPunctuation Normal
+hi link chromaticaIf Conditional
+hi link chromaticaSwitch Conditional
+hi link chromaticaLoop Repeat
+hi link chromaticaStatement Statement
+hi link chromaticaType Type
+hi link chromaticaBoolean Boolean
+hi link chromaticaConstant Constant
+hi link chromaticaCast Statement
+hi link chromaticaExceptionStatement Statement
+" Microsoft
+hi link chromaticaMSStatement Statement
