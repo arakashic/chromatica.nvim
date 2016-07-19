@@ -356,7 +356,10 @@ def get_highlight(tu, filename, lbegin, lend):
         cursor = token.cursor
         cursor._tu = tu
 
-        pos = [token.location.line, token.location.column, len(token.spelling)]
+        n_moreline = token.spelling.count("\n")
+        if token.spelling[-1] == "\n":
+            n_moreline = n_moreline - 1
+        pos = [token.location.line, token.location.column, len(token.spelling), n_moreline]
         group = _get_syntax_group(token, cursor)
 
         if group:

@@ -145,9 +145,20 @@ class Chromatica(logger.LoggingMixin):
             for pos in syn_group[hl_group]:
                 _row = pos[0] - 1
                 col_start = pos[1] - 1
-                col_end = col_start + pos[2]
+                hl_size = pos[2]
+                col_end = col_start + hl_size
+                n_moreline = pos[3]
                 buffer.add_highlight(hl_group, _row, col_start, col_end,\
                         self.syntax_src_id, async=True)
+                if n_moreline:
+                    next_row = _row + 1
+                    bytes_left = hl_size - len(buffer[_row][col_start:])
+                    while bytes_left > 0:
+                        buffer.add_highlight(hl_group, next_row, 0, bytes_left,\
+                                self.syntax_src_id, async=True)
+                        bytes_left = bytes_left - len(buffer[next_row]) - 1 # no trailing "\n"
+                        next_row = next_row + 1
+
         self.profiler.stop()
 
     def _clear_highlight(self, context, syn_src_id=None):
