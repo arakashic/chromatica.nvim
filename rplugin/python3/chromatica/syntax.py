@@ -269,7 +269,7 @@ SYNTAX_GROUP = {
     cindex.CursorKind.DLLIMPORT_ATTR: "cidx.dllimport-attr",
 
     cindex.CursorKind.PREPROCESSING_DIRECTIVE: "cidx.preprocessing_directive",
-    cindex.CursorKind.MACRO_DEFINITION: "cidx.macro_definition",
+    cindex.CursorKind.MACRO_DEFINITION: "chromaticaMacroDefinition",
     cindex.CursorKind.MACRO_INSTANTIATION: "chromaticaMacroInstantiation",
     cindex.CursorKind.INCLUSION_DIRECTIVE: "chromaticaInclusionDirective",
 }
