@@ -7,6 +7,16 @@ from clang import cindex
 
 log = logger.logging.getLogger("chromatica")
 
+class bcolors:
+    HEADER = '\033[0;35;38m'
+    OKBLUE = '\033[0;34;38m'
+    OKGREEN = '\033[0;32;38m'
+    WARNING = '\033[0;31;38m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[0;33;38m'
+    UNDERLINE = '\033[0;36;38m'
+
 def get_cursor(tu, filename, row, col):
     return cindex.Cursor.from_location(tu, \
         cindex.SourceLocation.from_position(tu, tu.get_file(filename), row, col))
@@ -393,7 +403,16 @@ def get_highlight2(tu, filename, lbegin, lend):
         group = _get_syntax_group(token, cursor)
 
         if token.kind.value != 0:
-            fp.write("%s %s %s %s %s\n" % (symbol, group, pos, token.kind, cursor.kind))
+            fp.write(bcolors.OKGREEN + "%s " % (symbol))
+            if group:
+                fp.write(bcolors.OKBLUE + "%s " % (group))
+            else:
+                fp.write(bcolors.WARNING + "%s " % (group))
+            fp.write(bcolors.ENDC + "%s " % (pos))
+            fp.write(bcolors.BOLD + "%s " % (token.kind))
+            fp.write(bcolors.UNDERLINE + "%s " % (cursor.kind))
+            fp.write(bcolors.HEADER + "%s" % (cursor.type.kind))
+            fp.write(bcolors.ENDC + "\n")
 
     fp.close()
 
