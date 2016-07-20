@@ -1468,28 +1468,6 @@ class Cursor(Structure):
         return AccessSpecifier.from_id(self._access_specifier)
 
     @property
-    def storage_class(self):
-        """
-        Retrieves the storage class (if any) of the entity pointed at by the
-        cursor.
-        """
-        if not hasattr(self, '_storage_class'):
-            self._storage_class = conf.lib.clang_Cursor_getStorageClass(self)
-
-        return StorageClass.from_id(self._storage_class)
-
-    @property
-    def access_specifier(self):
-        """
-        Retrieves the access specifier (if any) of the entity pointed at by the
-        cursor.
-        """
-        if not hasattr(self, '_access_specifier'):
-            self._access_specifier = conf.lib.clang_getCXXAccessSpecifier(self)
-
-        return AccessSpecifier.from_id(self._access_specifier)
-
-    @property
     def type(self):
         """
         Retrieve the Type (if any) of the entity pointed at by the cursor.
@@ -1678,16 +1656,6 @@ class Cursor(Structure):
         conf.lib.clang_visitChildren(self, callbacks['cursor_visit'](visitor),
             children)
         return iter(children)
-
-    def walk_preorder(self):
-        """Depth-first preorder walk over the cursor and its descendants.
-
-        Yields cursors.
-        """
-        yield self
-        for child in self.get_children():
-            for descendant in child.walk_preorder():
-                yield descendant
 
     def walk_preorder(self):
         """Depth-first preorder walk over the cursor and its descendants.
