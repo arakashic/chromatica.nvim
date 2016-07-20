@@ -7,16 +7,6 @@ from clang import cindex
 
 log = logger.logging.getLogger("chromatica")
 
-class bcolors:
-    HEADER = '\033[0;35;38m'
-    OKBLUE = '\033[0;34;38m'
-    OKGREEN = '\033[0;32;38m'
-    WARNING = '\033[0;31;38m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[0;33;38m'
-    UNDERLINE = '\033[0;36;38m'
-
 def get_cursor(tu, filename, row, col):
     return cindex.Cursor.from_location(tu, \
         cindex.SourceLocation.from_position(tu, tu.get_file(filename), row, col))
@@ -381,6 +371,29 @@ def get_highlight(tu, filename, lbegin, lend):
     return syntax
 
 def get_highlight2(tu, filename, lbegin, lend):
+    NOCOLOR = 0
+    BLACK   = 30
+    RED     = 31
+    GREEN   = 32
+    YELLOW  = 33
+    BLUE    = 34
+    MAGENTA = 35
+    CYAN    = 36
+    WHITE   = 37
+
+    NORMAL    = 0
+    BOLD      = 1
+    INVERSE   = 3
+    UNDERLINE = 4
+    BLINK     = 5
+
+    def termcolor(fgcolor=NOCOLOR, mode=NORMAL, bgcolor=NOCOLOR):
+        if fgcolor == NOCOLOR:
+            return "\033[0m"
+        if bgcolor == NOCOLOR:
+            return "\033[%d;%dm" % (mode, fgcolor)
+        return "\033[%d;%d;%dm" % (mode, fgcolor, bgcolor+10)
+
     fp = open("AST_out.log", "w")
     file = tu.get_file(filename)
 
@@ -403,16 +416,23 @@ def get_highlight2(tu, filename, lbegin, lend):
         group = _get_syntax_group(token, cursor)
 
         if token.kind.value != 0:
-            fp.write(bcolors.OKGREEN + "%s " % (symbol))
+            fp.write(termcolor(GREEN) + "%s " % (symbol))
             if group:
-                fp.write(bcolors.OKBLUE + "%s " % (group))
+                fp.write(termcolor(BLUE) + "%s " % (group))
             else:
-                fp.write(bcolors.WARNING + "%s " % (group))
-            fp.write(bcolors.ENDC + "%s " % (pos))
-            fp.write(bcolors.BOLD + "%s " % (token.kind))
-            fp.write(bcolors.UNDERLINE + "%s " % (cursor.kind))
-            fp.write(bcolors.HEADER + "%s" % (cursor.type.kind))
-            fp.write(bcolors.ENDC + "\n")
+                fp.write(termcolor(RED) + "%s " % (group))
+            fp.write(termcolor() + "%s " % (pos))
+            fp.write(termcolor(YELLOW) + "%s " % (str(token.kind).split(".")[1]))
+            fp.write(termcolor(CYAN) + "%s " % (str(cursor.kind).split(".")[1]))
+            if cursor.type.kind != cindex.TypeKind.INVALID:
+                fp.write(termcolor(MAGENTA) + "%s " % (str(cursor.type.kind).split(".")[1]))
+            if cursor.result_type.kind != cindex.TypeKind.INVALID:
+                fp.write(termcolor(RED, BOLD) + "%s " % (str(cursor.result_type.kind).split(".")[1]))
+            if cursor.storage_class != cindex.StorageClass.INVALID:
+                fp.write(termcolor(CYAN, BOLD) + "%s " % (str(cursor.storage_class).split(".")[1]))
+            if cursor.access_specifier != cindex.AccessSpecifier.INVALID:
+                fp.write(termcolor(MAGENTA, BOLD) + "%s " % (str(cursor.access_specifier).split(".")[1]))
+            fp.write(termcolor() + "\n")
 
     fp.close()
 
