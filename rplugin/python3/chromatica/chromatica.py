@@ -65,30 +65,42 @@ class Chromatica(logger.LoggingMixin):
     def get_unsaved_buffer(self, filename):
         return [(self.__vim.current.buffer.name, "\n".join(self.__vim.current.buffer))]
 
+    def _init_context(self, context):
+        filename = context["filename"]
+        # check if context is has the right filetype
+        buffer = self.__vim.current.buffer
+        filetype = buffer.options["filetype"]
+        if not Chromatica.is_supported_filetype(filetype): return False
+
+        args = self.args_db.get_args_filename_ft(filename, filetype)
+        self.info("args: %s" % args)
+
+        self.ctx[filename] = context
+        self.ctx[filename]["filetype"] = filetype
+        self.ctx[filename]["buffer"] = buffer
+        self.ctx[filename]["args"] = args
+
+        return True
+
     def parse(self, context):
         ret = False
         # check if context is already in ctx db
         filename = context["filename"]
         self.debug("filename: %s" % filename)
         if filename not in self.ctx:
-            # check if context is has the right filetype
-            buffer = self.__vim.current.buffer
-            if not Chromatica.is_supported_filetype(buffer.options["filetype"]): return ret
-
-            args = self.args_db.get_args_filename_ft(filename, buffer.options["filetype"])
-            self.info("args: %s" % args)
+            if not self._init_context(context): return ret
 
             self.profiler.start("parse index.parse")
-            tu = self.idx.parse(buffer.name, args, \
+            tu = self.idx.parse(self.ctx[filename]["buffer"].name,
+                                self.ctx[filename]["args"], \
                                 self.get_unsaved_buffer(filename), \
                                 options=self.parse_options)
             self.profiler.stop()
 
-            if not tu: return ret
+            if not tu:
+                self.error("Cannot generate Translation Unit for %s" % context)
+                return ret
 
-            self.ctx[filename] = context
-            self.ctx[filename]["buffer"] = buffer
-            self.ctx[filename]["args"] = args
             self.ctx[filename]["tu"] = tu
 
             ret = True

@@ -93,6 +93,8 @@ hi link chromaticaConstant Constant
 hi link chromaticaCast Statement
 hi link chromaticaExceptionStatement Statement
 hi link chromaticaTypeAliasStatement Statement
+hi link chromaticaFile Namespace
+hi link chromaticaIncludedHeaderFile Namespace
 " Microsoft
 hi link chromaticaMSStatement Statement
 

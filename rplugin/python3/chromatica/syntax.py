@@ -54,9 +54,11 @@ LITERAL_GROUP = {
     cindex.CursorKind.STRING_LITERAL: None,
     cindex.CursorKind.CHARACTER_LITERAL: "Character",
     cindex.CursorKind.OBJC_STRING_LITERAL: None,
+    cindex.CursorKind.INCLUSION_DIRECTIVE: "chromaticaIncludedHeaderFile",
 }
 
 TYPE_GROUP = {
+    cindex.TypeKind.INVALID: None,
     cindex.TypeKind.UNEXPOSED: "Variable",
     cindex.TypeKind.VOID: "Variable",
     cindex.TypeKind.BOOL: "Variable",
@@ -92,19 +94,20 @@ TYPE_GROUP = {
     cindex.TypeKind.LVALUEREFERENCE: "Variable",
     cindex.TypeKind.RVALUEREFERENCE: "Variable",
     cindex.TypeKind.RECORD: "Variable",
+    cindex.TypeKind.ENUM: "EnumConstant",
     cindex.TypeKind.TYPEDEF: "Variable",
     cindex.TypeKind.OBJCINTERFACE: "Variable",
     cindex.TypeKind.OBJCOBJECTPOINTER: "Variable",
+    cindex.TypeKind.FUNCTIONNOPROTO: "Function",
+    cindex.TypeKind.FUNCTIONPROTO: "Function",
     cindex.TypeKind.CONSTANTARRAY: "Variable",
     cindex.TypeKind.VECTOR: "Variable",
     cindex.TypeKind.INCOMPLETEARRAY: "Variable",
     cindex.TypeKind.VARIABLEARRAY: "Variable",
     cindex.TypeKind.DEPENDENTSIZEDARRAY: "Variable",
-    cindex.TypeKind.AUTO: "Variable",
     cindex.TypeKind.MEMBERPOINTER: "Member",
-    cindex.TypeKind.ENUM: "EnumConstant",
-    cindex.TypeKind.FUNCTIONNOPROTO: "Function",
-    cindex.TypeKind.FUNCTIONPROTO: "Function"
+    cindex.TypeKind.AUTO: "Variable",
+    cindex.TypeKind.ELABORATED: "Variable",
 }
 
 SYNTAX_GROUP = {
@@ -282,7 +285,7 @@ def _get_default_syn(cursor_kind):
     elif cursor_kind.is_reference():
         return "chromaticaRef"
     else:
-        return "chromaticaDEFSYN"
+        return None
 
 def _get_keyword_decl_syn(cursor_kind):
     if cursor_kind == cindex.CursorKind.TYPE_ALIAS_DECL:
@@ -302,7 +305,13 @@ def _get_keyword_syn(cursor_kind):
     elif cursor_kind.is_expression():
         return SYNTAX_GROUP.get(cursor_kind)
     else:
-        return "chromaticaKeyword"
+        return None
+
+def _get_punctuation_syntax(cursor_kind):
+    if cursor_kind == cindex.CursorKind.INCLUSION_DIRECTIVE:
+        return "chromaticaIncludedHeaderFile"
+    else:
+        return None
 
 def _get_syntax_group(token, cursor):
     if token.kind.value == 1: # Keyword
@@ -338,7 +347,7 @@ def _get_syntax_group(token, cursor):
         return "Comment"
 
     else: # Punctuation
-        return None
+        return _get_punctuation_syntax(cursor.kind)
 
 def get_highlight(tu, filename, lbegin, lend):
     file = tu.get_file(filename)
