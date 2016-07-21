@@ -133,6 +133,18 @@ Default: `1`
 >
 	let g:chromatica#use_pch = 1
 
+-------------------------------------------------------------------------------
+					*g:chromatica#replace_syntax*
+g:chromatica#replace_syntax~
+
+Chromatica has customized syntax files the reduces the dependency on regex
+based syntax highlighting. Many syntax highlight in default syntax files are
+removed. This option controlles whether these syntax files are used.
+
+Default: `0`
+>
+	let g:chromatica#replace_syntax = 0
+
 ==============================================================================
 					*chromatica-commands*
 5. Commands ~

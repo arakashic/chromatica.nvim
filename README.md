@@ -87,6 +87,18 @@ When chromatica initializes, it search the current directory and the ancestor
 directories for these two files. If both file are present, chromatica will
 combine the flags in them.
 
+## Customized Syntax Files
+
+Some of the highlight that libclang provides used to be handled by the regex
+engine of vim. Chromatica provides a set of customized syntax files without
+those redundant highlights. Set
+
+```vim
+let g:chromatica#replace_syntax=1
+```
+
+to use these syntax files.
+
 ## Responsive Mode
 
 By default, chromatica only updates highlight when returned to normal mode
@@ -106,7 +118,7 @@ in your vimrc.
 
 Note that the responsive mode comes at the cost of frequent reparsing the
 buffer. Even when the highlight is done asynchronously, frequent reparsing can
-still cause performance (editor repesonsiveness) problem if you C++ code is
+still cause performance (editor responsiveness) problem if you C++ code is
 super complex (Yes, I haven't experienced this problem with C code). Chromatica
 uses pre-compiled header to speed up the repasing and throttles the number of
 reparse requests per seconds to avoid reparse flooding. You can increase
