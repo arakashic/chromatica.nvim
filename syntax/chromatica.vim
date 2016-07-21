@@ -95,3 +95,5 @@ hi link chromaticaExceptionStatement Statement
 hi link chromaticaTypeAliasStatement Statement
 " Microsoft
 hi link chromaticaMSStatement Statement
+
+let b:chroamtica_syntax_loaded = 1

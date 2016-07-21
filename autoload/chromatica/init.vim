@@ -10,6 +10,15 @@ if !exists('s:is_enabled')
     let s:is_enabled = 0
 endif
 
+function! s:is_ft(fts) "{{{
+    for type in a:fts
+        if &filetype == type
+            return 1
+        endif
+    endfor
+    return 0
+endfunction "}}}
+
 function! chromatica#init#_is_enabled() abort
     return s:is_enabled
 endfunction
@@ -65,6 +74,15 @@ endfunction
 function! chromatica#init#_enable() abort
     call chromatica#handlers#_init()
     let s:is_enabled = 1
+    if g:chromatica#replace_syntax
+        if s:is_ft(['c', 'cpp'])
+            " load chromatica version of syntax for related filetype
+            doautoall Syntax
+        endif
+    else
+        runtime! syntax/chromatica.vim
+    endif
+
     if get(g:, 'chromatica#enable_debug', 0) "{{{
         call chromatica#enable_logging('DEBUG', 'chromatica.log')
     endif "}}}
@@ -76,6 +94,7 @@ function! chromatica#init#_disable() abort
         autocmd!
     augroup END
     let s:is_enabled = 0
+    doautoall Syntax
 endfunction
 
 function! chromatica#init#_variables() abort
@@ -99,6 +118,8 @@ function! chromatica#init#_variables() abort
                 \ 'g:chromatica#delay_ms', 80)
     call chromatica#util#set_default(
                 \ 'g:chromatica#use_pch', 1)
+    call chromatica#util#set_default(
+                \ 'g:chromatica#replace_syntax', 0)
 endfunction
 
 function! chromatica#init#_context() abort

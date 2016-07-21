@@ -175,17 +175,14 @@ class Chromatica(logger.LoggingMixin):
         highlight_tick = context["highlight_tick"]
 
         buffer = self.__vim.current.buffer
-        if not Chromatica.is_supported_filetype(buffer.options["filetype"]): return
-
-        # self.__vim.command("set syn=chromatica")
+        filetype = buffer.options["filetype"]
+        if not Chromatica.is_supported_filetype(filetype): return
 
         if highlight_tick != buffer.vars["highlight_tick"]: return
 
         if filename not in self.ctx: return self.parse(context)
 
         if "tu" not in self.ctx[filename]: return
-
-        tu = self.ctx[filename]["tu"]
 
         self._highlight(filename, lbegin, lend)
 
