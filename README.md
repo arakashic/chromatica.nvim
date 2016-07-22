@@ -6,8 +6,6 @@ accurate syntax highlighting for C-family languages (using libclang).
 
 Currently, the project is in alpha state.
 
-This project is largely inspired by [deoplete][1] and [color_coded][2].
-
 ## Features
 
 * Asynchronous parsing and highlighting provides fast and responsive highlight
@@ -122,6 +120,10 @@ super complex (Yes, I haven't experienced this problem with C code). Chromatica
 uses pre-compiled header to speed up the repasing and throttles the number of
 reparse requests per seconds to avoid reparse flooding. You can increase
 `g:chromatica#delay_ms` if you still experiencing performance issues.
+
+## Acknowledgement
+
+This project is largely inspired by [deoplete][1] and [color_coded][2].
 
 [1]: https://github.com/Shougo/deoplete.nvim
 [2]: https://github.com/jeaye/color_coded
