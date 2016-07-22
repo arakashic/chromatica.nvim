@@ -291,7 +291,7 @@ KEYWORDS = {
     "noexcept": "chromaticaExceptionAttr",
     "inline": "chromaticaSpecifier",
     "constexpr": "chromaticaSpecifier",
-    "decltype": "chroamticaAutoType",
+    "decltype": "chromaticaAutoType",
     "auto": "chromaticaAutoType",
     "register": "chromaticaRegister",
     "thread_local": "chromaticaThreadLocal",
@@ -303,7 +303,7 @@ KEYWORDS = {
 }
 
 PUNCTUATION_SYNTAX_GROUP = {
-    cindex.CursorKind.CONDITIONAL_OPERATOR: "chromaticaCondtionalOperator",
+    cindex.CursorKind.CONDITIONAL_OPERATOR: "chromaticaConditionalOperator",
     cindex.CursorKind.CSTYLE_CAST_EXPR: "chromaticaCStyleCast",
     cindex.CursorKind.INCLUSION_DIRECTIVE: "chromaticaIncludedHeaderFile",
 }

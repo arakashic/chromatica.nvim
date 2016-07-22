@@ -1,9 +1,14 @@
 hi default Member ctermfg=Cyan guifg=Cyan
 hi default Variable ctermfg=Grey guifg=Grey
 hi default Namespace ctermfg=Yellow guifg=#BBBB00
+hi default Typedef ctermfg=Yellow gui=bold guifg=#BBBB00
 hi default EnumConstant ctermfg=LightGreen guifg=LightGreen
-hi default chromaticaException gui=bold guifg=#B58900
-hi default chromaticaCast gui=bold  guifg=#719E07
+hi default chromaticaException ctermfg=Yellow gui=bold guifg=#B58900
+hi default chromaticaCast ctermfg=Green gui=bold guifg=#719E07
+hi default OperatorOverload cterm=bold ctermfg=14 gui=bold guifg=#268bd2
+hi default AccessQual cterm=underline ctermfg=81 gui=bold guifg=#6c71c4
+hi default Linkage ctermfg=239 guifg=#09AA08
+hi default AutoType ctermfg=Yellow guifg=#cb4b16
 
 hi default link chromaticaPrepro PreProc
 hi default link chromaticaDecl Identifier
@@ -99,7 +104,22 @@ hi link chromaticaExceptionAttr chromaticaException
 hi link chromaticaTypeAliasStatement Statement
 hi link chromaticaFile Namespace
 hi link chromaticaIncludedHeaderFile Namespace
+hi link chromaticaFinalAttr Statement
+hi link chromaticaOverrideAttr Statement
+hi link chromaitcaConstAttr Typedef
+hi link chromaticaTypedef Typedef
+hi link chromaticaStorageClass Statement
+hi link chromaticaOperatorOverload OperatorOverload
+hi link chromaticaAccessQual AccessQual
+hi link chromaticaSpecifier Type
+hi link chromaticaLinkage Linkage
+hi link chromaticaAutoType Type
+hi link chromaticaRegister Type
+hi link chromaticaThreadLocal Type
+hi link chromaticaRegister Type
+hi link chromaticaRegister Type
+hi link chromaticaConditionalOperator Todo
 " Microsoft
 hi link chromaticaMSStatement Statement
 
-let b:chroamtica_syntax_loaded = 1
+let b:chromatica_syntax_loaded = 1
