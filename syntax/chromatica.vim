@@ -2,6 +2,8 @@ hi default Member ctermfg=Cyan guifg=Cyan
 hi default Variable ctermfg=Grey guifg=Grey
 hi default Namespace ctermfg=Yellow guifg=#BBBB00
 hi default EnumConstant ctermfg=LightGreen guifg=LightGreen
+hi default chromaticaException gui=bold guifg=#B58900
+hi default chromaticaCast gui=bold  guifg=#719E07
 
 hi default link chromaticaPrepro PreProc
 hi default link chromaticaDecl Identifier
@@ -90,8 +92,10 @@ hi link chromaticaStatement Statement
 hi link chromaticaType Type
 hi link chromaticaBoolean Boolean
 hi link chromaticaConstant Constant
-hi link chromaticaCast Statement
-hi link chromaticaExceptionStatement Statement
+hi link chromaticaCXXCast chromaticaCast
+hi link chromaticaCStyleCast chromaticaCast
+hi link chromaticaExceptionStatement chromaticaException
+hi link chromaticaExceptionAttr chromaticaException
 hi link chromaticaTypeAliasStatement Statement
 hi link chromaticaFile Namespace
 hi link chromaticaIncludedHeaderFile Namespace

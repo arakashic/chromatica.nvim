@@ -181,28 +181,28 @@ SYNTAX_GROUP = {
 
     # literals moved
     cindex.CursorKind.PAREN_EXPR: None,
-    cindex.CursorKind.UNARY_OPERATOR: None,
+    cindex.CursorKind.UNARY_OPERATOR: "chromaticaStatement",
     cindex.CursorKind.ARRAY_SUBSCRIPT_EXPR: None,
-    cindex.CursorKind.BINARY_OPERATOR: None,
+    cindex.CursorKind.BINARY_OPERATOR: "chromaticaStatement",
     cindex.CursorKind.COMPOUND_ASSIGNMENT_OPERATOR: None,
     cindex.CursorKind.CONDITIONAL_OPERATOR: None,
-    cindex.CursorKind.CSTYLE_CAST_EXPR: None,
+    cindex.CursorKind.CSTYLE_CAST_EXPR: "chromaticaCStyleCast",
     cindex.CursorKind.INIT_LIST_EXPR: None,
     cindex.CursorKind.ADDR_LABEL_EXPR: None,
     cindex.CursorKind.StmtExpr: None,
     cindex.CursorKind.GENERIC_SELECTION_EXPR: None,
     cindex.CursorKind.GNU_NULL_EXPR: None,
-    cindex.CursorKind.CXX_STATIC_CAST_EXPR: "chromaticaCast",
-    cindex.CursorKind.CXX_DYNAMIC_CAST_EXPR: "chromaticaCast",
-    cindex.CursorKind.CXX_REINTERPRET_CAST_EXPR: "chromaticaCast",
-    cindex.CursorKind.CXX_CONST_CAST_EXPR: "chromaticaCast",
-    cindex.CursorKind.CXX_FUNCTIONAL_CAST_EXPR: "chromaticaCast",
-    cindex.CursorKind.CXX_TYPEID_EXPR: None,
+    cindex.CursorKind.CXX_STATIC_CAST_EXPR: "chromaticaCXXCast",
+    cindex.CursorKind.CXX_DYNAMIC_CAST_EXPR: "chromaticaCXXCast",
+    cindex.CursorKind.CXX_REINTERPRET_CAST_EXPR: "chromaticaCXXCast",
+    cindex.CursorKind.CXX_CONST_CAST_EXPR: "chromaticaCXXCast",
+    cindex.CursorKind.CXX_FUNCTIONAL_CAST_EXPR: "chromaticaCXXCast",
+    cindex.CursorKind.CXX_TYPEID_EXPR: "chromaticaStatement",
     cindex.CursorKind.CXX_BOOL_LITERAL_EXPR: "chromaticaBoolean",
     cindex.CursorKind.CXX_NULL_PTR_LITERAL_EXPR: "chromaticaConstant",
     cindex.CursorKind.CXX_THIS_EXPR: "chromaticaStatement",
 
-    cindex.CursorKind.CXX_THROW_EXPR: "chromaticaStatement",
+    cindex.CursorKind.CXX_THROW_EXPR: "chromaticaExceptionStatement",
     cindex.CursorKind.CXX_NEW_EXPR: "chromaticaStatement",
     cindex.CursorKind.CXX_DELETE_EXPR: "chromaticaStatement",
     cindex.CursorKind.CXX_UNARY_EXPR: "chromaticaStatement",
@@ -254,13 +254,13 @@ SYNTAX_GROUP = {
     cindex.CursorKind.IB_ACTION_ATTR: None,
     cindex.CursorKind.IB_OUTLET_ATTR: None,
     cindex.CursorKind.IB_OUTLET_COLLECTION_ATTR: None,
-    cindex.CursorKind.CXX_FINAL_ATTR: None,
-    cindex.CursorKind.CXX_OVERRIDE_ATTR: None,
+    cindex.CursorKind.CXX_FINAL_ATTR: "chromaticaFinalAttr",
+    cindex.CursorKind.CXX_OVERRIDE_ATTR: "chromaticaOverrideAttr",
     cindex.CursorKind.ANNOTATE_ATTR: None,
     cindex.CursorKind.ASM_LABEL_ATTR: None,
     cindex.CursorKind.PACKED_ATTR: None,
     cindex.CursorKind.PURE_ATTR: None,
-    cindex.CursorKind.CONST_ATTR: None,
+    cindex.CursorKind.CONST_ATTR: "chromaticaConstAttr",
     cindex.CursorKind.NODUPLICATE_ATTR: None,
     cindex.CursorKind.CUDACONSTANT_ATTR: None,
     cindex.CursorKind.CUDADEVICE_ATTR: None,
@@ -277,48 +277,76 @@ SYNTAX_GROUP = {
     cindex.CursorKind.INCLUSION_DIRECTIVE: "chromaticaInclusionDirective",
 }
 
-def _get_default_syn(cursor_kind):
-    if cursor_kind.is_preprocessing():
+KEYWORDS = {
+    "using": "chromaticaTypeAliasStatement",
+    "typedef": "chromaticaTypedef",
+    "static": "chromaticaLinkage",
+    "extern": "chromaticaLinkage",
+    "const": "chromaticaStorageClass",
+    "mutable": "chromaticaStorageClass",
+    "volatile": "chromaticaAccessQual",
+    "restrict": "chromaticaAccessQual",
+    "noexcept": "chromaticaExceptionAttr",
+    "inline": "chromaticaSpecifier",
+    "constexpr": "chromaticaSpecifier",
+    "decltype": "chroamticaAutoType",
+    "auto": "chromaticaAutoType",
+    "register": "chromaticaRegister",
+    "thread_local": "chromaticaThreadLocal",
+    "operator": "chromaticaOperatorOverload",
+    "static_cast": "chromaticaCXXCast",
+    "const_cast": "chromaticaCXXCast",
+    "dynamic_cast": "chromaticaCXXCast",
+    "reinterpret_cast": "chromaticaCXXCast",
+}
+
+def _get_default_syn(tu, token, cursor):
+    if cursor.kind.is_preprocessing():
         return "chromaticaPrepro"
-    elif cursor_kind.is_declaration():
+    elif cursor.kind.is_declaration():
         return "chromaticaDecl"
-    elif cursor_kind.is_reference():
+    elif cursor.kind.is_reference():
         return "chromaticaRef"
     else:
         return None
 
-def _get_keyword_decl_syn(cursor_kind):
-    if cursor_kind == cindex.CursorKind.TYPE_ALIAS_DECL:
-        return "chromaticaTypeAliasStatement"
+def _get_keyword_decl_syn(tu, token, cursor):
+    group = KEYWORDS.get(token.spelling)
+    if group:
+        return group
     else:
         return "chromaticaType"
 
-def _get_keyword_syn(cursor_kind):
+def _get_keyword_syn(tu, token, cursor):
     """Handles cursor type of keyword tokens. Providing syntax group for most
     keywords"""
-    if cursor_kind.is_statement():
-        return SYNTAX_GROUP.get(cursor_kind)
-    elif cursor_kind.is_declaration(): # hack for function return type and others
-        return _get_keyword_decl_syn(cursor_kind)
-    elif cursor_kind.is_attribute():
-        return SYNTAX_GROUP.get(cursor_kind)
-    elif cursor_kind.is_expression():
-        return SYNTAX_GROUP.get(cursor_kind)
+    if cursor.kind.is_statement():
+        return SYNTAX_GROUP.get(cursor.kind)
+    elif cursor.kind.is_declaration(): # hack for function return type and others
+        return _get_keyword_decl_syn(tu, token, cursor)
+    elif cursor.kind.is_attribute():
+        return SYNTAX_GROUP.get(cursor.kind)
+    elif cursor.kind.is_expression():
+        return SYNTAX_GROUP.get(cursor.kind)
     else:
-        return None
+        return SYNTAX_GROUP.get(cursor.kind)
 
-def _get_punctuation_syntax(cursor_kind):
-    if cursor_kind == cindex.CursorKind.INCLUSION_DIRECTIVE:
+def _get_punctuation_syntax(tu, token, cursor):
+    if cursor.kind == cindex.CursorKind.INCLUSION_DIRECTIVE:
         return "chromaticaIncludedHeaderFile"
+    elif cursor.kind == cindex.CursorKind.CSTYLE_CAST_EXPR:
+        return "chromaticaCStyleCast"
     else:
         return None
 
-def _get_syntax_group(token, cursor):
+def _get_syntax_group(tu, token):
+    cursor = token.cursor
+    cursor._tu = tu
     if token.kind.value == 1: # Keyword
-        return _get_keyword_syn(cursor.kind)
+        return _get_keyword_syn(tu, token, cursor)
 
     elif token.kind.value == 2: # Identifier
-        group = _get_default_syn(cursor.kind)
+        group = _get_default_syn(tu, token, cursor)
 
         _group = SYNTAX_GROUP.get(cursor.kind)
         if _group:
@@ -347,7 +375,7 @@ def _get_syntax_group(token, cursor):
         return "Comment"
 
     else: # Punctuation
-        return _get_punctuation_syntax(cursor.kind)
+        return _get_punctuation_syntax(tu, token, cursor)
 
 def get_highlight(tu, filename, lbegin, lend):
     file = tu.get_file(filename)
@@ -362,14 +390,11 @@ def get_highlight(tu, filename, lbegin, lend):
     syntax = {}
 
     for token in tokens:
-        cursor = token.cursor
-        cursor._tu = tu
-
         n_moreline = token.spelling.count("\n")
         if token.spelling[-1] == "\n":
             n_moreline = n_moreline - 1
         pos = [token.location.line, token.location.column, len(token.spelling), n_moreline]
-        group = _get_syntax_group(token, cursor)
+        group = _get_syntax_group(tu, token)
 
         if group:
             if group not in syntax:
@@ -422,7 +447,7 @@ def get_highlight2(tu, filename, lbegin, lend):
 
         symbol = token.spelling
         pos = [token.location.line, token.location.column, len(token.spelling)]
-        group = _get_syntax_group(token, cursor)
+        group = _get_syntax_group(tu, token)
 
         if token.kind.value != 0:
             fp.write(termcolor(GREEN) + "%s " % (symbol))
@@ -431,6 +456,8 @@ def get_highlight2(tu, filename, lbegin, lend):
             else:
                 fp.write(termcolor(RED) + "%s " % (group))
             fp.write(termcolor() + "%s " % (pos))
+            if cursor.kind.is_preprocessing():
+                fp.write(termcolor(BLUE) + "PREPROC ")
             fp.write(termcolor(YELLOW) + "%s " % (str(token.kind).split(".")[1]))
             fp.write(termcolor(CYAN) + "%s " % (str(cursor.kind).split(".")[1]))
             if cursor.type.kind != cindex.TypeKind.INVALID:
