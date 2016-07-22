@@ -312,7 +312,8 @@ def _get_default_syn(tu, token, cursor):
     if cursor.kind.is_preprocessing():
         return "chromaticaPrepro"
     elif cursor.kind.is_declaration():
-        return "chromaticaDecl"
+        if not cursor.kind.UNEXPOSED_DECL: return "chromaticaDecl"
+        else: return None
     elif cursor.kind.is_reference():
         return "chromaticaRef"
     else:
@@ -323,7 +324,8 @@ def _get_keyword_decl_syn(tu, token, cursor):
     if group:
         return group
     else:
-        return "chromaticaType"
+        if not cursor.kind.UNEXPOSED_DECL: return "chromaticaType"
+        else: return None
 
 def _get_keyword_syn(tu, token, cursor):
     """Handles cursor type of keyword tokens. Providing syntax group for most
@@ -346,7 +348,7 @@ def _get_syntax_group(tu, token):
     if HIGHLIGHT_FEATURE_LEVEL >= 1:
         if token.kind.value == 0: # Punctuation
             return _get_punctuation_syntax(tu, token, cursor)
-        if token.kind.value == 1: # Keyword
+        elif token.kind.value == 1: # Keyword
             return _get_keyword_syn(tu, token, cursor)
         elif token.kind.value == 4: # Comment
             return "Comment"
