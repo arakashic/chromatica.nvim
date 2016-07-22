@@ -87,17 +87,16 @@ When chromatica initializes, it search the current directory and the ancestor
 directories for these two files. If both file are present, chromatica will
 combine the flags in them.
 
-## Customized Syntax Files
+## Highlight Feature Level
 
-Some of the highlight that libclang provides used to be handled by the regex
-engine of vim. Chromatica provides a set of customized syntax files without
-those redundant highlights. Set
+Chromatica provides different feature levels. Each level enables a different set
+of highlight. This is controlled by `g:chromatica#highlight_feature_level`. 
 
-```vim
-let g:chromatica#replace_syntax=1
-```
+The default level is 0, which provides basic semantic highlight
+with default vim syntax.
 
-to use these syntax files.
+A more advanced level is 1, which gets more detailed highlight from libclang
+with a customized syntax file.
 
 ## Responsive Mode
 

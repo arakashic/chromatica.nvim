@@ -7,6 +7,8 @@ from clang import cindex
 
 log = logger.logging.getLogger("chromatica")
 
+HIGHLIGHT_FEATURE_LEVEL=0
+
 def get_cursor(tu, filename, row, col):
     return cindex.Cursor.from_location(tu, \
         cindex.SourceLocation.from_position(tu, tu.get_file(filename), row, col))
@@ -300,6 +302,12 @@ KEYWORDS = {
     "reinterpret_cast": "chromaticaCXXCast",
 }
 
+PUNCTUATION_SYNTAX_GROUP = {
+    cindex.CursorKind.CONDITIONAL_OPERATOR: "chromaticaCondtionalOperator",
+    cindex.CursorKind.CSTYLE_CAST_EXPR: "chromaticaCStyleCast",
+    cindex.CursorKind.INCLUSION_DIRECTIVE: "chromaticaIncludedHeaderFile",
+}
+
 def _get_default_syn(tu, token, cursor):
     if cursor.kind.is_preprocessing():
         return "chromaticaPrepro"
@@ -320,32 +328,30 @@ def _get_keyword_decl_syn(tu, token, cursor):
 def _get_keyword_syn(tu, token, cursor):
     """Handles cursor type of keyword tokens. Providing syntax group for most
     keywords"""
-    if cursor.kind.is_statement():
-        return SYNTAX_GROUP.get(cursor.kind)
-    elif cursor.kind.is_declaration(): # hack for function return type and others
+    if cursor.kind.is_declaration(): # hack for function return type and others
         return _get_keyword_decl_syn(tu, token, cursor)
-    elif cursor.kind.is_attribute():
-        return SYNTAX_GROUP.get(cursor.kind)
-    elif cursor.kind.is_expression():
-        return SYNTAX_GROUP.get(cursor.kind)
     else:
         return SYNTAX_GROUP.get(cursor.kind)
 
 def _get_punctuation_syntax(tu, token, cursor):
-    if cursor.kind == cindex.CursorKind.INCLUSION_DIRECTIVE:
-        return "chromaticaIncludedHeaderFile"
-    elif cursor.kind == cindex.CursorKind.CSTYLE_CAST_EXPR:
-        return "chromaticaCStyleCast"
-    else:
-        return None
+    """Handles tokens for punctuation"""
+    group = PUNCTUATION_SYNTAX_GROUP.get(cursor.kind)
+    if group: return group
+    else: return None
 
 def _get_syntax_group(tu, token):
     cursor = token.cursor
     cursor._tu = tu
-    if token.kind.value == 1: # Keyword
-        return _get_keyword_syn(tu, token, cursor)
 
-    elif token.kind.value == 2: # Identifier
+    if HIGHLIGHT_FEATURE_LEVEL >= 1:
+        if token.kind.value == 0: # Punctuation
+            return _get_punctuation_syntax(tu, token, cursor)
+        if token.kind.value == 1: # Keyword
+            return _get_keyword_syn(tu, token, cursor)
+        elif token.kind.value == 4: # Comment
+            return "Comment"
+
+    if token.kind.value == 2: # Identifier
         group = _get_default_syn(tu, token, cursor)
 
         _group = SYNTAX_GROUP.get(cursor.kind)
@@ -370,12 +376,9 @@ def _get_syntax_group(tu, token):
             return literal_type
         else:
             return "%s" % literal_type
+    else:
+        return None
 
-    elif token.kind.value == 4: # Comment
-        return "Comment"
-
-    else: # Punctuation
-        return _get_punctuation_syntax(tu, token, cursor)
 
 def get_highlight(tu, filename, lbegin, lend):
     file = tu.get_file(filename)

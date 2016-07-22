@@ -134,16 +134,16 @@ Default: `1`
 	let g:chromatica#use_pch = 1
 
 -------------------------------------------------------------------------------
-					*g:chromatica#replace_syntax*
-g:chromatica#replace_syntax~
+					*g:chromatica#highlight_feature_level*
+g:chromatica#highlight_feature_level~
 
-Chromatica has customized syntax files the reduces the dependency on regex
-based syntax highlighting. Many syntax highlight in default syntax files are
-removed. This option controlles whether these syntax files are used.
+Chromatica has different highlight feature levels:
+level 0: libclang semantic highlight + default syntax file
+level 1: libclang semantic highlight + customized syntax file
 
 Default: `0`
 >
-	let g:chromatica#replace_syntax = 0
+	let g:chromatica#highlight_feature_level = 0
 
 ==============================================================================
 					*chromatica-commands*

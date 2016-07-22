@@ -44,6 +44,8 @@ class Chromatica(logger.LoggingMixin):
             self.parse_options += cindex.TranslationUnit.PARSE_PRECOMPILED_PREAMBLE
             # self.parse_options += cindex.TranslationUnit.PARSE_PRECOMPILED_PREAMBLE \
             #                    + cindex.TranslationUnit.CREATE_PREAMBLE_ON_FIRST_PARSE
+        self.highlight_feature_level = self.__vim.vars["chromatica#highlight_feature_level"]
+        syntax.HIGHLIGHT_FEATURE_LEVEL = self.highlight_feature_level
 
         if not cindex.Config.loaded:
             if os.path.isdir(os.path.abspath(self.library_path)):

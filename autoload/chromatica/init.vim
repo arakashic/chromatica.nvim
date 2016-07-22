@@ -74,7 +74,7 @@ endfunction
 function! chromatica#init#_enable() abort
     call chromatica#handlers#_init()
     let s:is_enabled = 1
-    if g:chromatica#replace_syntax
+    if g:chromatica#highlight_feature_level > 0
         if s:is_ft(['c', 'cpp'])
             " load chromatica version of syntax for related filetype
             doautoall Syntax
@@ -119,7 +119,7 @@ function! chromatica#init#_variables() abort
     call chromatica#util#set_default(
                 \ 'g:chromatica#use_pch', 1)
     call chromatica#util#set_default(
-                \ 'g:chromatica#replace_syntax', 0)
+                \ 'g:chromatica#highlight_feature_level', 0)
 endfunction
 
 function! chromatica#init#_context() abort
