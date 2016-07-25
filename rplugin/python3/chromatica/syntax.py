@@ -324,7 +324,7 @@ def _get_keyword_decl_syn(tu, token, cursor):
     if group:
         return group
     else:
-        if not cursor.kind.UNEXPOSED_DECL: return "chromaticaType"
+        if cursor.kind != cindex.CursorKind.UNEXPOSED_DECL: return "chromaticaType"
         else: return None
 
 def _get_keyword_syn(tu, token, cursor):
@@ -332,6 +332,8 @@ def _get_keyword_syn(tu, token, cursor):
     keywords"""
     if cursor.kind.is_declaration(): # hack for function return type and others
         return _get_keyword_decl_syn(tu, token, cursor)
+    elif cursor.kind == cindex.CursorKind.INVALID_FILE and token.spelling == "typedef":
+        return "chromaticaTypeRef"
     else:
         return SYNTAX_GROUP.get(cursor.kind)
 
