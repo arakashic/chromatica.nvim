@@ -278,7 +278,7 @@ syn match	cIncluded	display contained "<[^>]*>"
 syn match	cInclude	display "^\s*\(%:\|#\)\s*include\>\s*["<]" contains=cIncluded
 "syn match cLineSkip	"\\$"
 " syn cluster	cPreProcGroup	contains=cPreCondit,cIncluded,cInclude,cDefine,cSpecial,cOctalZero,cCppOutWrapper,cCppInWrapper,@cCppOutInGroup,cFormat,cOctal,cOctalError,cNumbersCom,cString,cCommentSkip,cCommentString,cComment2String,@cCommentGroup,cMulti,cBadBlock
-syn region	cDefine		start="^\s*\(%:\|#\)\s*\(define\|undef\|ifdef\|else\|endif\)\>" end="\(\ \|$\)"
+syn region	cDefine		start="^\s*\(%:\|#\)\s*\(define\|undef\|if\|ifdef\|else\|endif\)\>" end="\(\ \|$\)"
 " syn region	cPreProc	start="^\s*\(%:\|#\)\s*\(pragma\>\|line\>\|warning\>\|warn\>\|error\>\)" skip="\\$" end="$" keepend contains=ALLBUT,@cPreProcGroup,@Spell
 
 " Highlight User Labels
