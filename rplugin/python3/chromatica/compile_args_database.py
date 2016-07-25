@@ -84,7 +84,29 @@ class CompileArgsDatabase(object):
             ret = self.cdb.getCompileCommands(filename)
 
         if ret:
-            return self.compile_args + ret.args
+            res = []
+            for cmds in ret:
+                cwd = cmds.directory
+                skip = 1
+                for arg in cmds.arguments:
+                    if skip or arg == '-c':
+                        skip = 0
+                        continue
+                    elif os.path.realpath(os.path.join(cwd, arg)) == cmds.filename:
+                        skip = 0
+                        continue
+                    elif arg == '-o':
+                        skip = 1
+                        continue
+                    elif arg.startswith('-I'):
+                        include_path = arg[2:]
+                        if not os.path.isabs(include_path):
+                            include_path = os.path.normpath(
+                                os.path.join(cwd, include_path))
+                        res.append('-I' + include_path)
+                        continue
+                    res.append(arg)
+            return self.compile_args + res
         else:
             return self.compile_args
 
