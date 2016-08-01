@@ -78,35 +78,40 @@ class CompileArgsDatabase(object):
         if self.__cdb_path != None:
             self.cdb = cindex.CompilationDatabase.fromDirectory(self.__cdb_path)
 
-    def get_args_filename(self, filename):
-        ret = None
-        if self.cdb != None:
-            ret = self.cdb.getCompileCommands(filename)
-
+    def __get_cdb_args(self, filename):
+        res = []
+        ret = self.cdb.getCompileCommands(filename)
         if ret:
-            res = []
             for cmds in ret:
                 cwd = cmds.directory
-                skip = 1
+                skip = 0
                 for arg in cmds.arguments:
-                    if skip or arg == '-c':
+                    if skip:
                         skip = 0
                         continue
-                    elif os.path.realpath(os.path.join(cwd, arg)) == cmds.filename:
-                        skip = 0
-                        continue
-                    elif arg == '-o':
+                    if arg == "-o" or arg == "-c":
                         skip = 1
                         continue
-                    elif arg.startswith('-I'):
+
+                    if arg.startswith('-I'):
                         include_path = arg[2:]
                         if not os.path.isabs(include_path):
                             include_path = os.path.normpath(
                                 os.path.join(cwd, include_path))
                         res.append('-I' + include_path)
-                        continue
-                    res.append(arg)
-            return self.compile_args + res
+                    else:
+                        res.append(arg)
+        else:
+            print("Cannot find compile flags for %s in compilation database" % filename)
+        return res
+
+    def get_args_filename(self, filename):
+        ret = None
+        if self.cdb != None:
+            ret = self.__get_cdb_args(filename)
+
+        if ret:
+            return self.compile_args + ret
         else:
             return self.compile_args
 
