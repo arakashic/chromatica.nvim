@@ -273,28 +273,13 @@ endif
 "   syn region	cCppOutSkip	contained start="^\s*\(%:\|#\)\s*\(if\>\|ifdef\>\|ifndef\>\)" skip="\\$" end="^\s*\(%:\|#\)\s*endif\>" contains=cCppOutSkip
 "   syn region	cCppInSkip	contained matchgroup=cCppInWrapper start="^\s*\(%:\|#\)\s*\(if\s\+\(\d\+\s*\($\|//\|/\*\||\|&\)\)\@!\|ifdef\>\|ifndef\>\)" skip="\\$" end="^\s*\(%:\|#\)\s*endif\>" containedin=cCppOutElse,cCppInIf,cCppInSkip contains=TOP,cPreProc
 " endif
-syn region	cIncluded	display contained start=+"+ skip=+\\\\\|\\"+ end=+"+
-syn match	cIncluded	display contained "<[^>]*>"
-syn match	cInclude	display "^\s*\(%:\|#\)\s*include\>\s*["<]" contains=cIncluded
+" syn region	cIncluded	display contained start=+"+ skip=+\\\\\|\\"+ end=+"+
+" syn match	cIncluded	display contained "<[^>]*>"
+" syn match	cInclude	display "^\s*\(%:\|#\)\s*include\>\s*["<]" contains=cIncluded
 "syn match cLineSkip	"\\$"
 " syn cluster	cPreProcGroup	contains=cPreCondit,cIncluded,cInclude,cDefine,cSpecial,cOctalZero,cCppOutWrapper,cCppInWrapper,@cCppOutInGroup,cFormat,cOctal,cOctalError,cNumbersCom,cString,cCommentSkip,cCommentString,cComment2String,@cCommentGroup,cMulti,cBadBlock
-syn region	cDefine		start="^\s*\(%:\|#\)\s*\(define\|undef\|if\|ifdef\|else\|endif\)\>" end="\(\ \|$\)"
-" syn region	cPreProc	start="^\s*\(%:\|#\)\s*\(pragma\>\|line\>\|warning\>\|warn\>\|error\>\)" skip="\\$" end="$" keepend contains=ALLBUT,@cPreProcGroup,@Spell
-
-" Highlight User Labels
-syn cluster	cMultiGroup	contains=cIncluded,cSpecial,cCommentSkip,cCommentString,cComment2String,@cCommentGroup,cUserCont,cOctalZero,cCppOutWrapper,cCppInWrapper,@cCppOutInGroup,cFormat,cOctal,cOctalError,cNumbersCom,cCppString
-if s:ft ==# 'c' || exists("cpp_no_cpp11")
-  syn region	cMulti		transparent start='?' skip='::' end=':' contains=ALLBUT,@cMultiGroup,@Spell,@cStringGroup
-endif
-syn match	cUserCont	display "^\s*\I\i*\s*:$"
-syn match	cUserCont	display ";\s*\I\i*\s*:$"
-if s:ft ==# 'cpp'
-  syn match	cUserCont	display "^\s*\%(class\|struct\|enum\)\@!\I\i*\s*:[^:]"me=e-1
-  syn match	cUserCont	display ";\s*\%(class\|struct\|enum\)\@!\I\i*\s*:[^:]"me=e-1
-else
-  syn match	cUserCont	display "^\s*\I\i*\s*:[^:]"me=e-1
-  syn match	cUserCont	display ";\s*\I\i*\s*:[^:]"me=e-1
-endif
+syn region	cDefine		start="^\s*\(%:\|#\)\s*\(define\|undef\|if\|ifdef\|ifndef\|else\|elif\|endif\)\>" end="\(\ \|$\)"
+syn region	cPreProc	start="^\s*\(%:\|#\)\s*\(pragma\|line\|warning\|warn\|error\)\>" end="\(\ \|$\)"
 
 if exists("c_minlines")
   let b:c_minlines = c_minlines
