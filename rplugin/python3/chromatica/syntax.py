@@ -376,10 +376,7 @@ def _get_syntax_group(tu, token):
 
     elif token.kind.value == 3: # Literal
         literal_type = LITERAL_GROUP.get(cursor.kind)
-        if literal_type:
-            return literal_type
-        else:
-            return "%s" % literal_type
+        if literal_type: return literal_type
     else:
         return None
 
