@@ -56,12 +56,6 @@ class CompileArgsDatabase(object):
                 return
             cdb_file_path = os.path.dirname(cdb_file_path)
 
-    def __parse_flags_key(self, value):
-        self.compile_args = value.split()
-
-    def __parse_flags_append_key(self, value):
-        self.compile_args.extend(value.split())
-
     def __parse_cdb_key(self, value):
         cdb_rel_path = value.strip("\"")
         cdb_path = os.path.join(os.path.dirname(self.__clang_file), cdb_rel_path)
@@ -76,8 +70,7 @@ class CompileArgsDatabase(object):
         lines = fp.readlines()
         fp.close()
 
-        funcs = {"flags" : self.__parse_flags_key,
-                 "flags+" : self.__parse_flags_append_key,
+        funcs = {"flags" : lambda s, value: s.compile_args.extend(value.split()),
                  "compilation_database" : self.__parse_cdb_key, }
 
         for line in lines:
