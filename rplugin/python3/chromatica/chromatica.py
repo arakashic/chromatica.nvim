@@ -111,7 +111,7 @@ class Chromatica(logger.LoggingMixin):
             ret = self._reparse(context)
 
         if ret:
-            self._highlight(filename) # update highlight on entire file
+            self.highlight(context) # update highlight on entire file
 
         return ret
 
