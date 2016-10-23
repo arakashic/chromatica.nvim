@@ -319,6 +319,25 @@ def _get_default_syn(tu, token, cursor):
     else:
         return None
 
+def _get_identifier_syn(tu, token, cursor):
+    group = _get_default_syn(tu, token, cursor)
+
+    _group = SYNTAX_GROUP.get(cursor.kind)
+    if _group:
+        if cursor.kind == cindex.CursorKind.DECL_REF_EXPR:
+            _group = _group.get(cursor.type.kind)
+            if _group:
+                group = _group
+        elif cursor.kind == cindex.CursorKind.MEMBER_REF_EXPR:
+            _group = _group.get(cursor.type.kind)
+            if _group:
+                group = _group
+            else:
+                group = "chromaticaMemberRefExprVar"
+        else:
+            group = _group
+    return group
+
 def _get_keyword_decl_syn(tu, token, cursor):
     group = KEYWORDS.get(token.spelling)
     if group:
@@ -335,7 +354,7 @@ def _get_keyword_syn(tu, token, cursor):
     elif cursor.kind == cindex.CursorKind.INVALID_FILE and token.spelling == "typedef":
         return "chromaticaTypeRef"
     else:
-        return SYNTAX_GROUP.get(cursor.kind)
+        return _get_identifier_syn(tu, token, cursor)
 
 def _get_punctuation_syntax(tu, token, cursor):
     """Handles tokens for punctuation"""
@@ -356,23 +375,7 @@ def _get_syntax_group(tu, token):
             return "Comment"
 
     if token.kind.value == 2: # Identifier
-        group = _get_default_syn(tu, token, cursor)
-
-        _group = SYNTAX_GROUP.get(cursor.kind)
-        if _group:
-            if cursor.kind == cindex.CursorKind.DECL_REF_EXPR:
-                _group = _group.get(cursor.type.kind)
-                if _group:
-                    group = _group
-            elif cursor.kind == cindex.CursorKind.MEMBER_REF_EXPR:
-                _group = _group.get(cursor.type.kind)
-                if _group:
-                    group = _group
-                else:
-                    group = "chromaticaMemberRefExprVar"
-            else:
-                group = _group
-        return group
+        return _get_identifier_syn(tu, token, cursor)
 
     elif token.kind.value == 3: # Literal
         literal_type = LITERAL_GROUP.get(cursor.kind)
