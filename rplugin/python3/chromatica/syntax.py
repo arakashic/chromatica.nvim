@@ -354,7 +354,15 @@ def _get_keyword_syn(tu, token, cursor):
     elif cursor.kind == cindex.CursorKind.INVALID_FILE and token.spelling == "typedef":
         return "chromaticaTypeRef"
     else:
-        return _get_identifier_syn(tu, token, cursor)
+        _group = SYNTAX_GROUP.get(cursor.kind)
+        if _group:
+            if cursor.kind == cindex.CursorKind.DECL_REF_EXPR:
+                return "Type"
+            elif cursor.kind == cindex.CursorKind.CALL_EXPR \
+                    and cursor.type == cindex.TypeKind.UNEXPOSED:
+                return "Type"
+            else:
+                return None
 
 def _get_punctuation_syntax(tu, token, cursor):
     """Handles tokens for punctuation"""
