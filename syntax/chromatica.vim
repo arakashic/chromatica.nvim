@@ -1,4 +1,4 @@
-hi default Member ctermfg=Cyan guifg=Cyan
+hi default Member ctermfg=LightBlue guifg=LightBlue
 hi default Variable ctermfg=Grey guifg=Grey
 hi default Namespace ctermfg=Yellow guifg=#BBBB00
 hi default Typedef ctermfg=Yellow gui=bold guifg=#BBBB00
@@ -18,8 +18,8 @@ hi default link chromaticaKeyword Keyword
 hi default link chromaticaInclusionDirective cIncluded
 hi default link chromaticaDeclRefExprEnum Constant
 hi default link chromaticaDeclRefExprCall Type
-hi default link chromaticaMemberRefExprCall Type
-hi default link chromaticaMemberRefExprVar Type
+hi default link chromaticaMemberRefExprCall Member
+hi default link chromaticaMemberRefExprVar Member
 hi default link chromaticaTemplateNoneTypeParameter Identifier
 
 hi link chromaticaStructDecl Type
