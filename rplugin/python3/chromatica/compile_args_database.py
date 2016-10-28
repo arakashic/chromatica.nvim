@@ -88,12 +88,14 @@ class CompileArgsDatabase(object):
     def __get_cdb_args(self, filename):
         res = []
         ret = self.cdb.getCompileCommands(filename)
+        _basename = os.path.basename(filename)
+        log.info("Read cdb for: %s" % filename)
         if ret:
             for cmds in ret:
                 cwd = cmds.directory
                 skip = 0
                 for arg in cmds.arguments:
-                    if skip:
+                    if skip and arg[0] != "-":
                         skip = 0
                         continue
                     if arg == "-o" or arg == "-c":
@@ -106,6 +108,8 @@ class CompileArgsDatabase(object):
                             include_path = os.path.normpath(
                                 os.path.join(cwd, include_path))
                         res.append('-I' + include_path)
+                    if _basename in arg:
+                        continue;
                     else:
                         res.append(arg)
         else:
