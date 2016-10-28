@@ -77,9 +77,12 @@ two ways to do that in chromatica.
 
    ```
    flags=-I/home/arakshic/.local/include -DNDEBUG
+   flang=-I/../src
    ```
 
-   Note that all flags must be written in one line.
+   Each `flags` option can have one or more compiler arguments. A `.clang` file
+   can have multiple `flags` options. They will be concatenated in the order of
+   their appearance.
 
 When chromatica initializes, it search the current directory and the ancestor
 directories for these two files. If both file are present, chromatica will
