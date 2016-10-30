@@ -71,9 +71,9 @@ g:chromatica#enable_at_startup == `1`, regardless the filetype. To load
 Chromatica only for C-family languages, please refer to the manual of
 your plugin manager.
 
-Default: `1`
+Default: `0`
 >
-	let g:chromatica#enable_at_startup = 1
+	let g:chromatica#enable_at_startup = 0
 <
 ------------------------------------------------------------------------------
 					*g:chromatica#libclang_path*
@@ -84,9 +84,9 @@ set this option when chromatica cannot find libclang, or other version
 of libclang is used. This can be set to either the libclang file (.so/.dylib)
 or the path to the library.
 
-Default: `''`
+Default: `'/usr/lib/libclang.so'`
 >
-	let g:chromatica#libclang_path = ''
+	let g:chromatica#libclang_path = '/usr/lib/libclang.so'
 <
 -------------------------------------------------------------------------------
 					*g:chromatica#global_args*
@@ -151,20 +151,20 @@ Default: `0`
 
 Chromatica provides these commands.
 
-|ChromaticaEnable|
-|ChromaticaDisable|
+|ChromaticaStart|
+|ChromaticaStop|
 |ChromaticaToggle|
 |ChromaticaShowInfo|
 
 ------------------------------------------------------------------------------
-					*ChromaticaEnable*
-ChromaticaEnable~
+					*ChromaticaStart*
+ChromaticaStart~
 
 Enable chromatica plugin.
 
 ------------------------------------------------------------------------------
-					*ChromaticaDisable*
-ChromaticaDisable~
+					*ChromaticaStop*
+ChromaticaStop~
 
 Disable chromatica plugin.
 

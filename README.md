@@ -50,7 +50,9 @@ Or manually check out the repo and put the directory to your vim runtime path.
 
 ## Essential Settings
 
-Like many other clang-based plugins, you need to set the path to your libclang.
+Like many other clang-based plugins, a path to your libclang is needed.
+Chromatica will default to `/usr/lib/libclang.so`, but you can specify a
+different one by setting
 
 ```vim
 let g:chromatica#libclang_path='/usr/local/opt/llvm/lib'
@@ -58,6 +60,18 @@ let g:chromatica#libclang_path='/usr/local/opt/llvm/lib'
 
 The path can be set to either the path of the libclang.dylib/libclang.so file,
 or the directory that contains it.
+
+If you want Chromatica to be automatically loaded at startup, you will need to
+set
+
+```vim
+let g:chromatica#enable_at_startup=1
+```
+
+Alternatively, you can manually enable and disable Chromatica by calling,
+respectively, `:ChromaticaStart` and `:ChromaticaStop`.
+
+
 
 ## Compilation Flags
 

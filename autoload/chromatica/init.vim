@@ -101,7 +101,7 @@ function! chromatica#init#_variables() abort
     let g:chromatica#_context = {}
     let g:chromatica#_rank = {}
 
-    " User vairables
+    " User variables
     call chromatica#util#set_default(
                 \ 'g:chromatica#libclang_path', '/usr/lib/libclang.so')
     call chromatica#util#set_default(
