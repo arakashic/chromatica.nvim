@@ -151,20 +151,20 @@ Default: `0`
 
 Chromatica provides these commands.
 
-|ChromaticaEnable|
-|ChromaticaDisable|
+|ChromaticaStart|
+|ChromaticaStop|
 |ChromaticaToggle|
 |ChromaticaShowInfo|
 
 ------------------------------------------------------------------------------
-					*ChromaticaEnable*
-ChromaticaEnable~
+					*ChromaticaStart*
+ChromaticaStart~
 
 Enable chromatica plugin.
 
 ------------------------------------------------------------------------------
-					*ChromaticaDisable*
-ChromaticaDisable~
+					*ChromaticaStop*
+ChromaticaStop~
 
 Disable chromatica plugin.
 
