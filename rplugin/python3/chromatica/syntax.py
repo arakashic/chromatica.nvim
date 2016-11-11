@@ -362,7 +362,7 @@ def _get_keyword_syn(tu, token, cursor):
                     and cursor.type == cindex.TypeKind.UNEXPOSED:
                 return "Type"
             else:
-                return None
+                return _get_identifier_syn(tu, token, cursor)
 
 def _get_punctuation_syntax(tu, token, cursor):
     """Handles tokens for punctuation"""
