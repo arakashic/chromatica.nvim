@@ -22,7 +22,7 @@ def globruntime(runtimepath, path):
     return ret
 
 def debug(vim, expr):
-    if vim.vars['chromatica#enable_debug']:
+    if vim.vars['chromatica#enable_log']:
         try:
             json_data = json.dumps(str(expr).strip())
         except Exception:

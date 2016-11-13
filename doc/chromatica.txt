@@ -56,7 +56,7 @@ Untar the chromatica.nvim.tar.gz to your vim path.
 
 |g:chromatica#enable_at_startup|
 |g:chromatica#libclang_path|
-|g:chromatica#enable_debug|
+|g:chromatica#enable_log|
 |g:chromatica#global_args|
 |g:chromatica#responsive_mode|
 |g:chromatica#delay_ms|
@@ -127,7 +127,8 @@ Default: `80`
 g:chromatica#use_pch~
 
 Chromatica uses pre-compiled header to reduce the overhead of reparse. The
-header is generated and updated by libclang.
+header is generated and updated by libclang. Disable this may cause
+significant performance issue in responsive mode.
 
 Default: `1`
 >
@@ -145,6 +146,17 @@ Default: `0`
 >
 	let g:chromatica#highlight_feature_level = 0
 
+-------------------------------------------------------------------------------
+					*g:chromatica#debug_log*
+g:chromatica#enable_log~
+
+Chromatica will generate a debug log is this option is set. The file will be
+`chromatica.log` in the current directory.
+
+Default: `0`
+>
+	let g:chromatica#debug_log = 0
+
 ==============================================================================
 					*chromatica-commands*
 5. Commands ~
@@ -155,6 +167,7 @@ Chromatica provides these commands.
 |ChromaticaStop|
 |ChromaticaToggle|
 |ChromaticaShowInfo|
+|ChromaticaDbgAST|
 
 ------------------------------------------------------------------------------
 					*ChromaticaStart*
@@ -179,6 +192,28 @@ Toggle on/off chromatica.
 ChromaticaShowInfo~
 
 Show chromatica runtime information.
+
+------------------------------------------------------------------------------
+					*ChromaticaEnableLog*
+ChromaticaEnableLog~
+
+Start debug logging. The log file is stored in the current directory and named
+as `chromatica.log`.
+
+------------------------------------------------------------------------------
+					*ChromaticaDbgAST*
+ChromaticaDbgAST~
+
+Dump the AST info of the visible portion of the current buffer. The AST info
+is saved in `AST_out.log` file in the current directory. The file is useful
+for the users who want to customize the highlight. It contains the tokens that
+are parsed and their corresponding syntax group.
+
+The `AST_out.log` is color-coded with terminal colors. You need to use a
+reader that can or has the option to parse the terminal colors. For example,
+using `less`.
+
+	less -R AST_out.log
 
 ==============================================================================
 					*chromatica-compilation-database*

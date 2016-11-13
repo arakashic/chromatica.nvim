@@ -44,6 +44,8 @@ function! chromatica#show_info()
     if exists('g:chromatica#_channel_id')
         let context = chromatica#init#_context()
         call rpcrequest(g:chromatica#_channel_id, 'chromatica_show_info', context)
+    else
+        echo 'Chromatica is not started. Try :ChromaticaStart or :ChromaticaToggle first'
     endif
 endf
 

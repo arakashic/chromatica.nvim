@@ -18,7 +18,7 @@ command! ChromaticaStart call chromatica#enable()
 command! ChromaticaStop call chromatica#disable()
 command! ChromaticaToggle call chromatica#toggle()
 command! ChromaticaShowInfo call chromatica#show_info()
-command! ChromaticaLogInfo call chromatica#enable_logging('INFO', 'chromatica.log')
+command! ChromaticaEnableLog call chromatica#enable_logging('INFO', 'chromatica.log')
 
 command! ChromaticaDbgAST call chromatica#handlers#_print_highlight()
 

@@ -5,7 +5,7 @@ from chromatica.util import load_external_module
 load_external_module(__file__, "")
 from clang import cindex
 
-log = logger.logging.getLogger("chromatica")
+log = logger.logging.getLogger("chromatica.syntax")
 
 HIGHLIGHT_FEATURE_LEVEL=0
 
@@ -393,6 +393,7 @@ def _get_syntax_group(tu, token):
 
 
 def get_highlight(tu, filename, lbegin, lend):
+    log.debug("get_highlight")
     file = tu.get_file(filename)
 
     if not file:
@@ -419,7 +420,7 @@ def get_highlight(tu, filename, lbegin, lend):
 
     return syntax
 
-def get_highlight2(tu, filename, lbegin, lend):
+def dump_ast_info(tu, filename, lbegin, lend):
     NOCOLOR = 0
     BLACK   = 30
     RED     = 31

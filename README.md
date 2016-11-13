@@ -19,7 +19,7 @@ Currently, the project is in alpha state.
 ## Prerequites
 
 * [Neovim][3]
-* [Python3][4] and [Neovim python client][5]
+* [Python3][4] and [Neovim python client][5] (Python2 will not work at all)
 * [libclang][6] (prefers 3.9.0, the latest HEAD version)
 
 Tested on:
@@ -36,6 +36,9 @@ Install neovim python client and latest clang
 pip3 install neovim
 brew install llvm --HEAD --with-clang
 ```
+Note the install configuration only include the required option `--with-clang`.
+Chromatica should work just fine if you have more options turned on when
+building LLVM.
 
 ### Install Chromatica
 
@@ -137,6 +140,63 @@ super complex (Yes, I haven't experienced this problem with C code). Chromatica
 uses pre-compiled header to speed up the repasing and throttles the number of
 reparse requests per seconds to avoid reparse flooding. You can increase
 `g:chromatica#delay_ms` if you still experiencing performance issues.
+
+## Troubleshooting and Customization
+
+When a token is not highlighted or not highlighted correctly, the first thing to
+check if whether Chromatica has the correct compilation arguments. Because
+Chromatica uses the clang compiler parser, it is very important to get all the
+compilation arguments right. For example, if the compiler cannot find some of
+the header file, it may lead to some tokens does not get highlighted. The
+command `ChromaticaShowInfo` will print the basic information for the current
+buffer including the location of `.clang`, compilation database, compilation
+arguments, etc.
+
+Chromatica has a debug log. It can be enabled by executing the
+`ChromaticaEnableLog` command (for one time use) or set the
+`g:chromatica#debug_log` option. It will generate a `chromatica.log` file in the
+current directory.
+
+Chromatica also provides a AST dump feature that is useful for the users who
+want to customize the highlight settings. Simply executing the
+`ChromaticaDbgAST` will generate a `AST_out.log` file in the current directory. It
+contains the parsed tokes in the visible part of the buffer. The file is
+color-coded using terminal colors. You might need to manually enable the parsing
+of color code in your pager or reader. I would simply do a `less -R` on it.
+
+For the following sample code
+
+```c++
+#include <iostream>
+
+int main(int argc, const char* argv[])
+{
+    return 0;
+}
+```
+
+The `AST_out.log` is
+
+```
+include chromaticaInclusionDirective [1, 2, 7] PREPROC IDENTIFIER INCLUSION_DIRECTIVE 
+iostream None [1, 11, 8] IDENTIFIER INVALID_FILE 
+int chromaticaType [3, 1, 3] KEYWORD FUNCTION_DECL FUNCTIONPROTO INT NONE 
+main chromaticaFunctionDecl [3, 5, 4] IDENTIFIER FUNCTION_DECL FUNCTIONPROTO INT NONE 
+int chromaticaType [3, 10, 3] KEYWORD PARM_DECL INT NONE 
+argc chromaticaParmDecl [3, 14, 4] IDENTIFIER PARM_DECL INT NONE 
+const chromaticaStorageClass [3, 20, 5] KEYWORD PARM_DECL INCOMPLETEARRAY NONE 
+char chromaticaType [3, 26, 4] KEYWORD PARM_DECL INCOMPLETEARRAY NONE 
+argv chromaticaParmDecl [3, 32, 4] IDENTIFIER PARM_DECL INCOMPLETEARRAY NONE 
+return chromaticaStatement [5, 5, 6] KEYWORD RETURN_STMT NONE 
+0 Number [5, 12, 1] LITERAL INTEGER_LITERAL INT NONE 
+```
+
+Each line represents one token. Following the token's spelling, there is the
+name of syntax group. This syntax group is what you need to set customized
+highlight. If a token does not match any syntax group, it will be shown as
+`None`.  Then, there is the position of the token in `[line, start column,
+length]` format. The rest fields are the raw info of the token which are useful
+for debugging when some token is not correctly highlighted.
 
 ## Acknowledgement
 

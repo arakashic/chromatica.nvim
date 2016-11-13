@@ -83,7 +83,7 @@ function! chromatica#init#_enable() abort
         runtime! syntax/chromatica.vim
     endif
 
-    if get(g:, 'chromatica#enable_debug', 0) "{{{
+    if get(g:, 'chromatica#enable_log', 0) "{{{
         call chromatica#enable_logging('DEBUG', 'chromatica.log')
     endif "}}}
 
@@ -107,7 +107,7 @@ function! chromatica#init#_variables() abort
     call chromatica#util#set_default(
                 \ 'g:chromatica#enable_at_startup', 0)
     call chromatica#util#set_default(
-                \ 'g:chromatica#enable_debug', 0)
+                \ 'g:chromatica#enable_log', 0)
     call chromatica#util#set_default(
                 \ 'g:chromatica#syntax_src_id', -2)
     call chromatica#util#set_default(

@@ -214,8 +214,7 @@ class Chromatica(logger.LoggingMixin):
 
         tu = self.ctx[filename]["tu"]
 
-        syntax.get_highlight2(tu, buffer.name, \
-                lbegin, lend)
+        syntax.dump_ast_info(tu, buffer.name, lbegin, lend)
 
     def clear_highlight(self):
         """clear highlight on all buffers"""
