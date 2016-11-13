@@ -5,7 +5,7 @@ a python3 remote plugin. Currently, chromatica focuses on providing
 semantic accurate syntax highlighting for C-family languages (using
 libclang).
 
-Currently, the project is in alpha state.
+The project is in alpha state, but it is fairly stable and usable now.
 
 ## Features
 
@@ -20,14 +20,19 @@ Currently, the project is in alpha state.
 ## Prerequites
 
 * [Neovim][3]
-* [Python3][4] and [Neovim python client][5] (Python2 will not work at
-  all)
+* [Python3][4] and [Neovim python client][5]
 * [libclang][6] (prefers 3.9.0, the latest HEAD version)
 
 Tested on:
 
     * macOS 10.11.5, Neovim 0.1.4, Python 3.5.2, clang 3.9.0svn
     * Archlinux, Neovim 0.1.4, Python 3.5.1, clang 3.8.0
+
+### Known Incompatibility
+
+* Python2 (sorry, Python3 only)
+* Some syntax plugins (depending on the loading order, third-party
+    syntax plugins may overwrite/mess up Chromatica's highlight)
 
 ## Installation
 
