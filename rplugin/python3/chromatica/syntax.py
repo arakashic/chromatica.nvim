@@ -379,8 +379,8 @@ def _get_syntax_group(tu, token):
             return _get_punctuation_syntax(tu, token, cursor)
         elif token.kind.value == 1: # Keyword
             return _get_keyword_syn(tu, token, cursor)
-        elif token.kind.value == 4: # Comment
-            return "Comment"
+        elif token.kind.value == 4: # Comment: let vim handle it
+            return None
 
     if token.kind.value == 2: # Identifier
         return _get_identifier_syn(tu, token, cursor)
