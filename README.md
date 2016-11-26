@@ -113,6 +113,11 @@ When chromatica initializes, it search the current directory and the
 ancestor directories for these two files. If both file are present,
 chromatica will combine the flags in them.
 
+For convenience, you can also set the
+`g:chromatica#dotclangfile_search_path` option to the directory that you
+put the `.clang` file or the compilation database. It overrides the
+default search directory.
+
 ## Highlight Feature Level
 
 Chromatica provides different feature levels. Each level enables a

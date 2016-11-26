@@ -37,6 +37,7 @@ class Chromatica(logger.LoggingMixin):
         self.syntax_src_id = self.__vim.vars["chromatica#syntax_src_id"]
         self.global_args = self.__vim.vars["chromatica#global_args"]
         self.delay_time = self.__vim.vars["chromatica#delay_ms"] / 1000.0
+        self.clangfile_search_path = self.__vim.vars["chromatica#dotclangfile_search_path"]
         self.ctx = {}
         self.parse_options = cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD \
                            + cindex.TranslationUnit.PARSE_INCOMPLETE
@@ -54,7 +55,7 @@ class Chromatica(logger.LoggingMixin):
                 cindex.Config.set_library_file(self.library_path)
             cindex.Config.set_compatibility_check(False)
 
-        self.args_db = CompileArgsDatabase(self.__vim.current.buffer.name,\
+        self.args_db = CompileArgsDatabase(self.clangfile_search_path,\
                 self.global_args)
         self.idx = cindex.Index.create()
 
@@ -233,3 +234,4 @@ class Chromatica(logger.LoggingMixin):
         self.vimh.echo("Compile Flags: %s" % " ".join( \
                 self.args_db.get_args_filename_ft(context["filename"], \
                 self.__vim.current.buffer.options["filetype"])))
+        self.vimh.echo(".clang File Search Path: %s" % self.clangfile_search_path)

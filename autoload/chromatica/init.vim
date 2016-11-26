@@ -120,6 +120,8 @@ function! chromatica#init#_variables() abort
                 \ 'g:chromatica#use_pch', 1)
     call chromatica#util#set_default(
                 \ 'g:chromatica#highlight_feature_level', 0)
+    call chromatica#util#set_default(
+                \ 'g:chromatica#dotclangfile_search_path', '')
 endfunction
 
 function! chromatica#init#_context() abort

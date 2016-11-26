@@ -61,6 +61,9 @@ Untar the chromatica.nvim.tar.gz to your vim path.
 |g:chromatica#responsive_mode|
 |g:chromatica#delay_ms|
 |g:chromatica#use_pch|
+|g:chromatica#highlight_feature_level|
+|g:chromatica#debug_log|
+|g:chromatica#dotclangfile_search_path|
 
 ------------------------------------------------------------------------------
 					*g:chromatica#enable_at_startup*
@@ -156,6 +159,17 @@ Chromatica will generate a debug log is this option is set. The file will be
 Default: `0`
 >
 	let g:chromatica#debug_log = 0
+
+-------------------------------------------------------------------------------
+					*g:chromatica#dotclangfile_search_path*
+g:chromatica#dotclangfile_search_path~
+
+Chromatica can search a customized path for the `.clang` file or the
+compilation database.
+
+Default: ``
+>
+	let g:chromatica#dotclangfile_search_path = ''
 
 ==============================================================================
 					*chromatica-commands*
