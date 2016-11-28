@@ -156,6 +156,7 @@ class Chromatica(logger.LoggingMixin):
         self.profiler.start("_highlight")
         syn_group = syntax.get_highlight(tu, buffer.name, _lbegin, _lend)
 
+        highlight_reqs = []
         for hl_group in syn_group:
             for pos in syn_group[hl_group]:
                 _row = pos[0] - 1
@@ -163,16 +164,22 @@ class Chromatica(logger.LoggingMixin):
                 hl_size = pos[2]
                 col_end = col_start + hl_size
                 n_moreline = pos[3]
-                buffer.add_highlight(hl_group, _row, col_start, col_end,\
-                        self.syntax_src_id, async=True)
+                # buffer.add_highlight(hl_group, _row, col_start, col_end,\
+                #         self.syntax_src_id, async=True)
+                highlight_reqs.append(["nvim_buf_add_highlight", [buffer, \
+                    self.syntax_src_id, hl_group, _row, col_start, col_end]])
                 if n_moreline:
                     next_row = _row + 1
                     bytes_left = hl_size - len(buffer[_row][col_start:])
                     while bytes_left > 0:
-                        buffer.add_highlight(hl_group, next_row, 0, bytes_left,\
-                                self.syntax_src_id, async=True)
+                        # buffer.add_highlight(hl_group, next_row, 0, bytes_left,\
+                        #         self.syntax_src_id, async=True)
+                        highlight_reqs.append(["nvim_buf_add_highlight", [buffer, \
+                            self.syntax_src_id, hl_group, next_row, 0, bytes_left]])
                         bytes_left = bytes_left - len(buffer[next_row]) - 1 # no trailing "\n"
                         next_row = next_row + 1
+
+        self.__vim.request("nvim_call_atomic", highlight_reqs)
 
         self.profiler.stop()
 
