@@ -66,8 +66,6 @@ function! chromatica#init#_initialize() abort
     let s:is_enabled = g:chromatica#enable_at_startup
     if s:is_enabled
         call chromatica#init#_enable()
-    else
-        call chromatica#init#_disable()
     endif
 endfunction
 
