@@ -109,7 +109,7 @@ function! chromatica#init#_variables() abort
     call chromatica#util#set_default(
                 \ 'g:chromatica#enable_log', 0)
     call chromatica#util#set_default(
-                \ 'g:chromatica#syntax_src_id', -2)
+                \ 'g:chromatica#syntax_src_id', 100)
     call chromatica#util#set_default(
                 \ 'g:chromatica#global_args', [])
     call chromatica#util#set_default(
