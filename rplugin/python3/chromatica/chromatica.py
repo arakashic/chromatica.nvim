@@ -22,6 +22,8 @@ import os
 import re
 import time
 
+import math
+
 class Chromatica(logger.LoggingMixin):
 
     """Chromatica Core """
@@ -157,27 +159,51 @@ class Chromatica(logger.LoggingMixin):
         syn_group = syntax.get_highlight(tu, buffer.name, _lbegin, _lend)
 
         highlight_reqs = []
+        # for hl_group in syn_group:
+        #     for pos in syn_group[hl_group]:
+        #         _row = pos[0] - 1
+        #         col_start = pos[1] - 1
+        #         hl_size = pos[2]
+        #         col_end = col_start + hl_size
+        #         n_moreline = pos[3]
+        #         # buffer.add_highlight(hl_group, _row, col_start, col_end,\
+        #         #         self.syntax_src_id, async=True)
+        #         highlight_reqs.append(["nvim_buf_add_highlight", [buffer, \
+        #             self.syntax_src_id, hl_group, _row, col_start, col_end]])
+        #         if n_moreline:
+        #             next_row = _row + 1
+        #             bytes_left = hl_size - len(buffer[_row][col_start:])
+        #             while bytes_left > 0:
+        #                 # buffer.add_highlight(hl_group, next_row, 0, bytes_left,\
+        #                 #         self.syntax_src_id, async=True)
+        #                 highlight_reqs.append(["nvim_buf_add_highlight", [buffer, \
+        #                     self.syntax_src_id, hl_group, next_row, 0, bytes_left]])
+        #                 bytes_left = bytes_left - len(buffer[next_row]) - 1 # no trailing "\n"
+        #                 next_row = next_row + 1
+
+        map_syn_group = {}
         for hl_group in syn_group:
+            map_syn_group[hl_group] = []
             for pos in syn_group[hl_group]:
-                _row = pos[0] - 1
-                col_start = pos[1] - 1
+                _row = pos[0]
+                col_start = pos[1]
                 hl_size = pos[2]
-                col_end = col_start + hl_size
                 n_moreline = pos[3]
-                # buffer.add_highlight(hl_group, _row, col_start, col_end,\
-                #         self.syntax_src_id, async=True)
-                highlight_reqs.append(["nvim_buf_add_highlight", [buffer, \
-                    self.syntax_src_id, hl_group, _row, col_start, col_end]])
+                map_syn_group[hl_group].append([_row, col_start, hl_size])
                 if n_moreline:
                     next_row = _row + 1
                     bytes_left = hl_size - len(buffer[_row][col_start:])
                     while bytes_left > 0:
-                        # buffer.add_highlight(hl_group, next_row, 0, bytes_left,\
-                        #         self.syntax_src_id, async=True)
-                        highlight_reqs.append(["nvim_buf_add_highlight", [buffer, \
-                            self.syntax_src_id, hl_group, next_row, 0, bytes_left]])
+                        map_syn_group[hl_group].append(next_row)
                         bytes_left = bytes_left - len(buffer[next_row]) - 1 # no trailing "\n"
                         next_row = next_row + 1
+
+            size = len(map_syn_group[hl_group])
+            n_loops = math.ceil(size / 8)
+            for i in range(n_loops):
+                end = min(i * 8 + 8, size)
+                highlight_reqs.append(["nvim_call_function", ["matchaddpos", [hl_group, map_syn_group[hl_group][i * 8:end]]]])
+                # self.__vim.call("matchaddpos", hl_group, map_syn_group[hl_group][i * 8:end])
 
         self.__vim.request("nvim_call_atomic", highlight_reqs)
 
