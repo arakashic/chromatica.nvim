@@ -189,6 +189,7 @@ SYNTAX_GROUP = {
     cindex.CursorKind.COMPOUND_ASSIGNMENT_OPERATOR: None,
     cindex.CursorKind.CONDITIONAL_OPERATOR: None,
     cindex.CursorKind.CSTYLE_CAST_EXPR: "chromaticaCStyleCast",
+    cindex.CursorKind.COMPOUND_LITERAL_EXPR: None,
     cindex.CursorKind.INIT_LIST_EXPR: None,
     cindex.CursorKind.ADDR_LABEL_EXPR: None,
     cindex.CursorKind.StmtExpr: None,
@@ -351,6 +352,8 @@ def _get_keyword_syn(tu, token, cursor):
     keywords"""
     if cursor.kind.is_declaration(): # hack for function return type and others
         return _get_keyword_decl_syn(tu, token, cursor)
+    elif cursor.kind == cindex.CursorKind.COMPOUND_LITERAL_EXPR:
+        return _get_keyword_decl_syn(tu, token, cursor)
     elif cursor.kind == cindex.CursorKind.INVALID_FILE and token.spelling == "typedef":
         return "chromaticaTypeRef"
     else:
@@ -388,6 +391,7 @@ def _get_syntax_group(tu, token):
     elif token.kind.value == 3: # Literal
         literal_type = LITERAL_GROUP.get(cursor.kind)
         if literal_type: return literal_type
+        else: return None
     else:
         return None
 
