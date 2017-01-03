@@ -998,6 +998,8 @@ CursorKind.OBJ_SELF_EXPR = CursorKind(146)
 # OpenMP 4.0 [2.4, Array Section].
 CursorKind.OMP_ARRAY_SECTION_EXPR = CursorKind(147)
 
+# Represents an @available(...) check.
+CursorKind.OBJC_AVAILABILITY_CHECK_EXPR = CursorKind(148)
 
 # A statement whose specific kind is not exposed via this interface.
 #
@@ -1205,6 +1207,30 @@ CursorKind.OMP_TARGET_UPDATE_DIRECTIVE = CursorKind(265)
 
 CursorKind.OMP_DISTRIBUTE_PARALLEL_FOR_DIRECTIVE = CursorKind(266)
 
+# OpenMP distribute parallel for simd directive.
+CursorKind.OMP_DISTRIBUTE_PARALLEL_FOR_SIMD_DIRECTIVE = CursorKind(267)
+
+# OpenMP distribute parallel simd directive.
+CursorKind.OMP_DISTRIBUTE_PARALLEL_SIMD_DIRECTIVE = CursorKind(268)
+
+# OpenMP target parallel for simd directive
+CursorKind.OMP_TARGET_PARALLEL_FOR_SIMD_DIRECTIVE = CursorKind(269)
+
+# OpenMP target simd directive
+CursorKind.OMP_TARGET_SIMD_DIRECTIVE = CursorKind(270)
+
+# OpenMP teams distribute directive
+CursorKind.OMP_TEAMS_DISTRIBUTE_DIRECTIVE = CursorKind(271)
+
+# OpenMP teams distrbute simd directive
+CursorKind.OMP_TEAMS_DISTRIBUTE_SIMD_DIRECTIVE = CursorKind(272)
+
+# OpenMP teams distrbute parallel for simd directive
+CursorKind.OMP_TEAMS_DISTRIBUTE_PARALLEL_FOR_SIMD_DIRECTIVE = CursorKind(273)
+
+# OpenMP teams distribute parallel for directive
+CursorKind.OMP_TEAMS_DISTRIBUTE_PARALLEL_FOR_DIRECTIVE = CursorKind(274)
+
 ###
 # Other Kinds
 
@@ -1259,6 +1285,8 @@ CursorKind.MODULE_IMPORT_DECL = CursorKind(600)
 CursorKind.TYPE_ALIAS_TEMPLATE_DECL = CursorKind(601)
 # A static_assert or _Static_assert node
 CursorKind.STATIC_ASSERT = CursorKind(602)
+# A friend declaration
+CursorKind.FRIEND_DECL = CursorKind(603)
 
 # A code completion overload candidate.
 CursorKind.OVERLOAD_CANDIDATE = CursorKind(700)
