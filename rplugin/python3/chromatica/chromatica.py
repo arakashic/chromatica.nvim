@@ -94,10 +94,15 @@ class Chromatica(logger.LoggingMixin):
             if not self._init_context(context): return ret
 
             self.profiler.start("parse index.parse")
-            tu = self.idx.parse(self.ctx[filename]["buffer"].name,
-                                self.ctx[filename]["args"], \
-                                self.get_unsaved_buffer(filename), \
-                                options=self.parse_options)
+            try:
+                tu = self.idx.parse(self.ctx[filename]["buffer"].name,
+                                    self.ctx[filename]["args"], \
+                                    self.get_unsaved_buffer(filename), \
+                                    options=self.parse_options)
+            except cindex.TranslationUnitLoadError as e:
+                self.ctx[filename]["error"] = "clang.cindex.TranslationUnitLoadError(%s)" % str(e)
+                return ret
+
             self.profiler.stop()
 
             if not tu:
@@ -119,6 +124,7 @@ class Chromatica(logger.LoggingMixin):
     def _reparse(self, context):
         filename = context["filename"]
         if context["changedtick"] <= self.ctx[filename]["changedtick"]: return False
+        if "error" in self.ctx[filename]: return False
         self.profiler.start("_reparse")
         self.ctx[filename]["tu"].reparse(\
             self.get_unsaved_buffer(filename), \
@@ -226,6 +232,7 @@ class Chromatica(logger.LoggingMixin):
         self.ctx.clear()
 
     def show_info(self, context):
+        filename = context["filename"]
         self.vimh.echo("libclang file: %s" % cindex.conf.get_filename())
         self.vimh.echo("Filename: %s" % context["filename"])
         self.vimh.echo("Filetype: %s" % self.__vim.current.buffer.options["filetype"])
@@ -235,3 +242,5 @@ class Chromatica(logger.LoggingMixin):
                 self.args_db.get_args_filename_ft(context["filename"], \
                 self.__vim.current.buffer.options["filetype"])))
         self.vimh.echo(".clang File Search Path: %s" % self.clangfile_search_path)
+        if "error" in self.ctx[filename]:
+            self.vimh.echo("Error Message: %s" % self.ctx[filename]["error"])
