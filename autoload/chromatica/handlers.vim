@@ -26,6 +26,10 @@ fun! chromatica#handlers#_highlight()
 
     let b:highlight_tick = b:highlight_tick + 1
 
+    if get(b:, 'chromatica_fallback', 0)
+        return
+    endif
+
     if exists('g:chromatica#_channel_id')
         let context = chromatica#init#_context()
         silent! call rpcnotify(g:chromatica#_channel_id, 'chromatica_highlight', context)
@@ -33,6 +37,10 @@ fun! chromatica#handlers#_highlight()
 endf
 
 fun! chromatica#handlers#_parse()
+    if get(b:, 'chromatica_fallback', 0)
+        return
+    endif
+
     if exists('g:chromatica#_channel_id')
         let context = chromatica#init#_context()
         silent! call rpcnotify(g:chromatica#_channel_id, 'chromatica_parse', context)
@@ -40,6 +48,10 @@ fun! chromatica#handlers#_parse()
 endf
 
 fun! chromatica#handlers#_delayed_parse()
+    if get(b:, 'chromatica_fallback', 0)
+        return
+    endif
+
     if exists('g:chromatica#_channel_id')
         let context = chromatica#init#_context()
         silent! call rpcnotify(g:chromatica#_channel_id, 'chromatica_delayed_parse', context)
@@ -47,6 +59,10 @@ fun! chromatica#handlers#_delayed_parse()
 endf
 
 fun! chromatica#handlers#_print_highlight()
+    if get(b:, 'chromatica_fallback', 0)
+        return
+    endif
+
     if exists('g:chromatica#_channel_id')
         let context = chromatica#init#_context()
         silent! call rpcnotify(g:chromatica#_channel_id, 'chromatica_print_highlight', context)

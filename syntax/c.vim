@@ -5,7 +5,9 @@
 " Last Change:	July 21, 2016
 
 " load default c.vim when chromatica is not enabled
-if !chromatica#init#_is_enabled() || !(get(g:, 'chromatica#highlight_feature_level', 0) > 0)
+if !chromatica#init#_is_enabled()
+    \ || !(get(g:, 'chromatica#highlight_feature_level', 0) > 0)
+    \ || (get(b:, 'chromatica_fallback', 0) > 0)
     source $VIMRUNTIME/syntax/c.vim
     finish
 endif
@@ -280,6 +282,7 @@ endif
 " syn cluster	cPreProcGroup	contains=cPreCondit,cIncluded,cInclude,cDefine,cSpecial,cOctalZero,cCppOutWrapper,cCppInWrapper,@cCppOutInGroup,cFormat,cOctal,cOctalError,cNumbersCom,cString,cCommentSkip,cCommentString,cComment2String,@cCommentGroup,cMulti,cBadBlock
 syn region	cDefine		start="^\s*\(%:\|#\)\s*\(define\|undef\|if\|ifdef\|ifndef\|else\|elif\|endif\)\>" end="\(\ \|$\)"
 syn region	cPreProc	start="^\s*\(%:\|#\)\s*\(pragma\|line\|warning\|warn\|error\)\>" end="\(\ \|$\)"
+
 
 if exists("c_minlines")
   let b:c_minlines = c_minlines

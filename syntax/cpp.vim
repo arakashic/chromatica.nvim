@@ -5,7 +5,9 @@
 " Last Change:	July 21, 2016
 
 " load default c.vim when chromatica is not enabled
-if !chromatica#init#_is_enabled() || !(get(g:, 'chromatica#highlight_feature_level', 0) > 0)
+if !chromatica#init#_is_enabled()
+    \ || !(get(g:, 'chromatica#highlight_feature_level', 0) > 0)
+    \ || (get(b:, 'chromatica_fallback', 0) > 0)
     source $VIMRUNTIME/syntax/cpp.vim
     finish
 endif

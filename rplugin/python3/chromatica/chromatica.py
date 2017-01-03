@@ -101,6 +101,7 @@ class Chromatica(logger.LoggingMixin):
                                     options=self.parse_options)
             except cindex.TranslationUnitLoadError as e:
                 self.ctx[filename]["error"] = "clang.cindex.TranslationUnitLoadError(%s)" % str(e)
+                self.__vim.call("chromatica#init#buffer_fallback")
                 return ret
 
             self.profiler.stop()

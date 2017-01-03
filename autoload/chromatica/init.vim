@@ -95,6 +95,12 @@ function! chromatica#init#_disable() abort
     doautoall Syntax
 endfunction
 
+function! chromatica#init#buffer_fallback() abort
+    let b:chromatica_fallback = 1
+    doautoall Syntax
+    echom 'Chromatica has fallback to neovim default (no semantic highlight) for current buffer. Check :ChromaticaShowInfo for the error message.'
+endfunction
+
 function! chromatica#init#_variables() abort
     let g:chromatica#_context = {}
     let g:chromatica#_rank = {}
