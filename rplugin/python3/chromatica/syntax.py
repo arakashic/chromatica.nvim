@@ -1,11 +1,15 @@
 
+from functools import partial
+
 from chromatica import logger
 from chromatica.util import load_external_module
+from chromatica.profiler import Profiler
 
 load_external_module(__file__, "")
 from clang import cindex
 
 log = logger.logging.getLogger("chromatica.syntax")
+prof = Profiler(output_fn=log.debug)
 
 HIGHLIGHT_FEATURE_LEVEL=0
 
@@ -395,6 +399,13 @@ def _get_syntax_group(tu, token):
     else:
         return None
 
+def _get_highlight_token(token, _tu):
+    n_moreline = token.spelling.count("\n")
+    if token.spelling[-1] == "\n":
+        n_moreline = n_moreline - 1
+    pos = [token.location.line, token.location.column, len(token.spelling), n_moreline]
+    group = _get_syntax_group(_tu, token)
+    return [group, pos]
 
 def get_highlight(tu, filename, lbegin, lend):
     log.debug("get_highlight")
@@ -407,22 +418,9 @@ def get_highlight(tu, filename, lbegin, lend):
     end   = cindex.SourceLocation.from_position(tu, file, line=lend+1, column=1)
     tokens = tu.get_tokens(extent=cindex.SourceRange.from_locations(begin, end))
 
-    syntax = {}
-
-    for token in tokens:
-        n_moreline = token.spelling.count("\n")
-        if token.spelling[-1] == "\n":
-            n_moreline = n_moreline - 1
-        pos = [token.location.line, token.location.column, len(token.spelling), n_moreline]
-        group = _get_syntax_group(tu, token)
-
-        if group:
-            if group not in syntax:
-                syntax[group] = []
-
-            syntax[group].append(pos)
-
-    return syntax
+    get_highlight_token = partial(_get_highlight_token, _tu=tu)
+    hl_tokens = map(get_highlight_token, tokens)
+    return list(filter((lambda x: x[0] != None), hl_tokens))
 
 def dump_ast_info(tu, filename, lbegin, lend):
     NOCOLOR = 0
