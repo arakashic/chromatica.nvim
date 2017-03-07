@@ -289,7 +289,7 @@ reparse requests per seconds to avoid reparse flooding. You can increase
 
 1. The fallback mode. Chromatica will fallback to the default mode (no
 semantic-based highlighting) for the current buffer, if libclang raises
-exceptions when processing the translation unit. The *ChromaticaShowInfo*
+exceptions when processing the translation unit. The `ChromaticaShowInfo`
 command will print the message for the exception that causes the failure. You
 need to fix the problem and restart neovim.
 
