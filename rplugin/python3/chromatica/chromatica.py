@@ -205,6 +205,8 @@ class Chromatica(logger.LoggingMixin):
         filetype = buffer.options["filetype"]
         if not Chromatica.is_supported_filetype(filetype): return
 
+        if not 'highlight_tick' in buffer.vars: return
+
         if highlight_tick != buffer.vars["highlight_tick"]: return
 
         if filename not in self.ctx: return self.parse(context)
