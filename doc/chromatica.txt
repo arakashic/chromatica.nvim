@@ -32,8 +32,8 @@ https://github.com/arakashic/chromatica.nvim
 
 Chromatica requires the following:
 
-* Neovim 0.1.4 with python3.x enabled
-* libclang, preferably 3.9.0 (latest svn version). Please reference
+* Neovim 0.1.6 (or newer) with python3.x enabled
+* libclang, preferably 3.9.0 (or newer). Please reference
   http://llvm.org/apt/ to install
 * Chromatica has been tested under Linux and macOS
 

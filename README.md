@@ -19,10 +19,9 @@ The project is in alpha state, but it is fairly stable and usable now.
 
 ## Prerequites
 
-* [Neovim][3] 0.1.6
+* [Neovim][3] 0.1.6 or newer
 * [Python3][4] and [Neovim python client][5]
-* [libclang][6] (prefers 3.9.0, though an older version may work as
-    well)
+* [libclang][6] (prefers 3.9.0 or newer)
 
 ### Known Incompatibility
 
