@@ -119,11 +119,15 @@ Chromatica provides different feature levels. Each level enables a
 different set of highlight. This is controlled by
 `g:chromatica#highlight_feature_level`. 
 
-The default level is 0, which provides basic semantic highlight with
-default vim syntax.
+The default level is 1, which let Chromatica handles most of the token
+in the code. A modified `c.vim` will be load for the highlighting the %
+format specifier and other stuff that a parser does not understand.
 
-A more advanced level is 1, which gets more detailed highlight from
-libclang with a customized syntax file.
+Setting it to 0 would limit Chromatica to handle only the identifiers
+and literals. This is only recommended if you have a slow machine and
+are experiencing performance issue with the full functionality of
+Chromatica. Note the `$VIMRUNTIME/syntax/c.vim` will be loaded in this
+case and may exhibit highlight conflicts in some scenarios.
 
 ## Responsive Mode
 

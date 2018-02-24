@@ -141,13 +141,19 @@ Default: `1`
 					*g:chromatica#highlight_feature_level*
 g:chromatica#highlight_feature_level~
 
-Chromatica has different highlight feature levels:
-level 0: libclang semantic highlight + default syntax file
-level 1: libclang semantic highlight + customized syntax file
+By default, Chromatica handles most of the token in the code. A modified
+`c.vim` will be load for the highlighting the % format specifier and other
+stuff that a parser does not understand.
 
-Default: `0`
+Setting it to 0 would limit Chromatica to handle only the identifiers
+and literals. This is only recommended if you have a slow machine and
+are experiencing performance issue with the full functionality of
+Chromatica. Note the `$VIMRUNTIME/syntax/c.vim` will be loaded in this
+case and may exhibit highlight conflicts in some scenarios.
+
+Default: `1`
 >
-	let g:chromatica#highlight_feature_level = 0
+	let g:chromatica#highlight_feature_level = 1
 
 -------------------------------------------------------------------------------
 					*g:chromatica#debug_log*
