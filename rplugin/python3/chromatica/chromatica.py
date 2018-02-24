@@ -46,8 +46,6 @@ class Chromatica(logger.LoggingMixin):
                            + cindex.TranslationUnit.PARSE_INCOMPLETE
         if self.__vim.vars["chromatica#use_pch"]:
             self.parse_options += cindex.TranslationUnit.PARSE_PRECOMPILED_PREAMBLE
-            # self.parse_options += cindex.TranslationUnit.PARSE_PRECOMPILED_PREAMBLE \
-            #                    + cindex.TranslationUnit.CREATE_PREAMBLE_ON_FIRST_PARSE
         self.highlight_feature_level = self.__vim.vars["chromatica#highlight_feature_level"]
         syntax.HIGHLIGHT_FEATURE_LEVEL = self.highlight_feature_level
 
