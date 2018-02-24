@@ -113,6 +113,8 @@ function! chromatica#init#_variables() abort
     call chromatica#util#set_default(
                 \ 'g:chromatica#enable_log', 0)
     call chromatica#util#set_default(
+                \ 'g:chromatica#enable_profiling', 0)
+    call chromatica#util#set_default(
                 \ 'g:chromatica#syntax_src_id', 100)
     call chromatica#util#set_default(
                 \ 'g:chromatica#global_args', [])

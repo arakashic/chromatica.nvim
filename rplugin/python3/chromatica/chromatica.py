@@ -32,7 +32,10 @@ class Chromatica(logger.LoggingMixin):
         self.__runtimepath = ""
         self.name = "core"
         self.mark = "[Chromatica Core]"
-        self.profiler = Profiler(output_fn=self.debug)
+        if self.__vim.vars["chromatica#enable_profiling"]:
+            self.profiler = Profiler(output_fn=self.debug)
+        else:
+            self.profiler = Profiler()
         self.library_path = self.__vim.vars["chromatica#libclang_path"]
         self.syntax_src_id = self.__vim.vars["chromatica#syntax_src_id"]
         self.global_args = self.__vim.vars["chromatica#global_args"]

@@ -10,7 +10,10 @@ class Profiler(object):
 
     """Basic profiler framework."""
 
-    def __init__(self, output_fn=print, header="[profile]"):
+    def null_output(expr):
+        return
+
+    def __init__(self, output_fn=null_output, header="[profile]"):
         """TODO: to be defined1. """
         self._output_fn = output_fn
         self._header = header
