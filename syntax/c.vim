@@ -218,7 +218,7 @@ if !exists("c_no_ansi") || exists("c_ansi_constants") || exists("c_gnu")
   syn keyword cConstant DBL_MIN_10_EXP DBL_MAX_10_EXP
   syn keyword cConstant LDBL_MIN LDBL_MAX LDBL_MIN_EXP LDBL_MAX_EXP
   syn keyword cConstant LDBL_MIN_10_EXP LDBL_MAX_10_EXP
-  syn keyword cConstant HUGE_VAL CLOCKS_PER_SEC NULL
+  syn keyword cConstant HUGE_VAL CLOCKS_PER_SEC
   syn keyword cConstant LC_ALL LC_COLLATE LC_CTYPE LC_MONETARY
   syn keyword cConstant LC_NUMERIC LC_TIME
   syn keyword cConstant SIG_DFL SIG_ERR SIG_IGN
@@ -251,35 +251,6 @@ if !exists("c_no_ansi") || exists("c_ansi_constants") || exists("c_gnu")
   syn keyword cConstant M_1_PI M_2_PI M_2_SQRTPI M_SQRT2 M_SQRT1_2
 endif
 
-" Accept %: for # (C99)
-" syn region	cPreCondit	start="^\s*\(%:\|#\)\s*\(if\|ifdef\|ifndef\|elif\)\>" skip="\\$" end="$" keepend contains=cComment,cCommentL,cCppString,cCharacter,cNumbers
-" syn match	cPreConditMatch	display "^\s*\(%:\|#\)\s*\(else\|endif\)\>"
-" if !exists("c_no_if0")
-"   syn cluster	cCppOutInGroup	contains=cCppInIf,cCppInElse,cCppInElse2,cCppOutIf,cCppOutIf2,cCppOutElse,cCppInSkip,cCppOutSkip
-"   syn region	cCppOutWrapper	start="^\s*\(%:\|#\)\s*if\s\+0\+\s*\($\|//\|/\*\|&\)" end=".\@=\|$" contains=cCppOutIf,cCppOutElse,@NoSpell fold
-"   syn region	cCppOutIf	contained start="0\+" matchgroup=cCppOutWrapper end="^\s*\(%:\|#\)\s*endif\>" contains=cCppOutIf2,cCppOutElse
-"   if !exists("c_no_if0_fold")
-"     syn region	cCppOutIf2	contained matchgroup=cCppOutWrapper start="0\+" end="^\s*\(%:\|#\)\s*\(else\>\|elif\s\+\(0\+\s*\($\|//\|/\*\|&\)\)\@!\|endif\>\)"me=s-1 contains=cCppOutSkip,@Spell fold
-"   else
-"     syn region	cCppOutIf2	contained matchgroup=cCppOutWrapper start="0\+" end="^\s*\(%:\|#\)\s*\(else\>\|elif\s\+\(0\+\s*\($\|//\|/\*\|&\)\)\@!\|endif\>\)"me=s-1 contains=cCppOutSkip,@Spell
-"   endif
-"   syn region	cCppOutElse	contained matchgroup=cCppOutWrapper start="^\s*\(%:\|#\)\s*\(else\|elif\)" end="^\s*\(%:\|#\)\s*endif\>"me=s-1 contains=TOP,cPreCondit
-"   syn region	cCppInWrapper	start="^\s*\(%:\|#\)\s*if\s\+0*[1-9]\d*\s*\($\|//\|/\*\||\)" end=".\@=\|$" contains=cCppInIf,cCppInElse fold
-"   syn region	cCppInIf	contained matchgroup=cCppInWrapper start="\d\+" end="^\s*\(%:\|#\)\s*endif\>" contains=TOP,cPreCondit
-"   if !exists("c_no_if0_fold")
-"     syn region	cCppInElse	contained start="^\s*\(%:\|#\)\s*\(else\>\|elif\s\+\(0*[1-9]\d*\s*\($\|//\|/\*\||\)\)\@!\)" end=".\@=\|$" containedin=cCppInIf contains=cCppInElse2 fold
-"   else
-"     syn region	cCppInElse	contained start="^\s*\(%:\|#\)\s*\(else\>\|elif\s\+\(0*[1-9]\d*\s*\($\|//\|/\*\||\)\)\@!\)" end=".\@=\|$" containedin=cCppInIf contains=cCppInElse2
-"   endif
-"   syn region	cCppInElse2	contained matchgroup=cCppInWrapper start="^\s*\(%:\|#\)\s*\(else\|elif\)\([^/]\|/[^/*]\)*" end="^\s*\(%:\|#\)\s*endif\>"me=s-1 contains=cCppOutSkip,@Spell
-"   syn region	cCppOutSkip	contained start="^\s*\(%:\|#\)\s*\(if\>\|ifdef\>\|ifndef\>\)" skip="\\$" end="^\s*\(%:\|#\)\s*endif\>" contains=cCppOutSkip
-"   syn region	cCppInSkip	contained matchgroup=cCppInWrapper start="^\s*\(%:\|#\)\s*\(if\s\+\(\d\+\s*\($\|//\|/\*\||\|&\)\)\@!\|ifdef\>\|ifndef\>\)" skip="\\$" end="^\s*\(%:\|#\)\s*endif\>" containedin=cCppOutElse,cCppInIf,cCppInSkip contains=TOP,cPreProc
-" endif
-" syn region	cIncluded	display contained start=+"+ skip=+\\\\\|\\"+ end=+"+
-" syn match	cIncluded	display contained "<[^>]*>"
-" syn match	cInclude	display "^\s*\(%:\|#\)\s*include\>\s*["<]" contains=cIncluded
-"syn match cLineSkip	"\\$"
-" syn cluster	cPreProcGroup	contains=cPreCondit,cIncluded,cInclude,cDefine,cSpecial,cOctalZero,cCppOutWrapper,cCppInWrapper,@cCppOutInGroup,cFormat,cOctal,cOctalError,cNumbersCom,cString,cCommentSkip,cCommentString,cComment2String,@cCommentGroup,cMulti,cBadBlock
 syn region	cDefine		start="^\s*\(%:\|#\)\s*\(define\|undef\|if\|ifdef\|ifndef\|else\|elif\|endif\)\>" end="\(\ \|$\)"
 syn region	cPreProc	start="^\s*\(%:\|#\)\s*\(pragma\|line\|warning\|warn\|error\)\>" end="\(\ \|$\)"
 
@@ -316,8 +287,6 @@ hi def link cInclude		Include
 hi def link cPreProc		PreProc
 hi def link cDefine		Macro
 hi def link cIncluded		cString
-" hi def link cCppInWrapper	cCppOutWrapper
-" hi def link cCppOutWrapper	cPreCondit
 hi def link cPreConditMatch	cPreCondit
 hi def link cPreCondit		PreCondit
 hi def link cType		Type
@@ -329,10 +298,6 @@ hi def link cString		String
 hi def link cComment		Comment
 hi def link cSpecial		SpecialChar
 hi def link cTodo		Todo
-" hi def link cCppOutSkip		cCppOutIf2
-" hi def link cCppInElse2		cCppOutIf2
-" hi def link cCppOutIf2		cCppOut
-" hi def link cCppOut		Comment
 
 let b:current_syntax = 'c'
 
