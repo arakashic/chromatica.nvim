@@ -168,7 +168,7 @@ location of `.clang`, compilation database, compilation arguments, etc.
 
 Chromatica has a debug log. It can be enabled by executing the
 `ChromaticaEnableLog` command (for one time use) or set the
-`g:chromatica#debug_log` option. It will generate a `chromatica.log`
+`g:chromatica#enable_log` option. It will generate a `chromatica.log`
 file in the current directory.
 
 Chromatica also provides a AST dump feature that is useful for the users

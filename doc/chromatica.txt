@@ -57,6 +57,7 @@ Untar the chromatica.nvim.tar.gz to your vim path.
 |g:chromatica#enable_at_startup|
 |g:chromatica#libclang_path|
 |g:chromatica#enable_log|
+|g:chromatica#enable_profiling|
 |g:chromatica#global_args|
 |g:chromatica#responsive_mode|
 |g:chromatica#delay_ms|
@@ -159,12 +160,23 @@ Default: `1`
 					*g:chromatica#debug_log*
 g:chromatica#enable_log~
 
-Chromatica will generate a debug log is this option is set. The file will be
+Chromatica will generate a debug log when this option is set. The file will be
 `chromatica.log` in the current directory.
 
 Default: `0`
 >
 	let g:chromatica#debug_log = 0
+
+-------------------------------------------------------------------------------
+					*g:chromatica#debug_profiling*
+g:chromatica#enable_profiling~
+
+Chromatica will generate a profiling in the debug log when this option is set.
+It only be effective when debug log is enabled.
+
+Default: `0`
+>
+	let g:chromatica#debug_profiling = 0
 
 -------------------------------------------------------------------------------
 					*g:chromatica#dotclangfile_search_path*
