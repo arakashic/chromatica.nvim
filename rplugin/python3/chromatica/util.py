@@ -11,6 +11,7 @@ import os
 import sys
 import unicodedata
 import glob
+import subprocess
 
 def set_default(vim, var, val):
     return vim.call('chromatica#util#set_default', var, val)
@@ -20,6 +21,23 @@ def globruntime(runtimepath, path):
     for rtp in re.split(',', runtimepath):
         ret += glob.glob(rtp + '/' + path)
     return ret
+
+def get_lineno(vim, expr):
+    return vim.call('line', expr)
+
+def echo(vim, expr):
+    if hasattr(vim, 'out_write'):
+        string = (expr if isinstance(expr, str) else str(expr))
+        return vim.out_write('[chromatica] ' + string + '\n')
+    else:
+        vim.command("echo '%s'" % expr)
+
+def echomsg(vim, expr):
+    if hasattr(vim, 'out_write'):
+        string = (expr if isinstance(expr, str) else str(expr))
+        return vim.out_write('[chromatica] ' + string + '\n')
+    else:
+        vim.command("echomsg '%s'" % expr)
 
 def debug(vim, expr):
     if hasattr(vim, 'out_write'):
@@ -58,3 +76,38 @@ def load_external_module(file, module):
     if module_dir not in sys.path:
         sys.path.insert(0, module_dir)
 
+def run_external_tool(cmdline):
+    cmd_args = cmdline.strip().split(" ")
+    proc = subprocess.Popen(cmd_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return proc.stdout.read()
+
+def get_libclang_info(libclang_path):
+    if os.path.isfile(libclang_path) or os.path.islink(libclang_path):
+        real_path = os.path.realpath(libclang_path)
+        if os.path.basename(real_path) == "libclang.so":
+            cmdline = "readelf -a -W " + real_path
+            return run_external_tool(cmdline)
+        elif os.path.basename(real_path) == "libclang.dylib":
+            cmdline = "otool -L " + real_path
+            return run_external_tool(cmdline)
+        else:
+            debug("Cannot get library info for %s" % libclang_path)
+            return None
+    else:
+        error("libclang path is not a file or a symlink")
+        return None
+
+def get_clang_include_path(libclang_path):
+    if os.path.isfile(libclang_path) or os.path.islink(libclang_path):
+        real_path = os.path.realpath(libclang_path)
+        bin_path = os.path.join(os.path.dirname(os.path.dirname(real_path)), "bin", "clang")
+        cmd_args = [bin_path, "-v", "-E", "-x", "c++", "-"]
+        proc = subprocess.Popen(cmd_args, \
+                                stdin=subprocess.PIPE, \
+                                stdout=subprocess.PIPE, \
+                                stderr=subprocess.STDOUT)
+        output = proc.communicate(input=b'')[0]
+        return output
+    else:
+        error("libclang path is not a file or a symlink")
+        return None

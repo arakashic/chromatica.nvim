@@ -5,17 +5,17 @@
 # based on original version by BB Chung <afafaf4 at gmail.com>
 # ============================================================================
 
-from chromatica.neovim_helper import NvimHelper
 from chromatica.profiler import Profiler
 
 from chromatica import logger
 from chromatica import syntax
-from chromatica.util import load_external_module
 from chromatica.compile_args_database import CompileArgsDatabase
+
+import chromatica.util as util
 
 current = __file__
 
-load_external_module(current, "")
+util.load_external_module(current, "")
 from clang import cindex
 
 import os
@@ -28,7 +28,7 @@ class Chromatica(logger.LoggingMixin):
 
     def __init__(self, vim):
         self.__vim = vim
-        self.vimh = NvimHelper(vim)
+        self.debug_enabled = False
         self.__runtimepath = ""
         self.name = "core"
         self.mark = "[Chromatica Core]"
@@ -66,6 +66,36 @@ class Chromatica(logger.LoggingMixin):
             return True
         return False
 
+    def dump_debug_info(self):
+        self.info("--------- runtime variables ---------")
+        self.info("g:chromatica#_channel_id=%s" \
+                % self.__vim.vars["chromatica#_channel_id"])
+        self.info("g:chromatica#enable_profiling=%d" \
+                % self.__vim.vars["chromatica#enable_profiling"])
+        self.info("g:chromatica#highlight_feature_level=%d" \
+                % self.__vim.vars["chromatica#highlight_feature_level"])
+        self.info("g:chromatica#delay_ms=%d" \
+                % self.__vim.vars["chromatica#delay_ms"])
+        self.info("g:chromatica#libclang_path=%s" \
+                % self.__vim.vars["chromatica#libclang_path"])
+        self.info("g:chromatica#dotclangfile_search_path=%s" \
+                % self.__vim.vars["chromatica#dotclangfile_search_path"])
+        self.info("g:chromatica#responsive_mode=%d" \
+                % self.__vim.vars["chromatica#responsive_mode"])
+        self.info("g:chromatica#enable_at_startup=%d" \
+                % self.__vim.vars["chromatica#enable_at_startup"])
+        self.info("g:chromatica#syntax_src_id=%d" \
+                % self.__vim.vars["chromatica#syntax_src_id"])
+        self.info("g:chromatica#enable_log=%d" \
+                % self.__vim.vars["chromatica#enable_log"])
+        self.info("g:chromatica#use_pch=%s" \
+                % self.__vim.vars["chromatica#use_pch"])
+        self.info("-------------------------------------")
+        clang_verbose_info = util.get_clang_include_path(self.library_path).decode()
+        for line in clang_verbose_info.split("\n"):
+            self.info(line)
+        self.info("-------------------------------------")
+
     def get_unsaved_buffer(self, filename):
         return [(self.__vim.current.buffer.name, "\n".join(self.__vim.current.buffer))]
 
@@ -77,7 +107,8 @@ class Chromatica(logger.LoggingMixin):
         if not Chromatica.is_supported_filetype(filetype): return False
 
         args = self.args_db.get_args_filename_ft(filename, filetype)
-        self.info("args: %s" % args)
+        self.debug("filename: %s" % filename)
+        self.debug("args: %s" % "".join(args))
 
         self.ctx[filename] = context
         self.ctx[filename]["filetype"] = filetype
@@ -90,7 +121,6 @@ class Chromatica(logger.LoggingMixin):
         ret = False
         # check if context is already in ctx db
         filename = context["filename"]
-        self.debug("filename: %s" % filename)
         if filename not in self.ctx:
             if not self._init_context(context): return ret
 
@@ -155,7 +185,7 @@ class Chromatica(logger.LoggingMixin):
     def _highlight(self, filename, lbegin=1, lend=-1):
         """internal highlight function"""
         _lbegin = lbegin
-        _lend = self.vimh.line("$") if lend == -1 else lend
+        _lend = util.get_lineno(self.__vim, "$") if lend == -1 else lend
 
         buffer = self.__vim.current.buffer
         tu = self.ctx[filename]["tu"]
@@ -242,14 +272,14 @@ class Chromatica(logger.LoggingMixin):
 
     def show_info(self, context):
         filename = context["filename"]
-        self.vimh.echo("libclang file: %s" % cindex.conf.get_filename())
-        self.vimh.echo("Filename: %s" % context["filename"])
-        self.vimh.echo("Filetype: %s" % self.__vim.current.buffer.options["filetype"])
-        self.vimh.echo(".clang file: %s" % self.args_db.clang_file)
-        self.vimh.echo("Compilation Database: %s" % self.args_db.cdb_file)
-        self.vimh.echo("Compile Flags: %s" % " ".join( \
+        util.echo(self.__vim, "libclang file: %s" % cindex.conf.get_filename())
+        util.echo(self.__vim, "Filename: %s" % context["filename"])
+        util.echo(self.__vim, "Filetype: %s" % self.__vim.current.buffer.options["filetype"])
+        util.echo(self.__vim, ".clang file: %s" % self.args_db.clang_file)
+        util.echo(self.__vim, "Compilation Database: %s" % self.args_db.cdb_file)
+        util.echo(self.__vim, "Compile Flags: %s" % " ".join( \
                 self.args_db.get_args_filename_ft(context["filename"], \
                 self.__vim.current.buffer.options["filetype"])))
-        self.vimh.echo(".clang File Search Path: %s" % self.clangfile_search_path)
+        util.echo(self.__vim, ".clang File Search Path: %s" % self.clangfile_search_path)
         if "error" in self.ctx[filename]:
-            self.vimh.echo("Error Message: %s" % self.ctx[filename]["error"])
+            util.echo(self.__vim, "Error Message: %s" % self.ctx[filename]["error"])

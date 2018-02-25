@@ -23,8 +23,10 @@ class ChromaticaPlugin(object):
 
     @neovim.rpc_export('chromatica_enable_logging', sync=True)
     def enable_logging(self, level, logfile):
-        logger.setup(self.__vim, level, logfile)
-        self.__chromatica.debug_enabled = True
+        if not self.__chromatica.debug_enabled:
+            logger.setup(self.__vim, level, logfile)
+            self.__chromatica.debug_enabled = True
+            self.__chromatica.dump_debug_info()
 
     @neovim.rpc_export("chromatica_highlight")
     def highlight(self, context):
