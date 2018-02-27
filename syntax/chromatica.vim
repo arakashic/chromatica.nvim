@@ -106,7 +106,7 @@ hi default link chromaticaFile Namespace
 hi default link chromaticaIncludedHeaderFile Namespace
 hi default link chromaticaFinalAttr Statement
 hi default link chromaticaOverrideAttr Statement
-hi default link chromaitcaConstAttr Typedef
+hi default link chromaticaConstAttr Typedef
 hi default link chromaticaTypedef Typedef
 hi default link chromaticaStorageClass Statement
 hi default link chromaticaOperatorOverload OperatorOverload
