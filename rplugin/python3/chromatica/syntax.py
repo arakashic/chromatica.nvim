@@ -348,8 +348,12 @@ def _get_keyword_decl_syn(tu, token, cursor):
     if group:
         return group
     else:
-        if cursor.kind != cindex.CursorKind.UNEXPOSED_DECL: return "chromaticaType"
-        else: return None
+        if cursor.kind not in (cindex.CursorKind.UNEXPOSED_DECL, cindex.CursorKind.CXX_ACCESS_SPEC_DECL):
+            return "chromaticaType"
+        elif cursor.kind == cindex.CursorKind.UNEXPOSED_DECL:
+            return None
+        else:
+            return SYNTAX_GROUP.get(cursor.kind)
 
 def _get_keyword_syn(tu, token, cursor):
     """Handles cursor type of keyword tokens. Providing syntax group for most
