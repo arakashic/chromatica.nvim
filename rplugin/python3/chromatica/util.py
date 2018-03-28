@@ -99,15 +99,18 @@ def get_libclang_info(libclang_path):
 
 def get_clang_include_path(libclang_path):
     if os.path.isfile(libclang_path) or os.path.islink(libclang_path):
-        real_path = os.path.realpath(libclang_path)
-        bin_path = os.path.join(os.path.dirname(os.path.dirname(real_path)), "bin", "clang")
-        cmd_args = [bin_path, "-v", "-E", "-x", "c++", "-"]
-        proc = subprocess.Popen(cmd_args, \
-                                stdin=subprocess.PIPE, \
-                                stdout=subprocess.PIPE, \
-                                stderr=subprocess.STDOUT)
-        output = proc.communicate(input=b'')[0]
-        return output
+        bin_path = os.path.realpath("/usr/bin/env")
+        cmd_args = [bin_path, "clang", "-v", "-E", "-x", "c++", "-"]
+        try:
+            proc = subprocess.Popen(cmd_args, \
+                    stdin=subprocess.PIPE, \
+                    stdout=subprocess.PIPE, \
+                    stderr=subprocess.STDOUT)
+            output = proc.communicate(input=b'')[0]
+            return output
+        except:
+            error("Cannot get clang configuration")
     else:
         error("libclang path is not a file or a symlink")
-        return None
+
+    return None
