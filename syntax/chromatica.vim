@@ -113,7 +113,7 @@ hi default link chromaticaOperatorOverload OperatorOverload
 hi default link chromaticaAccessQual AccessQual
 hi default link chromaticaSpecifier Type
 hi default link chromaticaLinkage Linkage
-hi default link chromaticaAutoType Type
+hi default link chromaticaAutoType AutoType
 hi default link chromaticaRegister Type
 hi default link chromaticaThreadLocal Type
 hi default link chromaticaRegister Type
