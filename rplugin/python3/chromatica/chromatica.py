@@ -108,7 +108,7 @@ class Chromatica(logger.LoggingMixin):
 
         args = self.args_db.get_args_filename_ft(filename, filetype)
         self.debug("filename: %s" % filename)
-        self.debug("args: %s" % "".join(args))
+        self.debug("args: %s" % " ".join(args))
 
         self.ctx[filename] = context
         self.ctx[filename]["filetype"] = filetype
