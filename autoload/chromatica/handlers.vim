@@ -12,10 +12,11 @@ function! chromatica#handlers#_init() abort
         autocmd BufEnter * call chromatica#handlers#_parse()
         autocmd InsertLeave * call chromatica#handlers#_delayed_parse()
         autocmd TextChanged * call chromatica#handlers#_delayed_parse()
-        autocmd CursorMoved * call chromatica#handlers#_highlight()
         if get(g:, 'chromatica#responsive_mode', 0)
             autocmd TextChangedI * call chromatica#handlers#_delayed_parse()
         endif
+        autocmd CursorMoved,CursorMovedI * call chromatica#handlers#_highlight()
+        autocmd CursorHold,CursorHoldI * call chromatica#handlers#_highlight()
     augroup END
 endfunction
 
