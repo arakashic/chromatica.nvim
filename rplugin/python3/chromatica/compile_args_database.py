@@ -112,6 +112,12 @@ class CompileArgsDatabase(object):
                             include_path = os.path.normpath(
                                 os.path.join(cwd, include_path))
                         res.append('-I' + include_path)
+                    if arg.startswith('-isystem'):
+                        include_path = arg[8:]
+                        if not os.path.isabs(include_path):
+                            include_path = os.path.normpath(
+                                os.path.join(cwd, include_path))
+                        res.append('-isystem' + include_path)
                     if _basename in arg:
                         continue;
                     else:
