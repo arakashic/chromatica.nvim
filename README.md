@@ -36,11 +36,8 @@ The project is in alpha state, but it is fairly stable and usable now.
 Install neovim python client and latest clang
 ```bash
 pip3 install neovim
-brew install llvm --HEAD --with-clang
+brew install llvm
 ```
-Note the install configuration only include the required option
-`--with-clang`.  Chromatica should work just fine if you have more
-options turned on when building LLVM.
 
 ### Install Chromatica
 
