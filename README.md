@@ -114,7 +114,7 @@ put the `.clang` file or the compilation database. It overrides the
 default search directory.
 
 If preferred, you can set the `g:chromatica#search_source_args` option to
-have Chromatica the compilation database for similar filenames, if an entry
+have Chromatica search the compilation database for similar filenames, if an entry
 for the current file is not found. (This is especially useful if your
 compilation database does not contain entries for header files). Currently,
 this just searches the database for the current file's base name, with the extensions
