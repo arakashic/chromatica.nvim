@@ -121,5 +121,6 @@ hi default link chromaticaRegister Type
 hi default link chromaticaConditionalOperator Todo
 " Microsoft
 hi default link chromaticaMSStatement Statement
+hi default link chromaticaOMP Namespace
 
 let b:chromatica_syntax_loaded = 1
