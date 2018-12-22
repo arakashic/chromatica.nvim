@@ -75,11 +75,14 @@ class CompileArgsDatabase(object):
 
         for line in lines:
             pos = line.find("=")
-            key = line[:pos]
-            try:
-                funcs[key](self, line[pos+1:].strip())
-            except:
-                log.error("Invalid configuration key: ", key)
+            if pos != -1:
+                key = line[:pos]
+                try:
+                    funcs[key](self, line[pos+1:].strip())
+                except:
+                    log.error("Invalid configuration key: ", key)
+            else:
+                self.compile_args.extend(line.strip().split())
 
     def __try_init_cdb(self):
         if self.__cdb_path != None:
