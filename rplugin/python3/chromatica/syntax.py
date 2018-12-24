@@ -307,7 +307,7 @@ SYNTAX_GROUP = {
     cindex.CursorKind.OMP_TEAMS_DISTRIBUTE_DIRECTIVE: "chromaticaOMPStatement",
     cindex.CursorKind.OMP_TEAMS_DISTRIBUTE_SIMD_DIRECTIVE: "chromaticaOMPStatement",
     cindex.CursorKind.OMP_TEAMS_DISTRIBUTE_PARALLEL_FOR_SIMD_DIRECTIVE: "chromaticaOMPStatement",
-    CursorKind.OMP_TEAMS_DISTRIBUTE_PARALLEL_FOR_DIRECTIVE: "chromaticaOMPStatement",
+    cindex.CursorKind.OMP_TEAMS_DISTRIBUTE_PARALLEL_FOR_DIRECTIVE: "chromaticaOMPStatement",
 
     cindex.CursorKind.UNEXPOSED_STMT: None,
     cindex.CursorKind.LABEL_STMT: "chromaticaStatement",
