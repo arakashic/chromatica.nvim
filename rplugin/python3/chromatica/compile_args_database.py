@@ -1,6 +1,8 @@
 from chromatica import logger
 from chromatica.util import load_external_module
 
+import chromatica.util as util
+
 load_external_module(__file__, "")
 from clang import cindex
 
@@ -12,87 +14,149 @@ log = logger.logging.getLogger("chromatica.compile_args")
 DEFAULT_STD={"c"   : ["-std=c11"], \
              "cpp" : ["-std=c++14"]}
 
+compile_args_files = ['.chromatica', '.color_coded', '.clang', '.cquery', '.ccls', '.ycm_extra_flags.py', 'compile_commands.json']
+
 def set_default_std(stds):
     DEFAULT_STD = stds
     return True
 
 class CompileArgsDatabase(object):
 
-    def __init__(self, path, global_args=None):
-        if path:
-            self.__path = path
-        else:
-            self.__path = os.getcwd()
-        self.compile_args = []
+    def __init__(self, global_path, global_args=None):
+        if global_path:
+            self.__global_path = global_path
+
+        self.__paths = []
         self.cdb = None
-        self.__clang_file = None
-        self.__cdb_path = None
 
-        if global_args != None:
-            self.compile_args = global_args
+        self.global_args = global_args
+        self.compile_args = []
+        self.ft_compile_args = { "c" : [], "cpp" : [] , "objc" : [], "objcpp" : [] }
 
-        self.__find_clang_file()
-        self.__find_cdb_file()
+        self.find_per_project_file()
 
-        self.__parse_compile_args()
-        self.__try_init_cdb()
+        if len(self.__paths) > 0:
+            self.__args_file = self.__paths[0]
 
-    def __find_clang_file(self):
-        clang_file_path = self.__path
-        while os.path.dirname(clang_file_path) != clang_file_path:
-            self.__clang_file = os.path.join(clang_file_path, ".clang")
-            if os.path.exists(self.__clang_file):
-                return
-            clang_file_path = os.path.dirname(clang_file_path)
+        self.__cdb_file = None
 
-        self.__clang_file = None
+        self.parse_args_file()
 
-    def __find_cdb_file(self):
-        cdb_file_path = self.__path
-        while os.path.dirname(cdb_file_path) != cdb_file_path:
-            cdb_file = os.path.join(cdb_file_path, "compile_commands.json")
-            if os.path.exists(cdb_file):
-                self.__cdb_path = cdb_file_path
-                return
-            cdb_file_path = os.path.dirname(cdb_file_path)
+    def find_per_project_file(self):
+        search_path = os.getcwd()
+        found_project_root = False
+        while not found_project_root and os.path.dirname(search_path) != search_path:
+            for args_file in compile_args_files:
+                args_file_path = os.path.join(search_path, args_file)
+                if os.path.exists(args_file_path):
+                    self.__paths.append(args_file_path)
+                    found_project_root = True
+            search_path = os.path.dirname(search_path)
 
-    def __parse_cdb_key(self, value):
-        cdb_rel_path = value.strip("\"")
-        cdb_path = os.path.join(os.path.dirname(self.__clang_file), cdb_rel_path)
-        if cdb_path and os.path.isdir(cdb_path):
-            self.__cdb_path = cdb_path
+    def parse_args_file(self):
+        filename = os.path.basename(self.__args_file)
+        if filename == ".chromatica":
+            self.parse_chromatica_file()
+        elif filename == ".color_coded" or filename == ".clang":
+            self.parse_simple_file()
+        elif filename == ".cquery":
+            self.parse_ccls_file()
+        elif filename == ".ccls":
+            self.parse_ccls_file()
+        elif filename == ".ycm_extra_flags":
+            self.parse_ycm_file()
+        else:
+            self.init_cdb(self.__args_file)
 
-    def __parse_compile_args(self):
-        if self.__clang_file == None:
+    def parse_simple_file(self):
+        if self.__args_file == None:
             return
-        # read .clang file
-        fp = open(self.__clang_file)
+        fp = open(self.__args_file, "r")
+        lines = fp.readlines()
+        fp.close()
+
+        for line in lines:
+            if len(line) == 0:
+                continue
+            self.compile_args.extend(line.strip().split())
+
+    def parse_chromatica_file(self):
+        assert len(self.compile_args) == 0
+        if self.__args_file == None:
+            return
+        fp = open(self.__args_file, "r")
         lines = fp.readlines()
         fp.close()
 
         funcs = {"flags" : lambda s, value: s.compile_args.extend(value.split()),
-                 "compilation_database" : self.__parse_cdb_key, }
+                 "c" : lambda s, value: s.ft_compile_args["c"].extend(value.split()),
+                 "cpp" : lambda s, value: s.ft_compile_args["cpp"].extend(value.split()),
+                 "compilation_database" : lambda s, value: s.init_cdb(value), }
 
         for line in lines:
+            if len(line) == 0 :
+                continue
+            line = line.strip()
+            if line.startswith("#"):
+                continue
             pos = line.find("=")
             if pos != -1:
                 key = line[:pos]
                 try:
-                    funcs[key](self, line[pos+1:].strip())
+                    funcs[key](self, line[pos+1:])
                 except:
                     log.error("Invalid configuration key: ", key)
             else:
-                self.compile_args.extend(line.strip().split())
+                self.compile_args.extend(line.split())
 
-    def __try_init_cdb(self):
-        if self.__cdb_path != None:
+    def parse_ccls_file(self):
+        util.echo("parse_ccls_file")
+        if self.__args_file == None:
+            return
+        fp = open(self.__args_file, "r")
+        lines = fp.readlines()
+        fp.close()
+
+        for line in lines:
+            if len(line) == 0 :
+                continue
+            line = line.strip()
+            if line.startswith("#"):
+                continue
+            elif line.startswith("%"):
+                keys = [key for key in line.split(" ") if len(key) > 0]
+                i = 0
+                while i < len(keys):
+                    if key == "%compile_commands.json":
+                        self.init_cdb("compile_commands.json")
+                    elif key == "%c" or key == "%h":
+                        self.ft_compile_args["c"].append(keys[-1])
+                    elif key == "%cpp" or key == "%hpp":
+                        self.ft_compile_args["c"].append(keys[-1])
+                    elif key == "%objective-c":
+                        self.ft_compile_args["objc"].append(keys[-1])
+                    elif key == "%objective-cpp":
+                        self.ft_compile_args["objcpp"].append(keys[-1])
+                    i += 1
+            else:
+                self.compile_args.append(line)
+
+    def init_cdb(self, value):
+        cdb_rel_path = value.strip("\"")
+        if os.path.isabs(cdb_rel_path):
+            cdb_path = cdb_rel_path
+        else:
+            cdb_path = os.path.join(os.path.dirname(self.__args_file), cdb_rel_path)
+        if cdb_path and os.path.isdir(cdb_path):
+            self.__cdb_path = cdb_path
+            self.try_init_cdb()
             try:
                 self.cdb = cindex.CompilationDatabase.fromDirectory(self.__cdb_path)
             except:
                 log.error("Invalid compilation database file %s" % self.__cdb_path)
                 self.__cdb_path = None
 
-    def __get_cdb_args(self, filename):
+    def get_cdb_args(self, filename):
         res = []
         ret = self.cdb.getCompileCommands(filename)
         _basename = os.path.basename(filename)
@@ -130,30 +194,24 @@ class CompileArgsDatabase(object):
         return res
 
     def get_args_filename(self, filename):
-        ret = None
-        if self.cdb != None:
-            ret = self.__get_cdb_args(filename)
+        ret = []
+        if self.global_args != None:
+            ret = self.global_args
 
-        if ret:
-            return self.compile_args + ret
-        else:
-            return self.compile_args
+        ret += self.compile_args
+
+        if self.cdb != None:
+            ret += self.get_cdb_args(filename)
+
+        return ret
 
     def get_args_filename_ft(self, filename, filetype):
-        if self.cdb != None or filetype not in DEFAULT_STD:
-            return self.get_args_filename(filename)
+        ret = self.get_args_filename(filename)
+        return ret + self.ft_compile_args[filetype]
 
-        ret = DEFAULT_STD[filetype]
-        return ret + self.compile_args
-
-    @property
-    def clang_file(self):
-        return self.__clang_file
+    def get_available_args_files(self):
+        return self.__paths
 
     @property
-    def cdb_file(self):
-        if self.__cdb_path:
-            return os.path.join(self.__cdb_path, "compile_commands.json")
-        else:
-            return ""
-
+    def args_file(self):
+        return self.__args_file
