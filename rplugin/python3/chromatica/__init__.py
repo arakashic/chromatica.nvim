@@ -4,31 +4,31 @@
 # License: MIT license
 # ============================================================================
 
-import neovim
+import pynvim
 
 from chromatica import logger
 from chromatica.chromatica import Chromatica
 
 import time
 
-@neovim.plugin
+@pynvim.plugin
 class ChromaticaPlugin(object):
     def __init__(self, vim):
         self.__vim = vim
 
-    @neovim.function("_chromatica", sync=True)
+    @pynvim.function("_chromatica", sync=True)
     def init_chromatica(self, args):
         self.__chromatica = Chromatica(self.__vim)
         self.__vim.vars["chromatica#_channel_id"] = self.__vim.channel_id
 
-    @neovim.rpc_export('chromatica_enable_logging', sync=True)
+    @pynvim.rpc_export('chromatica_enable_logging', sync=True)
     def enable_logging(self, level, logfile):
         if not self.__chromatica.debug_enabled:
             logger.setup(self.__vim, level, logfile)
             self.__chromatica.debug_enabled = True
             self.__chromatica.dump_debug_info()
 
-    @neovim.rpc_export("chromatica_highlight")
+    @pynvim.rpc_export("chromatica_highlight")
     def highlight(self, context):
         context["rpc"] = "chromatica_highlight"
         try:
@@ -37,7 +37,7 @@ class ChromaticaPlugin(object):
             self.__chromatica.debug(context)
             raise
 
-    @neovim.rpc_export("chromatica_parse")
+    @pynvim.rpc_export("chromatica_parse")
     def parse(self, context):
         context["rpc"] = "chromatica_parse"
         try:
@@ -46,7 +46,7 @@ class ChromaticaPlugin(object):
             self.__chromatica.debug(context)
             raise
 
-    @neovim.rpc_export("chromatica_delayed_parse")
+    @pynvim.rpc_export("chromatica_delayed_parse")
     def delayed_parse(self, context):
         context["rpc"] = "chromatica_delayed_parse"
         try:
@@ -55,7 +55,7 @@ class ChromaticaPlugin(object):
             self.__chromatica.debug(context)
             raise
 
-    @neovim.rpc_export("chromatica_print_highlight")
+    @pynvim.rpc_export("chromatica_print_highlight")
     def print_highlight(self, context):
         context["rpc"] = "chromatica_print_highlight"
         try:
@@ -64,11 +64,11 @@ class ChromaticaPlugin(object):
             self.__chromatica.debug(context)
             raise
 
-    @neovim.rpc_export("chromatica_clear_highlight")
+    @pynvim.rpc_export("chromatica_clear_highlight")
     def clear_highlight(self):
         self.__chromatica.clear_highlight()
 
-    @neovim.rpc_export("chromatica_show_info", sync=True)
+    @pynvim.rpc_export("chromatica_show_info", sync=True)
     def show_info(self, context):
         self.__chromatica.show_info(context)
 
