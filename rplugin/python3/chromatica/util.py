@@ -17,9 +17,11 @@ import pynvim
 util_vim = None
 
 def use_vim(vim):
+    global util_vim
     util_vim = vim
 
 def set_default(var, val):
+    global util_vim
     return util_vim.call('chromatica#util#set_default', var, val)
 
 def globruntime(runtimepath, path):
@@ -29,9 +31,11 @@ def globruntime(runtimepath, path):
     return ret
 
 def get_lineno(expr):
+    global util_vim
     return util_vim.call('line', expr)
 
 def echo(expr):
+    global util_vim
     if hasattr(util_vim, 'out_write'):
         string = (expr if isinstance(expr, str) else str(expr))
         return util_vim.out_write('[chromatica] ' + string + '\n')
@@ -39,6 +43,7 @@ def echo(expr):
         util_vim.command("echo '%s'" % expr)
 
 def echomsg(expr):
+    global util_vim
     if hasattr(util_vim, 'out_write'):
         string = (expr if isinstance(expr, str) else str(expr))
         return util_vim.out_write('[chromatica] ' + string + '\n')
@@ -46,6 +51,7 @@ def echomsg(expr):
         util_vim.command("echomsg '%s'" % expr)
 
 def debug(expr):
+    global util_vim
     if hasattr(util_vim, 'out_write'):
         string = (expr if isinstance(expr, str) else str(expr))
         return util_vim.out_write('[chromatica] ' + string + '\n')
@@ -54,6 +60,7 @@ def debug(expr):
 
 
 def error(expr):
+    global util_vim
     if hasattr(util_vim, 'err_write'):
         string = (expr if isinstance(expr, str) else str(expr))
         return util_vim.err_write('[chromatica] ' + string + '\n')
