@@ -12,6 +12,8 @@ log = logger.logging.getLogger("chromatica.compile_args")
 DEFAULT_STD={"c"   : ["-std=c11"], \
              "cpp" : ["-std=c++14"]}
 
+SOURCE_EXTS=[".c", ".cc", ".cpp", ".cxx"]
+
 def set_default_std(stds):
     DEFAULT_STD = stds
     return True
@@ -129,19 +131,26 @@ class CompileArgsDatabase(object):
             print("Cannot find compile flags for %s in compilation database" % filename)
         return res
 
-    def get_args_filename(self, filename):
+    def get_args_filename(self, filename, search_source_args=False):
         ret = None
         if self.cdb != None:
             ret = self.__get_cdb_args(filename)
+
+        if not ret and search_source_args:
+            filename_base = os.path.splitext(filename)[0]
+            for source_ext in SOURCE_EXTS:
+                ret = self.__get_cdb_args(filename_base + source_ext)
+                if ret:
+                    break
 
         if ret:
             return self.compile_args + ret
         else:
             return self.compile_args
 
-    def get_args_filename_ft(self, filename, filetype):
+    def get_args_filename_ft(self, filename, filetype, search_source_args=False):
         if self.cdb != None or filetype not in DEFAULT_STD:
-            return self.get_args_filename(filename)
+            return self.get_args_filename(filename, search_source_args)
 
         ret = DEFAULT_STD[filetype]
         return ret + self.compile_args

@@ -128,6 +128,8 @@ function! chromatica#init#_variables() abort
                 \ 'g:chromatica#highlight_feature_level', 1)
     call chromatica#util#set_default(
                 \ 'g:chromatica#dotclangfile_search_path', '')
+    call chromatica#util#set_default(
+                \ 'g:chromatica#search_source_args', 0)
 endfunction
 
 function! chromatica#init#_context() abort

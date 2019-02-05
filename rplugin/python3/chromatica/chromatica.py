@@ -49,6 +49,8 @@ class Chromatica(logger.LoggingMixin):
         self.highlight_feature_level = self.__vim.vars["chromatica#highlight_feature_level"]
         syntax.HIGHLIGHT_FEATURE_LEVEL = self.highlight_feature_level
 
+        self.search_source_args = self.__vim.vars["chromatica#search_source_args"]
+
         if not cindex.Config.loaded:
             if os.path.isdir(os.path.abspath(self.library_path)):
                 cindex.Config.set_library_path(self.library_path)
@@ -90,6 +92,8 @@ class Chromatica(logger.LoggingMixin):
                 % self.__vim.vars["chromatica#enable_log"])
         self.info("g:chromatica#use_pch=%s" \
                 % self.__vim.vars["chromatica#use_pch"])
+        self.info("g:chromatica#search_source_args=%d" \
+                % self.__vim.vars["chromatica#search_source_args"])
         self.info("-------------------------------------")
         clang_verbose_info = util.get_clang_include_path(self.library_path).decode()
         for line in clang_verbose_info.split("\n"):
@@ -106,7 +110,7 @@ class Chromatica(logger.LoggingMixin):
         filetype = buffer.options["filetype"]
         if not Chromatica.is_supported_filetype(filetype): return False
 
-        args = self.args_db.get_args_filename_ft(filename, filetype)
+        args = self.args_db.get_args_filename_ft(filename, filetype, self.search_source_args)
         self.debug("filename: %s" % filename)
         self.debug("args: %s" % " ".join(args))
 
@@ -279,7 +283,8 @@ class Chromatica(logger.LoggingMixin):
         util.echo(self.__vim, "Compilation Database: %s" % self.args_db.cdb_file)
         util.echo(self.__vim, "Compile Flags: %s" % " ".join( \
                 self.args_db.get_args_filename_ft(context["filename"], \
-                self.__vim.current.buffer.options["filetype"])))
+                self.__vim.current.buffer.options["filetype"], \
+                self.search_source_args)))
         util.echo(self.__vim, ".clang File Search Path: %s" % self.clangfile_search_path)
         if "error" in self.ctx[filename]:
             util.echo(self.__vim, "Error Message: %s" % self.ctx[filename]["error"])
