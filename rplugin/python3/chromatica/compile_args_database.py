@@ -45,6 +45,9 @@ class CompileArgsDatabase(object):
             self.__clang_file = os.path.join(clang_file_path, ".clang")
             if os.path.exists(self.__clang_file):
                 return
+            self.__clang_file = os.path.join(clang_file_path, "compile_flags.txt")
+            if os.path.exists(self.__clang_file):
+                return
             clang_file_path = os.path.dirname(clang_file_path)
 
         self.__clang_file = None
