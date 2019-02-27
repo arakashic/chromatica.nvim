@@ -54,6 +54,9 @@ class CompileArgsDatabase(object):
             search_path = os.path.dirname(search_path)
 
     def parse_args_file(self):
+        if not self.__args_file:
+            return
+
         filename = os.path.basename(self.__args_file)
         if filename == ".chromatica":
             self.parse_chromatica_file()
