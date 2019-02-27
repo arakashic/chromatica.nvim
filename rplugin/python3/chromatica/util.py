@@ -12,9 +12,17 @@ import sys
 import unicodedata
 import glob
 import subprocess
+import pynvim
 
-def set_default(vim, var, val):
-    return vim.call('chromatica#util#set_default', var, val)
+util_vim = None
+
+def use_vim(vim):
+    global util_vim
+    util_vim = vim
+
+def set_default(var, val):
+    global util_vim
+    return util_vim.call('chromatica#util#set_default', var, val)
 
 def globruntime(runtimepath, path):
     ret = []
@@ -22,53 +30,58 @@ def globruntime(runtimepath, path):
         ret += glob.glob(rtp + '/' + path)
     return ret
 
-def get_lineno(vim, expr):
-    return vim.call('line', expr)
+def get_lineno(expr):
+    global util_vim
+    return util_vim.call('line', expr)
 
-def echo(vim, expr):
-    if hasattr(vim, 'out_write'):
+def echo(expr):
+    global util_vim
+    if hasattr(util_vim, 'out_write'):
         string = (expr if isinstance(expr, str) else str(expr))
-        return vim.out_write('[chromatica] ' + string + '\n')
+        return util_vim.out_write('[chromatica] ' + string + '\n')
     else:
-        vim.command("echo '%s'" % expr)
+        util_vim.command("echo '%s'" % expr)
 
-def echomsg(vim, expr):
-    if hasattr(vim, 'out_write'):
+def echomsg(expr):
+    global util_vim
+    if hasattr(util_vim, 'out_write'):
         string = (expr if isinstance(expr, str) else str(expr))
-        return vim.out_write('[chromatica] ' + string + '\n')
+        return util_vim.out_write('[chromatica] ' + string + '\n')
     else:
-        vim.command("echomsg '%s'" % expr)
+        util_vim.command("echomsg '%s'" % expr)
 
-def debug(vim, expr):
-    if hasattr(vim, 'out_write'):
+def debug(expr):
+    global util_vim
+    if hasattr(util_vim, 'out_write'):
         string = (expr if isinstance(expr, str) else str(expr))
-        return vim.out_write('[chromatica] ' + string + '\n')
+        return util_vim.out_write('[chromatica] ' + string + '\n')
     else:
-        vim.call('chromatica#util#print_debug', expr)
+        util_vim.call('chromatica#util#print_debug', expr)
 
 
-def error(vim, expr):
-    if hasattr(vim, 'err_write'):
+def error(expr):
+    global util_vim
+    if hasattr(util_vim, 'err_write'):
         string = (expr if isinstance(expr, str) else str(expr))
-        return vim.err_write('[chromatica] ' + string + '\n')
+        return util_vim.err_write('[chromatica] ' + string + '\n')
     else:
-        vim.call('chromatica#util#print_error', expr)
+        util_vim.call('chromatica#util#print_error', expr)
 
 
-def error_tb(vim, msg):
+def error_tb(msg):
     for line in traceback.format_exc().splitlines():
-        error(vim, str(line))
-    error(vim, '%s.  Use :messages for error details.' % msg)
+        error(str(line))
+    error('%s.  Use :messages for error details.' % msg)
 
 
-def error_vim(vim, msg):
+def error_vim(msg):
     throwpoint = vim.eval('v:throwpoint')
     if throwpoint != '':
-        error(vim, 'v:throwpoint = ' + throwpoint)
+        error('v:throwpoint = ' + throwpoint)
     exception = vim.eval('v:exception')
     if exception != '':
-        error(vim, 'v:exception = ' + exception)
-    error_tb(vim, msg)
+        error('v:exception = ' + exception)
+    error_tb(msg)
 
 def load_external_module(file, module):
     current = os.path.dirname(os.path.abspath(file))

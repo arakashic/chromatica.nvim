@@ -58,8 +58,7 @@ class Chromatica(logger.LoggingMixin):
                 cindex.Config.set_library_file(self.library_path)
             cindex.Config.set_compatibility_check(False)
 
-        self.args_db = CompileArgsDatabase(self.clangfile_search_path,\
-                self.global_args)
+        self.args_db = None
         self.idx = cindex.Index.create()
 
     @classmethod
@@ -107,10 +106,13 @@ class Chromatica(logger.LoggingMixin):
         filename = context["filename"]
         # check if context is has the right filetype
         buffer = self.__vim.current.buffer
-        filetype = buffer.options["filetype"]
+        filetype = buffer.options["filetype"].split(".")[0]
         if not Chromatica.is_supported_filetype(filetype): return False
 
-        args = self.args_db.get_args_filename_ft(filename, filetype, self.search_source_args)
+        if not self.args_db:
+            self.args_db = CompileArgsDatabase(None, self.global_args)
+
+        args = self.args_db.get_args_filename_ft(filename, filetype)
         self.debug("filename: %s" % filename)
         self.debug("args: %s" % " ".join(args))
 
@@ -189,7 +191,7 @@ class Chromatica(logger.LoggingMixin):
     def _highlight(self, filename, lbegin=1, lend=-1):
         """internal highlight function"""
         _lbegin = lbegin
-        _lend = util.get_lineno(self.__vim, "$") if lend == -1 else lend
+        _lend = util.get_lineno("$") if lend == -1 else lend
 
         buffer = self.__vim.current.buffer
         tu = self.ctx[filename]["tu"]
@@ -276,15 +278,15 @@ class Chromatica(logger.LoggingMixin):
 
     def show_info(self, context):
         filename = context["filename"]
-        util.echo(self.__vim, "libclang file: %s" % cindex.conf.get_filename())
-        util.echo(self.__vim, "Filename: %s" % context["filename"])
-        util.echo(self.__vim, "Filetype: %s" % self.__vim.current.buffer.options["filetype"])
-        util.echo(self.__vim, ".clang file: %s" % self.args_db.clang_file)
-        util.echo(self.__vim, "Compilation Database: %s" % self.args_db.cdb_file)
-        util.echo(self.__vim, "Compile Flags: %s" % " ".join( \
-                self.args_db.get_args_filename_ft(context["filename"], \
-                self.__vim.current.buffer.options["filetype"], \
-                self.search_source_args)))
-        util.echo(self.__vim, ".clang File Search Path: %s" % self.clangfile_search_path)
+        util.echo("libclang file: %s" % cindex.conf.get_filename())
+        util.echo("Filename: %s" % context["filename"])
+        util.echo("Filetype: %s" % self.__vim.current.buffer.options["filetype"])
+        util.echo("Using compile args file: %s" % self.args_db.args_file)
+        for arg in self.ctx[filename]["args"]:
+            util.echo("    : %s" % arg)
+        # util.echo("Compile Flags: %s" % " ".join(self.ctx[filename]["args"]))
+                # self.args_db.get_args_filename_ft(context["filename"], \
+                # self.__vim.current.buffer.options["filetype"])))
+        util.echo(".clang File Search Path: %s" % self.clangfile_search_path)
         if "error" in self.ctx[filename]:
-            util.echo(self.__vim, "Error Message: %s" % self.ctx[filename]["error"])
+            util.echo("Error Message: %s" % self.ctx[filename]["error"])

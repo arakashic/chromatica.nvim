@@ -9,12 +9,15 @@ import pynvim
 from chromatica import logger
 from chromatica.chromatica import Chromatica
 
+import chromatica.util as util
+
 import time
 
 @pynvim.plugin
 class ChromaticaPlugin(object):
     def __init__(self, vim):
         self.__vim = vim
+        util.use_vim(vim)
 
     @pynvim.function("_chromatica", sync=True)
     def init_chromatica(self, args):
