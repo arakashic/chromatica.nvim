@@ -102,7 +102,7 @@ class Chromatica(logger.LoggingMixin):
         filename = context["filename"]
         # check if context is has the right filetype
         buffer = self.__vim.current.buffer
-        filetype = buffer.options["filetype"]
+        filetype = buffer.options["filetype"].split(".")[0]
         if not Chromatica.is_supported_filetype(filetype): return False
 
         if not self.args_db:
