@@ -20,7 +20,21 @@ function! chromatica#handlers#_init() abort
     augroup END
 endfunction
 
+fun! chromatica#handlers#skip_buffer() abort "{{{
+    let s:bufname = expand("%")
+    if s:bufname == "CtrlSF" || s:bufname =~ "fugitive:"
+        return 1
+    endif
+    if &filetype == 'fugitive'
+        return 1
+    endif
+    return 0
+endf "}}}
+
 fun! chromatica#handlers#_highlight()
+    if chromatica#handlers#skip_buffer()
+        return
+    endif
     if !exists('b:highlight_tick')
         let b:highlight_tick = 0
     endif
@@ -38,6 +52,9 @@ fun! chromatica#handlers#_highlight()
 endf
 
 fun! chromatica#handlers#_parse()
+    if chromatica#handlers#skip_buffer()
+        return
+    endif
     if get(b:, 'chromatica_fallback', 0)
         return
     endif
@@ -49,6 +66,9 @@ fun! chromatica#handlers#_parse()
 endf
 
 fun! chromatica#handlers#_delayed_parse()
+    if chromatica#handlers#skip_buffer()
+        return
+    endif
     if get(b:, 'chromatica_fallback', 0)
         return
     endif
@@ -60,6 +80,9 @@ fun! chromatica#handlers#_delayed_parse()
 endf
 
 fun! chromatica#handlers#_print_highlight()
+    if chromatica#handlers#skip_buffer()
+        return
+    endif
     if get(b:, 'chromatica_fallback', 0)
         return
     endif
