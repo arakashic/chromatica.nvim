@@ -14,7 +14,7 @@ log = logger.logging.getLogger("chromatica.compile_args")
 DEFAULT_STD={"c"   : ["-std=c11"], \
              "cpp" : ["-std=c++14"]}
 
-compile_args_files = ['.chromatica', '.color_coded', '.clang', '.cquery', '.ccls', '.ycm_extra_flags.py', 'compile_commands.json']
+compile_args_files = ['.color_coded', '.clang', 'compile_flags.txt', '.cquery', '.ccls', '.chromatica', 'compile_commands.json']
 
 def set_default_std(stds):
     DEFAULT_STD = stds
@@ -60,7 +60,7 @@ class CompileArgsDatabase(object):
         filename = os.path.basename(self.__args_file)
         if filename == ".chromatica":
             self.parse_chromatica_file()
-        elif filename == ".color_coded" or filename == ".clang":
+        elif filename == ".color_coded" or filename == ".clang" or filename == "compile_flags.txt":
             self.parse_simple_file()
         elif filename == ".cquery":
             self.parse_ccls_file()
