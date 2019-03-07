@@ -97,14 +97,17 @@ def run_external_tool(cmdline):
 def get_libclang_info(libclang_path):
     if os.path.isfile(libclang_path) or os.path.islink(libclang_path):
         real_path = os.path.realpath(libclang_path)
-        if os.path.basename(real_path) == "libclang.so":
+        if sys.platform == "linux" or sys.platform == "cygwin":
             cmdline = "readelf -a -W " + real_path
             return run_external_tool(cmdline)
-        elif os.path.basename(real_path) == "libclang.dylib":
+        elif sys.platform == "darwin":
             cmdline = "otool -L " + real_path
             return run_external_tool(cmdline)
-        else:
+        elif sys.platform == "win32":
             debug("Cannot get library info for %s" % libclang_path)
+            return None
+        else:
+            debug("Invalid platform %s" % sys.platform)
             return None
     else:
         error("libclang path is not a file or a symlink")
@@ -112,17 +115,20 @@ def get_libclang_info(libclang_path):
 
 def get_clang_include_path(libclang_path):
     if os.path.isfile(libclang_path) or os.path.islink(libclang_path):
-        bin_path = os.path.realpath("/usr/bin/env")
-        cmd_args = [bin_path, "clang", "-v", "-E", "-x", "c++", "-"]
-        try:
-            proc = subprocess.Popen(cmd_args, \
-                    stdin=subprocess.PIPE, \
-                    stdout=subprocess.PIPE, \
-                    stderr=subprocess.STDOUT)
-            output = proc.communicate(input=b'')[0]
-            return output
-        except:
-            error("Cannot get clang configuration")
+        if sys.platform != "win32":
+            bin_path = os.path.realpath("/usr/bin/env")
+            cmd_args = [bin_path, "clang", "-v", "-E", "-x", "c++", "-"]
+            try:
+                proc = subprocess.Popen(cmd_args, \
+                        stdin=subprocess.PIPE, \
+                        stdout=subprocess.PIPE, \
+                        stderr=subprocess.STDOUT)
+                output = proc.communicate(input=b'')[0]
+                return output
+            except:
+                error("Cannot get clang configuration")
+        else:
+                warn("Cannot get clang configuration automatically on Windows")
     else:
         error("libclang path is not a file or a symlink")
 
