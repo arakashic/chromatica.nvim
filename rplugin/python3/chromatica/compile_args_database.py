@@ -70,7 +70,7 @@ class CompileArgsDatabase(object):
         elif filename == ".ycm_extra_flags":
             self.parse_ycm_file()
         else:
-            self.init_cdb(self.__args_file)
+            self.init_cdb(os.path.dirname(self.__args_file))
 
     def parse_simple_file(self):
         if self.__args_file == None:
@@ -145,6 +145,7 @@ class CompileArgsDatabase(object):
                 self.compile_args.append(line)
 
     def init_cdb(self, value):
+        log.info("cdb: %s" % value)
         cdb_rel_path = value.strip("\"")
         if os.path.isabs(cdb_rel_path):
             cdb_path = cdb_rel_path
@@ -152,7 +153,7 @@ class CompileArgsDatabase(object):
             cdb_path = os.path.join(os.path.dirname(self.__args_file), cdb_rel_path)
         if cdb_path and os.path.isdir(cdb_path):
             self.__cdb_path = cdb_path
-            self.try_init_cdb()
+            # self.try_init_cdb()
             try:
                 self.cdb = cindex.CompilationDatabase.fromDirectory(self.__cdb_path)
             except:
