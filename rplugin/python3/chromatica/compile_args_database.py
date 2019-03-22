@@ -128,8 +128,7 @@ class CompileArgsDatabase(object):
                 continue
             elif line.startswith("%"):
                 keys = [key for key in line.split(" ") if len(key) > 0]
-                i = 0
-                while i < len(keys):
+                for key in keys:
                     if key == "%compile_commands.json":
                         self.init_cdb("compile_commands.json")
                     elif key == "%c" or key == "%h":
@@ -140,7 +139,6 @@ class CompileArgsDatabase(object):
                         self.ft_compile_args["objc"].append(keys[-1])
                     elif key == "%objective-cpp":
                         self.ft_compile_args["objcpp"].append(keys[-1])
-                    i += 1
             else:
                 self.compile_args.append(line)
 
