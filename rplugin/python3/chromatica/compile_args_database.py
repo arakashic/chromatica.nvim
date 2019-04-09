@@ -168,7 +168,7 @@ class CompileArgsDatabase(object):
                 cwd = cmds.directory
                 skip = 0
                 for arg in cmds.arguments:
-                    if skip and arg[0] != "-":
+                    if skip and (len(arg) == 0 or arg[0] != "-"):
                         skip = 0
                         continue
                     if arg == "-o" or arg == "-c":
