@@ -193,7 +193,10 @@ class CompileArgsDatabase(object):
                     else:
                         # if last added switch was standalone include then we need to append path to it
                         if last == '-I' or last == '-isystem':
-                            res[len(res) - 1] += arg
+                            include_path = arg
+                            if not os.path.isabs(include_path):
+                                include_path = os.path.normpath(os.path.join(cwd, include_path))
+                            res[len(res) - 1] += include_path
                             last = ''
                         else:
                             res.append(arg)
