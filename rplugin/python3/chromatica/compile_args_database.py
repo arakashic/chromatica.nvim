@@ -167,6 +167,7 @@ class CompileArgsDatabase(object):
             for cmds in ret:
                 cwd = cmds.directory
                 skip = 0
+                last = ''
                 for arg in cmds.arguments:
                     if skip and (len(arg) == 0 or arg[0] != "-"):
                         skip = 0
@@ -175,13 +176,13 @@ class CompileArgsDatabase(object):
                         skip = 1
                         continue
 
-                    if arg.startswith('-I'):
+                    if arg != '-I' and arg.startswith('-I'):
                         include_path = arg[2:]
                         if not os.path.isabs(include_path):
                             include_path = os.path.normpath(
                                 os.path.join(cwd, include_path))
                         res.append('-I' + include_path)
-                    if arg.startswith('-isystem'):
+                    if arg != '-isystem' and arg.startswith('-isystem'):
                         include_path = arg[8:]
                         if not os.path.isabs(include_path):
                             include_path = os.path.normpath(
@@ -190,7 +191,16 @@ class CompileArgsDatabase(object):
                     if _basename in arg:
                         continue;
                     else:
-                        res.append(arg)
+                        # if last added switch was standalone include then we need to append path to it
+                        if last == '-I' or last == '-isystem':
+                            include_path = arg
+                            if not os.path.isabs(include_path):
+                                include_path = os.path.normpath(os.path.join(cwd, include_path))
+                            res[len(res) - 1] += include_path
+                            last = ''
+                        else:
+                            res.append(arg)
+                            last = arg
         else:
             print("Cannot find compile flags for %s in compilation database" % filename)
         return res
