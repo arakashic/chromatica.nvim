@@ -124,6 +124,8 @@ class CompileArgsDatabase(object):
             if len(line) == 0 :
                 continue
             line = line.strip()
+            if line.startswith("clang"):
+                continue
             if line.startswith("#"):
                 continue
             elif line.startswith("%"):
