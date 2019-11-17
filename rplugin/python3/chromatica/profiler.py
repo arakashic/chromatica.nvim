@@ -20,10 +20,10 @@ class Profiler(object):
         self._timestamps = []
 
     def start(self, tag=""):
-        self._timestamps.append((tag, time.clock()))
+        self._timestamps.append((tag, time.perf_counter()))
 
     def stop(self):
-        tend = time.clock()
+        tend = time.perf_counter()
         ts = self._timestamps.pop(-1)
         tstart = ts[1]
         self._output_fn("%s %s: %.6fs" % (self._header, ts[0], tend - tstart))
