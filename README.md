@@ -1,5 +1,24 @@
 # chromatica.nvim
 
+## End of Project
+
+I have decided to stop the development and maintenance of this project.
+First of all, the landscape of compiler-based completion and syntax
+support has greatly improved over the past few years since the LSP is
+born. I think [vim-lsp-cxx-hightlight][9] which leverages LSP to provide
+semantic-based syntax highlight is a much cleaner solution for the
+problem. After trying it a bit, I have decide to switch to it.
+
+I wrote chromatica because back then there is no good solution for the
+semantic-based syntax highlight on Neovim. I did not like the situation
+that it cannot share the AST with my auto completion which also uses
+clang. But there was no good solution for that. Things have changed a
+lot now.
+
+I would suggest you move on to [vim-lsp-cxx-highlight][9] because it
+is simply better (and probably addressed some of the issues you run into
+with chromatica).
+
 Chromatica is an asynchronous syntax highlight engine for Neovim. It is
 a python3 remote plugin. Currently, chromatica focuses on providing
 semantic accurate syntax highlighting for C-family languages (using
@@ -262,3 +281,4 @@ This project is largely inspired by [deoplete][1] and [color_coded][2].
 [6]: http://clang.llvm.org
 [7]: https://github.com/rizsotto/Bear
 [8]: https://apple.stackexchange.com/questions/337940/why-is-usr-include-missing-i-have-xcode-and-command-line-tools-installed-moja
+[9]: https://github.com/jackguo380/vim-lsp-cxx-highlight
